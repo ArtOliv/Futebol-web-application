@@ -1,0 +1,12 @@
+:root{
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 400;
+
+    background: linear-gradient(to bottom, black 30%, #1ce00a 250%);
+    background-attachment: fixed;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
