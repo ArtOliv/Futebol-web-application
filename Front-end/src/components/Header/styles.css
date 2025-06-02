@@ -1,17 +1,18 @@
 header{
-    background-color: black;
+    background-color: #2E2EB1;
     display: flex;
     height: 80px;
     padding-bottom: 20px;
-    border-bottom: 1px solid #1ce00a;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
+    margin: 50px;
+    border-radius: 10px;
 }
 
 .logo{
-    padding-left: 250px;
+    padding-left: 280px;
     height: 130px;
 }
 
@@ -20,18 +21,17 @@ header{
     text-align: center;
     justify-content: center;
     height: 100px;
-    width: 1000px;
-    padding: 0px 300px 0px 700px;
+    width: 400px;
 }
 
 .button-bar{
     display: flex;
-    padding-top: 30px;
+    padding-top: 25px;
     gap: 50px;
 }
 
 .head-buttons ul li{
-    color: #1ce00a;
+    color: #FFFFFF;
     display: inline;
     font-weight: 700;
     font-size: 19px;

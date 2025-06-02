@@ -7,8 +7,8 @@ function Home(){
             <Header />
             <div className='home-content'>
                 <div className='content'>
-                    <h3>Seja bem vindo ao <b>Web Futebol!</b></h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus fuga voluptatem delectus reprehenderit cum doloremque perferendis veniam saepe quia veritatis totam nam magni voluptate, non fugit. Non sed nobis ducimus.</p>
+                    <h3>Seja bem vindo ao <b>Web Futebol</b>!</h3>
+                    <p>Com vários campeonatos, acompanhe os jogos do seu time favorito, com tabelas de classificação atualizadas e simulação de jogos.</p>
                 </div>
             </div>
         </>
