@@ -1,0 +1,49 @@
+.main-page{
+  margin: 25px;
+  padding-top: 100px;
+}
+
+.select-campeonato{
+  background-color: #373737;
+  color: #ffffff;
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.drop-content{
+  background-color: #4C4C4C;
+  margin-top: 15px;
+  border-radius: 10px;
+  overflow-x: auto;
+}
+
+table{
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead{
+  color: #ffffff;
+}
+
+thead th{
+  padding: 0.8rem;
+  text-align: left;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+tbody tr{
+  border-top: 2px solid #696969;
+}
+
+tbody tr:hover{
+  background-color: #3d3d3d;
+}
+
+tbody td{
+  padding: 0.7rem 0.8rem;
+  font-size: 0.9rem;
+  color: #f1f1f1;
+}

@@ -2,37 +2,64 @@ header{
     background-color: #2E2EB1;
     display: flex;
     height: 80px;
-    padding-bottom: 20px;
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    margin: 50px;
+    padding: 0 30px;
+    margin: 25px;
     border-radius: 10px;
-}
-
-.logo{
-    padding-left: 280px;
-    height: 130px;
+    z-index: 1000;
 }
 
 .head-buttons{
     display: flex;
-    text-align: center;
-    justify-content: center;
-    height: 100px;
-    width: 400px;
+    justify-content: flex-start;
+    align-items: center;
 }
 
 .button-bar{
+    list-style: none;
     display: flex;
-    padding-top: 25px;
-    gap: 50px;
+    gap: 40px;
+    margin: 0;
+    padding: 0;
 }
 
-.head-buttons ul li{
-    color: #FFFFFF;
-    display: inline;
+.button-bar li{
+    display: flex;
+    align-items: center;
+}
+
+.menu-btn{
+    color: #ffffff;
     font-weight: 700;
     font-size: 19px;
+    text-decoration: none;
+    position: relative;
+    padding: 10px 5px;
+}
+
+
+.menu-btn::after {
+    content: '';
+    position: absolute;
+    top: 58px;
+    left: 50%;
+    transform: translateX(-50%) scaleX(0);
+    transform-origin: center;
+    width: 0%;
+    height: 3px;
+    background-color: #FFFFFF;
+    transition: width 0.3s ease;
+}
+
+.menu-btn:hover::after {
+    transform: translateX(-50%) scaleX(1);
+    width: 100%;
+}
+
+.menu-btn.active::after {
+    transform: translateX(-50%) scaleX(1);
+    width: 100%;
 }

@@ -1,14 +1,15 @@
 import './styles.css'
-import appLogo from '../../assets/appLogo.png'
+import { NavLink } from 'react-router-dom'
 
 function Header(){
     return(
         <header>
             <div className='head-buttons'>
                 <ul className='button-bar'>
-                    <li>Início</li>
-                    <li>Jogos</li>
-                    <li>Campeonatos</li>
+                    <li><NavLink to="/" className="menu-btn">Classificação</NavLink></li>
+                    <li><NavLink to="/jogos" className="menu-btn">Jogos</NavLink></li>
+                    <li><NavLink to="/times" className="menu-btn">Times</NavLink></li>
+                    <li><NavLink to="/jogadores" className="menu-btn">Jogadores</NavLink></li>
                 </ul>
             </div>
         </header>
