@@ -1,7 +1,7 @@
 [
     {
         "posicao": 1,
-        "time": "Flamengo",
+        "time": "Vasco",
         "pontos": 55,
         "jogos": 20,
         "vitorias": 18,
@@ -97,7 +97,7 @@
     },
     {
         "posicao": 9,
-        "time": "Vasco",
+        "time": "Juventude",
         "pontos": 12,
         "jogos": 16,
         "vitorias": 0,
@@ -229,7 +229,7 @@
     },
     {
         "posicao": 20,
-        "time": "Juventude",
+        "time": "Flamengo",
         "pontos": 7,
         "jogos": 17,
         "vitorias": 1,

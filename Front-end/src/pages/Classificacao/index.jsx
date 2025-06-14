@@ -19,9 +19,8 @@ function Classificacao(){
                     <option value="libertadores">Libertadores</option>
                     <option value="mundial">Mundial</option>
                 </select>
-
                 <div className="drop-content">
-                    <table>
+                    <table className="class-table">
                         <colgroup>
                             <col style={{ width: '100px' }}/>
                             <col style={{ width: '1200px' }}/>
@@ -34,7 +33,7 @@ function Classificacao(){
                             <col/>
                             <col/>
                         </colgroup>
-                        <thead>
+                        <thead className="class-thead">
                             <tr>
                                 <th>Posição</th>
                                 <th>Time</th>
@@ -48,7 +47,7 @@ function Classificacao(){
                                 <th>SG</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="class-tbody">
                             {dados.map(grupos => (
                                 <tr key={grupos.time}>
                                     <td>{grupos.posicao}</td>

@@ -3,47 +3,45 @@
   padding-top: 100px;
 }
 
-.select-campeonato{
-  background-color: #373737;
-  color: #ffffff;
-  border: none;
-  font-size: 20px;
-  font-weight: 700;
-}
-
 .drop-content{
   background-color: #4C4C4C;
   margin-top: 15px;
   border-radius: 10px;
-  overflow-x: auto;
+  overflow: auto;
+  position: relative;
+  max-height: 700px;
 }
 
-table{
+.class-table{
   width: 100%;
   border-collapse: collapse;
 }
 
-thead{
+.class-thead{
   color: #ffffff;
 }
 
-thead th{
+.class-thead th{
+  background-color: #4C4C4C;
   padding: 0.8rem;
   text-align: left;
   font-weight: 700;
   font-size: 1rem;
+  position: sticky;
+  top: 0;
 }
 
-tbody tr{
+.class-tbody tr{
   border-top: 2px solid #696969;
 }
 
-tbody tr:hover{
+.class-tbody tr:hover{
   background-color: #3d3d3d;
+  cursor: pointer;
 }
 
-tbody td{
+.class-tbody td{
   padding: 0.7rem 0.8rem;
-  font-size: 1rem;
+  font-size: 20px;
   color: #f1f1f1;
 }

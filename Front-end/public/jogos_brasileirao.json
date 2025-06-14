@@ -2,6 +2,7 @@
     {
         "jogo": 1,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "A",
         "dia": "QUI",
         "data": "20/07",
@@ -17,6 +18,7 @@
     {
         "jogo": 2,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "B",
         "dia": "QUI",
         "data": "20/07",
@@ -32,6 +34,7 @@
     {
         "jogo": 3,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "B",
         "dia": "QUI",
         "data": "20/07",
@@ -47,6 +50,7 @@
     {
         "jogo": 4,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "A",
         "dia": "SEX",
         "data": "21/07",
@@ -62,6 +66,7 @@
     {
         "jogo": 5,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "C",
         "dia": "SEX",
         "data": "21/07",
@@ -77,6 +82,7 @@
     {
         "jogo": 6,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "C",
         "dia": "SEX",
         "data": "21/07",
@@ -92,6 +98,7 @@
     {
         "jogo": 7,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "E",
         "dia": "SEX",
         "data": "21/07",
@@ -107,6 +114,7 @@
     {
         "jogo": 8,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "D",
         "dia": "SÁB",
         "data": "22/07",
@@ -122,6 +130,7 @@
     {
         "jogo": 9,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "D",
         "dia": "SÁB",
         "data": "22/07",
@@ -137,6 +146,7 @@
     {
         "jogo": 10,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "G",
         "dia": "DOM",
         "data": "23/07",
@@ -152,6 +162,7 @@
     {
         "jogo": 11,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "E",
         "dia": "DOM",
         "data": "23/07",
@@ -167,6 +178,7 @@
     {
         "jogo": 12,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "F",
         "dia": "DOM",
         "data": "23/07",
@@ -182,6 +194,7 @@
     {
         "jogo": 13,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "G",
         "dia": "SEG",
         "data": "24/07",
@@ -197,6 +210,7 @@
     {
         "jogo": 14,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "H",
         "dia": "SEG",
         "data": "24/07",
@@ -212,6 +226,7 @@
     {
         "jogo": 15,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "F",
         "dia": "SEG",
         "data": "24/07",
@@ -227,6 +242,7 @@
     {
         "jogo": 16,
         "rodada": 1,
+        "estadio": "Maracanã",
         "grupo": "H",
         "dia": "SEG",
         "data": "24/07",
@@ -242,6 +258,7 @@
     {
         "jogo": 17,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "A",
         "dia": "TER",
         "data": "25/07",
@@ -257,6 +274,7 @@
     {
         "jogo": 18,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "A",
         "dia": "TER",
         "data": "25/07",
@@ -272,6 +290,7 @@
     {
         "jogo": 19,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "C",
         "dia": "QUA",
         "data": "26/07",
@@ -287,6 +306,7 @@
     {
         "jogo": 20,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "C",
         "dia": "QUA",
         "data": "26/07",
@@ -302,6 +322,7 @@
     {
         "jogo": 21,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "B",
         "dia": "QUA",
         "data": "26/07",
@@ -317,6 +338,7 @@
     {
         "jogo": 22,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "E",
         "dia": "QUA",
         "data": "26/07",
@@ -332,6 +354,7 @@
     {
         "jogo": 23,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "E",
         "dia": "QUA",
         "data": "27/07",
@@ -347,6 +370,7 @@
     {
         "jogo": 24,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "B",
         "dia": "QUA",
         "data": "27/07",
@@ -362,6 +386,7 @@
     {
         "jogo": 25,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "G",
         "dia": "QUI",
         "data": "27/07",
@@ -377,6 +402,7 @@
     {
         "jogo": 26,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "D",
         "dia": "SEX",
         "data": "28/07",
@@ -392,6 +418,7 @@
     {
         "jogo": 27,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "D",
         "dia": "SEX",
         "data": "28/07",
@@ -407,6 +434,7 @@
     {
         "jogo": 28,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "G",
         "dia": "SÁB",
         "data": "29/07",
@@ -422,6 +450,7 @@
     {
         "jogo": 29,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "F",
         "dia": "SÁB",
         "data": "29/07",
@@ -437,6 +466,7 @@
     {
         "jogo": 30,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "F",
         "dia": "SÁB",
         "data": "29/07",
@@ -452,6 +482,7 @@
     {
         "jogo": 31,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "H",
         "dia": "DOM",
         "data": "30/07",
@@ -467,6 +498,7 @@
     {
         "jogo": 32,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "A",
         "dia": "DOM",
         "data": "30/07",
@@ -482,6 +514,7 @@
     {
         "jogo": 33,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "A",
         "dia": "DOM",
         "data": "30/07",
@@ -497,6 +530,7 @@
     {
         "jogo": 34,
         "rodada": 2,
+        "estadio": "Maracanã",
         "grupo": "H",
         "dia": "DOM",
         "data": "30/07",
@@ -512,6 +546,7 @@
     {
         "jogo": 35,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "C",
         "dia": "SEG",
         "data": "31/07",
@@ -527,6 +562,7 @@
     {
         "jogo": 36,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "C",
         "dia": "SEG",
         "data": "31/07",
@@ -542,6 +578,7 @@
     {
         "jogo": 37,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "B",
         "dia": "SEG",
         "data": "31/07",
@@ -557,6 +594,7 @@
     {
         "jogo": 38,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "B",
         "dia": "SEG",
         "data": "31/07",
@@ -572,6 +610,7 @@
     {
         "jogo": 39,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "E",
         "dia": "TER",
         "data": "01/08",
@@ -587,6 +626,7 @@
     {
         "jogo": 40,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "E",
         "dia": "TER",
         "data": "01/08",
@@ -602,6 +642,7 @@
     {
         "jogo": 41,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "D",
         "dia": "TER",
         "data": "01/08",
@@ -617,6 +658,7 @@
     {
         "jogo": 42,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "D",
         "dia": "TER",
         "data": "01/08",
@@ -632,6 +674,7 @@
     {
         "jogo": 43,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "G",
         "dia": "QUA",
         "data": "02/08",
@@ -647,6 +690,7 @@
     {
         "jogo": 44,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "G",
         "dia": "QUA",
         "data": "02/08",
@@ -662,6 +706,7 @@
     {
         "jogo": 45,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "F",
         "dia": "QUA",
         "data": "02/08",
@@ -677,6 +722,7 @@
     {
         "jogo": 46,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "F",
         "dia": "QUA",
         "data": "02/08",
@@ -692,6 +738,7 @@
     {
         "jogo": 47,
         "rodada": 3,
+        "estadio": "Maracanã",
         "grupo": "H",
         "dia": "QUI",
         "data": "03/08",
@@ -707,6 +754,23 @@
     {
         "jogo": 48,
         "rodada": 3,
+        "estadio": "Maracanã",
+        "grupo": "H",
+        "dia": "QUI",
+        "data": "03/08",
+        "hora": "07:00",
+        "local": "HBF PARK",
+        "mandante": "MARROCOS",
+        "sigla_mandante": "MAR",
+        "gols_mandante": 1,
+        "gols_visitante": 0,
+        "sigla_visitante": "COL",
+        "visitante": "COLÔMBIA"
+    },
+    {
+        "jogo": 48,
+        "rodada": 4,
+        "estadio": "Maracanã",
         "grupo": "H",
         "dia": "QUI",
         "data": "03/08",
