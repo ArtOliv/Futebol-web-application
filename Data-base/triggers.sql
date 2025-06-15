@@ -27,26 +27,22 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER atulizar_pontuacao_no_jogo
-AFTER INSERT ON GOL
+AFTER INSERT ON Gol
 FOR EACH ROW
 BEGIN
-	DECLARE time_fez_gol varchar(100);
+	DECLARE time_fez_gol VARCHAR(100);
 	SELECT c_nome_time INTO time_fez_gol
-	FROM jogador
-	WHERE c_Pnome_jogador = NEW.c_Pnome_jogador AND 
-		  c_Unome_jogador = NEW.c_Unome_jogador AND
-		  n_camisa = NEW.n_camisa;
-    
-	UPDATE jogo
-    SET
+	FROM Jogador
+	WHERE id_jogador = NEW.id_jogador;
+
+	UPDATE Jogo
+	SET
 		n_placar_casa = n_placar_casa + CASE WHEN time_fez_gol = c_time_casa THEN 1 ELSE 0 END,
-        n_placar_visitante = n_placar_visitante + CASE WHEN time_fez_gol = c_time_vistante THEN 1 ELSE 0 END
-    WHERE id_jogo = NEW.id_jogo;
+		n_placar_visitante = n_placar_visitante + CASE WHEN time_fez_gol = c_time_visitante THEN 1 ELSE 0 END
+	WHERE id_jogo = NEW.id_jogo;
 END$$
-
-
-
 DELIMITER ;
+
 DELIMITER $$
 CREATE TRIGGER criar_classificacao
 AFTER INSERT ON campeonato
@@ -72,21 +68,96 @@ DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER cartao_vermelho_automatico
-BEFORE INSERT on cartao
+BEFORE INSERT ON Cartao
 FOR EACH ROW
 BEGIN
-	DECLARE num_cartao int;
-    IF NEW.e_tipo = 'amarelo' THEN
+	DECLARE num_cartao INT;
+
+	IF NEW.e_tipo = 'amarelo' AND NEW.id_jogador IS NOT NULL THEN
 		SELECT COUNT(*) INTO num_cartao
-		FROM cartao
-		WHERE NEW.id_jogo = id_jogo AND
-			  NEW.c_Pnome_jogador = c_Pnome_jogador AND
-			  NEW.c_Unome_jogador = c_Unome_jogador AND
-			  NEW.n_camisa = n_camisa AND
-			  e_tipo = 'amarelo';
-		
-        IF num_cartao >= 1 THEN
+		FROM Cartao
+		WHERE id_jogo = NEW.id_jogo
+		  AND id_jogador = NEW.id_jogador
+		  AND e_tipo = 'amarelo';
+
+		IF num_cartao >= 1 THEN
 			SET NEW.e_tipo = 'vermelho';
 		END IF;
 	END IF;
-END $$
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER verificar_capacidade_estadio
+BEFORE INSERT ON Jogo
+FOR EACH ROW
+BEGIN
+  DECLARE capacidade INT;
+  SELECT n_capacidade INTO capacidade FROM Estadio WHERE c_nome_estadio = NEW.c_nome_estadio;
+  IF capacidade IS NULL OR capacidade <= 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Estádio com capacidade inválida.';
+  END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER verificar_time_jogador
+BEFORE INSERT ON Jogador
+FOR EACH ROW
+BEGIN
+  DECLARE ja_participa INT;
+  SELECT COUNT(*) INTO ja_participa
+  FROM Jogador j
+  JOIN Time_participa_campeonato tpc ON j.c_nome_time = tpc.c_nome_time
+  WHERE NEW.c_Pnome_jogador = j.c_Pnome_jogador
+    AND NEW.c_Unome_jogador = j.c_Unome_jogador
+    AND NEW.n_camisa = j.n_camisa;
+
+  IF ja_participa > 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Jogador já participa de um time nesse campeonato.';
+  END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER impedir_jogo_mesmo_time
+BEFORE INSERT ON Jogo
+FOR EACH ROW
+BEGIN
+  IF NEW.c_time_casa = NEW.c_time_visitante THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Um time não pode jogar contra si mesmo.';
+  END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER limitar_jogadores_por_time
+BEFORE INSERT ON Jogador
+FOR EACH ROW
+BEGIN
+  DECLARE total INT;
+  SELECT COUNT(*) INTO total FROM Jogador WHERE c_nome_time = NEW.c_nome_time;
+  IF total >= 11 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Time já possui 11 jogadores.';
+  END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER evitar_gol_duplicado
+BEFORE INSERT ON Gol
+FOR EACH ROW
+BEGIN
+  DECLARE ja_tem INT;
+  SELECT COUNT(*) INTO ja_tem FROM Gol
+  WHERE id_jogo = NEW.id_jogo
+    AND c_Pnome_jogador = NEW.c_Pnome_jogador
+    AND c_Unome_jogador = NEW.c_Unome_jogador
+    AND n_camisa = NEW.n_camisa
+    AND n_minuto_gol = NEW.n_minuto_gol;
+
+  IF ja_tem > 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Gol já registrado para esse minuto.';
+  END IF;
+END$$
+DELIMITER ;

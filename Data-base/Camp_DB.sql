@@ -26,6 +26,7 @@ create table if not exists Time_participa_campeonato(
         ON UPDATE CASCADE);
 
 create table if not exists Jogador(
+    id_jogador INT auto_increment primary key.
     c_Pnome_jogador VARCHAR(100),
     c_Unome_jogador VARCHAR(100),
     n_camisa INT CHECK (n_camisa >= 0 AND n_camisa < 100),
@@ -34,7 +35,6 @@ create table if not exists Jogador(
     n_altura DECIMAL(4,2) not null CHECK (n_altura > 0 AND n_altura < 3),
     n_peso DECIMAL(5,2) not null CHECK (n_peso > 0 AND n_peso < 200),
     c_nome_time VARCHAR(100),
-    primary key (c_PNome_jogador,c_Unome_jogador, n_camisa),
     constraint fk_time_jogador foreign key (c_nome_time) references Time(c_nome_time)
         ON DELETE SET NULL ON UPDATE CASCADE);
     
@@ -66,27 +66,30 @@ create table if not exists Gol(
     id_gol INT auto_increment,
     n_minuto_gol INT not null CHECK (n_minuto_gol>=0 AND n_minuto_gol<=90),
     id_jogo INT not null,
+    id_jogador INT,
     c_Pnome_jogador VARCHAR(100),
     c_Unome_jogador VARCHAR(100),
     n_camisa INT,
     primary key (id_gol, id_jogo),
     constraint fk_jogo_gol foreign key (id_jogo) references Jogo(id_jogo)
        ON UPDATE CASCADE,
-    constraint fk_jogador_gol foreign key (c_Pnome_jogador,c_Unome_jogador, n_camisa) references Jogador(c_Pnome_jogador,c_Unome_jogador, n_camisa)
-       ON DELETE SET NULL ON UPDATE CASCADE);
+    CONSTRAINT fk_jogador_gol FOREIGN KEY (id_jogador) REFERENCES Jogador(id_jogador)
+        ON DELETE SET NULL ON UPDATE CASCADE
+);
 
 create table if not exists Cartao(
     id_cartao INT auto_increment,
     e_tipo ENUM('amarelo', 'vermelho') not null,
     n_minuto_cartao INT not null CHECK (n_minuto_cartao>=0 AND n_minuto_cartao<=90),
     id_jogo INT not null,
+    id_jogador INT,
     c_Pnome_jogador VARCHAR(100),
     c_Unome_jogador VARCHAR(100),
     n_camisa INT,
     primary key (id_cartao, id_jogo),
     constraint fk_jogo_cartao foreign key (id_jogo) references Jogo(id_jogo)
             ON DELETE CASCADE ON UPDATE CASCADE,
-    constraint fk_jogador_cartao foreign key (c_Pnome_jogador,c_Unome_jogador, n_camisa) references Jogador(c_Pnome_jogador,c_Unome_jogador, n_camisa)
+    CONSTRAINT fk_jogador_cartao FOREIGN KEY (id_jogador) REFERENCES Jogador(id_jogador)
             ON DELETE SET NULL ON UPDATE CASCADE);
     
 create table if not exists Classificacao(
@@ -109,34 +112,28 @@ create table if not exists Classificacao(
 
 
 CREATE OR REPLACE TRIGGER Tg_Cartao_DoisAmarelos
-    AFTER INSERT ON Cartao
-    FOR EACH ROW
-    BEGIN
-        DECLARE total_amarelos INT;
-        DECLARE ja_tem_vermelho INT;
+AFTER INSERT ON Cartao
+FOR EACH ROW
+BEGIN
+    DECLARE total_amarelos INT;
+    DECLARE ja_tem_vermelho INT;
 
-        IF NEW.e_tipo = 'amarelo' THEN
-            SELECT COUNT(*)
-            INTO total_amarelos
-            FROM Cartao
-            WHERE id_jogo = NEW.id_jogo
-                AND c_Pnome_jogador = NEW.c_Pnome_jogador
-                AND c_Unome_jogador = NEW.c_Unome_jogador
-                AND n_camisa = NEW.n_camisa
-                AND e_tipo = 'amarelo';
+    IF NEW.e_tipo = 'amarelo' AND NEW.id_jogador IS NOT NULL THEN
+        SELECT COUNT(*) INTO total_amarelos
+        FROM Cartao
+        WHERE id_jogo = NEW.id_jogo
+          AND id_jogador = NEW.id_jogador
+          AND e_tipo = 'amarelo';
 
-            SELECT COUNT(*)
-            INTO ja_tem_vermelho
-            FROM Cartao
-            WHERE id_jogo = NEW.id_jogo
-                AND c_Pnome_jogador = NEW.c_Pnome_jogador
-                AND c_Unome_jogador = NEW.c_Unome_jogador
-                AND n_camisa = NEW.n_camisa
-                AND e_tipo = 'vermelho';
+        SELECT COUNT(*) INTO ja_tem_vermelho
+        FROM Cartao
+        WHERE id_jogo = NEW.id_jogo
+          AND id_jogador = NEW.id_jogador
+          AND e_tipo = 'vermelho';
 
-            IF total_amarelos = 2 AND ja_tem_vermelho = 0 THEN
-                INSERT INTO Cartao (e_tipo, n_minuto_cartao, id_jogo, c_Pnome_jogador, c_Unome_jogador, n_camisa)
-                VALUES ('vermelho', NEW.n_minuto_cartao, NEW.id_jogo, NEW.c_Pnome_jogador, NEW.c_Unome_jogador, NEW.n_camisa);
-            END IF;
+        IF total_amarelos = 2 AND ja_tem_vermelho = 0 THEN
+            INSERT INTO Cartao (e_tipo, n_minuto_cartao, id_jogo, id_jogador)
+            VALUES ('vermelho', NEW.n_minuto_cartao, NEW.id_jogo, NEW.id_jogador);
         END IF;
-    END;
+    END IF;
+END;
