@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import './styles.css'
+import ModalJogo from '../../components/Modal_jogo'
 
 function Jogos(){
     const [campeonato, setCampeonato] = useState("brasileirao")
     const [jogos, setJogos] = useState([])
     const [rodadaSelecionada, setRodadaSelecionada] = useState("")
+    const [jogoSelecionado, setJogoSelecionado] = useState(null)
 
     useEffect(() => {
             fetch(`/jogos_${campeonato}.json`)
@@ -45,8 +47,8 @@ function Jogos(){
                         <div key={rodadaSelecionada} className="round-section">
                             <div className="match-list">
                                 {jogosPorRodada[rodadaSelecionada].map(jogo => (
-                                    <div className="match-card" key={jogo.jogo}>
-                                        <span className="stadium">{jogo.estadio}</span>
+                                    <div className="match-card" key={jogo.jogo} onClick={() => setJogoSelecionado(jogo)}>
+                                        <span className="stadium">{jogo.local}</span>
                                         <span className="teams">{jogo.mandante}</span>
                                         <span className="score">{jogo.gols_mandante}</span>
                                         <span className="score">X</span>
@@ -64,7 +66,10 @@ function Jogos(){
                             </div>
                         </div>
                     )}
-                </div>   
+                </div>
+                {jogoSelecionado && (
+                    <ModalJogo jogo={jogoSelecionado} fechar={() => setJogoSelecionado(null)}/>
+                )}
             </div>
         </>
     )
