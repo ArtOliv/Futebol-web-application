@@ -28,7 +28,7 @@ function Modal_jogo({jogo, fechar}){
             <div className="modal-content" onClick={e => e.stopPropagation()}>
                 <div className="modal-header">
                     <button onClick={fechar}><img src={ArrowIcon} alt="Voltar"/></button>
-                    <span className="camp-label">{jogo.campeonato || "Brasileirão 2023"}</span>
+                    <span className="camp-label">{jogo.campeonato}</span>
                     <span>•</span> 
                     <span className="date-label">{jogo.dia} | {jogo.data} | {jogo.hora}</span>
                 </div>
