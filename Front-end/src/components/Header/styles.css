@@ -41,7 +41,7 @@ header{
 }
 
 
-.menu-btn::after {
+.menu-btn::after{
     content: '';
     position: absolute;
     top: 58px;
@@ -54,12 +54,12 @@ header{
     transition: width 0.3s ease;
 }
 
-.menu-btn:hover::after {
+.menu-btn:hover::after{
     transform: translateX(-50%) scaleX(1);
     width: 100%;
 }
 
-.menu-btn.active::after {
+.menu-btn.active::after{
     transform: translateX(-50%) scaleX(1);
     width: 100%;
 }
