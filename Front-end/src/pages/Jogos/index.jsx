@@ -7,15 +7,22 @@ function Jogos(){
     const [jogos, setJogos] = useState([])
     const [rodadaSelecionada, setRodadaSelecionada] = useState("")
     const [jogoSelecionado, setJogoSelecionado] = useState(null)
+    const [carregando, setCarregando] = useState(true)
 
     useEffect(() => {
-            fetch(`/jogos_${campeonato}.json`)
-            .then(res => res.json())
-            .then(data => {
-                setJogos(data)
-                setRodadaSelecionada(data.length > 0 ? data[0].rodada : "")
-            })
+        setCarregando(true)
+        fetch(`/jogos_${campeonato}.json`)
+        .then(res => res.json())
+        .then(data => {
+            setJogos(data)
+            setRodadaSelecionada(data.length > 0 ? data[0].rodada : "")
+            setCarregando(false)
+        })
     }, [campeonato])
+
+    if(carregando){
+        return null
+    }
 
     const jogosPorRodada = jogos.reduce((acc, jogo) => {
         if(!acc[jogo.rodada]){
