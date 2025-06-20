@@ -2,14 +2,23 @@ import { useEffect, useState } from "react";
 import './styles.css'
 
 function Classificacao(){
-    const [dados, setDados] = useState([]);
-    const [campeonato, setCampeonato] = useState("classificacao");
+    const [dados, setDados] = useState([])
+    const [campeonato, setCampeonato] = useState("classificacao")
+    const [carregando, setCarregando] = useState(true)
 
     useEffect(() => {
+        setCarregando(true)
         fetch(`/${campeonato}.json`)
             .then(res => res.json())
-            .then(setDados)
-    }, [campeonato]);
+            .then(data => {
+                setDados(data)
+                setCarregando(false)
+            })
+    }, [campeonato])
+
+    if(carregando){
+        return null
+    }
 
     return(
         <>
