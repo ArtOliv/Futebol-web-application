@@ -46,6 +46,7 @@ create table if not exists Estadio(
 create table if not exists Jogo(
     id_jogo INT auto_increment primary key,
     dt_data_horario DATETIME not null,
+    n_rodada INT,
     n_placar_casa INT default 0 CHECK (n_placar_casa >= 0),
     n_placar_visitante INT default 0 CHECK (n_placar_visitante >= 0),
     c_nome_campeonato VARCHAR(100) not null,
