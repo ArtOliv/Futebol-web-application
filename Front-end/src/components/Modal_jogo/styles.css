@@ -1,0 +1,122 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;900&display=swap');
+
+.modal-overlay{
+    position: fixed;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    background: rgba(44, 44, 44, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+.modal-content{
+    background: #4C4C4C;
+    border-radius: 15px;
+    padding: 30px;
+    color: white;
+    width: 80%;
+    max-width: 700px;
+}
+
+.modal-header{
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header button{
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-header button img{
+    width: 15px;
+    height: 15px;
+}
+
+.camp-label{
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.date-label{
+    font-size: 20px;
+}
+
+.scoreboard-container{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 28px;
+    margin: 20px 0;
+}
+
+.central-scoreboard{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 30px;
+}
+
+.goals{
+    font-size: 100px;
+    font-weight: 700;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+}
+
+.vs{
+    font-weight: 700;
+}
+
+.central-events{
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.event-line{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+.central-icon{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.event-icon{
+    width: 40px;
+    height: 40px;
+}
+
+.left{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    text-align: right;
+    gap: 5px;
+    font-size: 14px;
+}
+
+.right{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: 5px;
+    font-size: 14px;
+}
