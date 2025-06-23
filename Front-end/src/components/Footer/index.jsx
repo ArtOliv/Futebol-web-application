@@ -1,8 +1,8 @@
 import './styles.css'
 import { useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
-import ShowPassword from '../../assets/show_password.png'
-import HidePassword from '../../assets/hide_password.png'
+import ShowPassword from '../../assets/Show_password.png'
+import HidePassword from '../../assets/Hide_password.png'
 
 const ADMIN_CREDENTIALS = {
     cpf: "12345678910",
@@ -11,13 +11,12 @@ const ADMIN_CREDENTIALS = {
 
 function Footer({cpf, setCpf, senha, setSenha}){
     const navigate = useNavigate()
-
     const [mostrarSenha, setMostrarSenha] = useState(false)
 
     const handleSubmit = (e) => {
         e.preventDefault()
         if(cpf === ADMIN_CREDENTIALS.cpf && senha === ADMIN_CREDENTIALS.senha){
-            navigate('/administrador')
+            navigate('/administrador/criar', { replace: true })
         } else {
             alert("Credenciais de admin inválidas")
         }
