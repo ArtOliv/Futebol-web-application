@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import './styles.css'
-import ModalJogo from '../../components/Modal_jogo'
+import ModalJogo from '../../components/ModalJogo'
 
 function Jogos(){
     const [campeonato, setCampeonato] = useState("brasileirao")

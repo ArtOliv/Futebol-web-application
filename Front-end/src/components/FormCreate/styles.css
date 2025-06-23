@@ -1,0 +1,91 @@
+.dropdown{
+    background-color: #2E2EB1;
+    padding: 20px;
+    margin: 30px 20px 40px 20px;
+    border-radius: 5px;
+}
+
+.dropdown-button{
+    display: flex;
+    border: none;
+    color: #ffffff;
+    background-color: transparent;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.sub-dropdown-button{
+    display: flex;
+    border: none;
+    background-color: transparent;
+    color: #ffffff;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+.button-arrow{
+    transition: transform 0.3s ease;
+    transform: rotate(180deg);
+    width: 13px;
+    height: 13px;
+}
+
+.button-arrow.rotate{
+    transform: rotate(270deg);
+}
+
+.input-container{
+    display: flex;
+    margin: 10px 25px;
+}
+
+.input-container form{
+    display: flex;
+    flex-direction: column;
+}
+
+textarea{
+    width: 100%;
+    max-width: 1000px;
+    padding: 10px;
+    border-radius: 8px;
+    resize: vertical;
+    font-size: 15px;
+    font-family: 'Fira Code', 'Consolas', 'Courier New', monospace;
+}
+
+.create-button{
+    display: flex;
+    justify-content: center;
+    margin-top: 230px;
+}
+
+.create-button button{
+    border: 2px solid transparent;
+    border-radius: 30px;
+    padding: 20px 70px;
+    cursor: pointer;
+    color: #ffffff;
+    background-color: #2E2EB1;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.create-button button:hover{
+    color: #2E2EB1;
+    border: 3px solid #2E2EB1;
+    background-color: #ffffff;
+}
+
+.jogadores-content{
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0 0 25px;
+}
