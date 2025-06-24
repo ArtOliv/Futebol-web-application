@@ -67,7 +67,7 @@ function Times() {
     if (isLoading && allTeamsData.length === 0) {
         return (
             <div className="page-wrapper-background">
-                <div className="main-page">
+                <div className="main">
                     <div className="loading-message">Carregando lista de times...</div>
                 </div>
             </div>
@@ -77,7 +77,7 @@ function Times() {
     // Renderização principal da página
     return (
         <div className="page-wrapper-background">
-            <div className='main-page'>
+            <div className='main'>
                 {/* Elemento de Busca */}
                 <div className="search-bar-container">
                     <input
