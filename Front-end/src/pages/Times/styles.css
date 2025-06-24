@@ -7,7 +7,7 @@
   box-sizing: border-box;
 }
 
-.main-page{
+.main{
   margin: 25px;
   padding-top: 100px;
   width: 100%;
@@ -237,7 +237,7 @@
 }
 
 @media (max-width: 768px) {
-    .main-page {
+    .main {
         margin: 15px;
         padding-top: 80px;
     }
@@ -267,7 +267,7 @@
 }
 
 @media (max-width: 480px) {
-    .main-page {
+    .main {
         margin: 10px;
         padding-top: 60px;
     }

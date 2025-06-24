@@ -1,0 +1,53 @@
+[
+    {
+        "id": "cristiano_ronaldo",
+        "name": "Cristiano Ronaldo",
+        "team": "Al-Nassr",
+        "weight": "85 kg",
+        "height": "1.87 m",
+        "age": "39 anos",
+        "position": "Atacante",
+        "jerseyNumber": "7",
+        "statistics": {
+            "titles": 34,
+            "goals": 875,
+            "assists": 340,
+            "wins": 300,
+            "losses": 150
+        }
+    },
+    {
+        "id": "lionel_messi",
+        "name": "Lionel Messi",
+        "team": "Inter Miami CF",
+        "weight": "72 kg",
+        "height": "1.70 m",
+        "age": "37 anos",
+        "position": "Atacante",
+        "jerseyNumber": "10",
+        "statistics": {
+            "titles": 44,
+            "goals": 838,
+            "assists": 372,
+            "wins": 280,
+            "losses": 120
+        }
+    },
+    {
+        "id": "neymar_jr",
+        "name": "Neymar Jr.",
+        "team": "Santos",
+        "weight": "68 kg",
+        "height": "1.75 m",
+        "age": "32 anos",
+        "position": "Atacante",
+        "jerseyNumber": "10",
+        "statistics": {
+            "titles": 28,
+            "goals": 439,
+            "assists": 277,
+            "wins": 250,
+            "losses": 90
+        }
+    }
+]
