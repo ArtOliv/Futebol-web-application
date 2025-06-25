@@ -1,4 +1,3 @@
-
 import pandas as pd
 from sqlalchemy import create_engine
 import sys
@@ -12,10 +11,10 @@ db_name = 'campeonato_futebol'
 db_port = 3306
 
 # --- CONFIGURE OS ARQUIVOS E A TABELA DE DESTINO ---
-csv_file_path = 'gols_brasileirao_2023.csv'
-table_name = 'gol'
+csv_file_path = 'cartoes_brasileirao_2023.csv'
+table_name = 'cartao'
 
-print("Iniciando o processo de importação de gols com validação...")
+print("Iniciando o processo de importação de cartoes com validação...")
 
 try:
     # --- 2. CONECTAR AO BANCO E LER DADOS PARA VALIDAÇÃO ---
@@ -35,39 +34,39 @@ try:
 
     # --- 3. LER O CSV E FILTRAR OS GOLS VÁLIDOS ---
     print(f"Lendo e processando o arquivo CSV '{csv_file_path}'...")
-    df_gols = pd.read_csv(csv_file_path)
+    df_cartoes = pd.read_csv(csv_file_path)
 
     # Remove colunas inesperadas, se houver, garantindo que o DataFrame corresponda à tabela
-    colunas_esperadas = ['id_jogo', 'n_minuto_gol', 'id_jogador']
-    df_gols = df_gols[colunas_esperadas]
+    colunas_esperadas = ['e_tipo', 'n_minuto_cartao', 'id_jogo','id_jogador']
+    df_cartoes = df_cartoes[colunas_esperadas]
 
     # Guarda o número original de gols para o relatório final
-    total_gols_csv = len(df_gols)
+    total_cartoes_csv = len(df_cartoes)
     
-    # **ETAPA DE VALIDAÇÃO CRÍTICA**
+    # *ETAPA DE VALIDAÇÃO CRÍTICA*
     # Filtra o DataFrame, mantendo apenas os gols cujo 'id_jogo' E 'id_jogador'
     # existem nos conjuntos de IDs lidos do banco.
-    df_para_inserir = df_gols[
-        df_gols['id_jogo'].isin(jogos_existentes) & 
-        df_gols['id_jogador'].isin(jogadores_existentes)
+    df_para_inserir = df_cartoes[
+        df_cartoes['id_jogo'].isin(jogos_existentes) & 
+        df_cartoes['id_jogador'].isin(jogadores_existentes)
     ].copy()
     
-    gols_invalidos = total_gols_csv - len(df_para_inserir)
+    cartoes_invalidos = total_cartoes_csv - len(df_para_inserir)
 
-    if gols_invalidos > 0:
-        print(f"\nAVISO: {gols_invalidos} gol(s) foram ignorados.")
+    if cartoes_invalidos > 0:
+        print(f"\nAVISO: {cartoes_invalidos} cartoes foram ignorados.")
         print("Motivo: O 'id_jogo' ou 'id_jogador' associado não foi encontrado nas tabelas correspondentes.")
         # Para uma depuração avançada, você poderia listar os IDs problemáticos aqui.
 
     if df_para_inserir.empty:
-        print("\nNenhum gol com dados válidos para inserir.")
+        print("\nNenhum cartao com dados válidos para inserir.")
     else:
-        print(f"\nProcessamento concluído. {len(df_para_inserir)} gols válidos serão inseridos.")
+        print(f"\nProcessamento concluído. {len(df_para_inserir)} cartões válidos serão inseridos.")
         
         # --- 4. INSERIR APENAS OS GOLS VÁLIDOS ---
         # A coluna 'id_gol' não é enviada, pois ela é Auto Increment (AI) no MySQL
         df_para_inserir.to_sql(name=table_name, con=engine, if_exists='append', index=False, chunksize=1000)
-        print("\nSUCESSO! Novos gols inseridos na tabela 'gol'.")
+        print("\nSUCESSO! Novos cartões inseridos na tabela 'gol'.")
 
 except FileNotFoundError:
     print(f"\nERRO: O arquivo '{csv_file_path}' não foi encontrado. Verifique o caminho e o nome do arquivo.")
