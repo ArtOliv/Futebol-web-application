@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom'
 import './styles.css'
 
 function Classificacao(){
     const [dados, setDados] = useState([])
     const [campeonato, setCampeonato] = useState("classificacao")
     const [carregando, setCarregando] = useState(true)
+    const navigate = useNavigate()
 
     useEffect(() => {
         setCarregando(true)
@@ -18,6 +20,10 @@ function Classificacao(){
 
     if(carregando){
         return null
+    }
+
+    const handleClickTime = (teamName) => {
+        navigate(`/times?name=${encodeURIComponent(teamName)}`)
     }
 
     return(
@@ -58,7 +64,7 @@ function Classificacao(){
                         </thead>
                         <tbody className="class-tbody">
                             {dados.map(grupos => (
-                                <tr key={grupos.time}>
+                                <tr key={grupos.time} onClick={() => handleClickTime(grupos.time)}>
                                     <td>{grupos.posicao}</td>
                                     <td>{grupos.time}</td>
                                     <td>{grupos.pontos}</td>

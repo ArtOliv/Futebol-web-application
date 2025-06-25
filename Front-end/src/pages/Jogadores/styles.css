@@ -137,6 +137,8 @@
     margin-bottom: 10px;
     border-bottom: 1px solid #999;
     padding-bottom: 5px;
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
 .player-info-card .info-item:last-child {
@@ -155,8 +157,8 @@
 
 .player-stats-card .stats-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Two columns for stats */
-    gap: 15px; /* Gap between stat items */
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
 }
 
 .player-stats-card .stat-item {
