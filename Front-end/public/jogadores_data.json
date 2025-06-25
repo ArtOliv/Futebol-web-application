@@ -49,5 +49,22 @@
             "wins": 250,
             "losses": 90
         }
+    },
+    {
+        "id": "gabriel_barbosa",
+        "name": "Gabriel Barbosa",
+        "team": "Flamengo",
+        "weight": "68 kg",
+        "height": "1.75 m",
+        "age": "30 anos",
+        "position": "Meio Campo",
+        "jerseyNumber": "15",
+        "statistics": {
+            "titles": 10,
+            "goals": 352,
+            "assists": 269,
+            "wins": 250,
+            "losses": 90
+        }
     }
 ]

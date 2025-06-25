@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import './styles.css';
 import SearchIcon from '../../assets/Search_icon.png'
 
@@ -8,6 +9,7 @@ function Jogadores() {
     const [searchTerm, setSearchTerm] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const location = useLocation()
 
     useEffect(() => {
         const loadAllPlayers = async () => {
@@ -28,7 +30,29 @@ function Jogadores() {
             }
         };
         loadAllPlayers();
-    }, []); 
+    }, []);
+
+
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const playerNameFromUrl = params.get('name');
+
+        if (playerNameFromUrl && allPlayersData.length > 0) {
+            const decodedPlayerName = decodeURIComponent(playerNameFromUrl);
+            const foundPlayer = allPlayersData.find(player =>
+                player.name.toLowerCase().includes(decodedPlayerName.toLowerCase())
+            );
+            if (foundPlayer) {
+                setPlayerData(foundPlayer);
+                setError(null);
+            } else {
+                setPlayerData(null);
+                setError(`Jogador "${decodedPlayerName}" não encontrado.`);
+            }
+
+            setSearchTerm('');
+        }
+    }, [location.search, allPlayersData]);
 
     const handleSearch = () => {
         if (!searchTerm.trim()) { 
@@ -50,6 +74,8 @@ function Jogadores() {
             setPlayerData(null); 
             setError(`Jogador "${searchTerm}" não encontrado na lista. Verifique a grafia.`);
         }
+
+        setSearchTerm('');
     };
 
     if (isLoading && allPlayersData.length === 0) {
