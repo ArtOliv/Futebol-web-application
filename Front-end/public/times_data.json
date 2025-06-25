@@ -2,7 +2,6 @@
   {
     "name": "FLAMENGO",
     "leaguePosition": "1º lugar Brasileirão 2023",
-    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Flamengo_logo.svg/1200px-Flamengo_logo.svg.png",
     "games": [
       { "description": "vs Grêmio (3-1)", "result": "vitoria" },
       { "description": "vs Vasco (0-0)", "result": "empate" },
@@ -37,7 +36,6 @@
   {
     "name": "PALMEIRAS",
     "leaguePosition": "2º lugar Brasileirão 2023",
-    "logoUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/10/Palmeiras_logo.svg/1200px-Palmeiras_logo.svg.png",
     "games": [
       { "description": "vs Atlético-MG (2-2)", "result": "empate" },
       { "description": "vs Fluminense (1-0)", "result": "vitoria" },

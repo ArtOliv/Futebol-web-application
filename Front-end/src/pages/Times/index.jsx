@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import './styles.css';
+import SearchIcon from '../../assets/Search_icon.png'
 
 function Times() {
     // Estado para armazenar TODOS os dados dos times (carregados do JSON principal)
@@ -80,21 +81,23 @@ function Times() {
             <div className='main'>
                 {/* Elemento de Busca */}
                 <div className="search-bar-container">
-                    <input
-                        type="text"
-                        placeholder="Busque por time (ex: Flamengo, Palmeiras)..."
-                        className="search-input"
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                handleSearch();
-                            }
-                        }}
-                    />
-                    <button className="search-button" onClick={handleSearch}>
-                        🔍
-                    </button>
+                    <div className="search-bar-bg">
+                        <input
+                            type="text"
+                            placeholder="Busque por time (ex: Flamengo, Palmeiras)"
+                            className="search-input"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                    handleSearch();
+                                }
+                            }}
+                            />
+                        <button className="search-button" onClick={handleSearch}>
+                            <img src={SearchIcon} alt='pesquisar'/>
+                        </button>
+                    </div>
                 </div>
 
                 {/* Mensagem de Erro (se houver) */}
@@ -110,11 +113,9 @@ function Times() {
 
                 {/* Conteúdo dos detalhes do time (visível apenas se teamData existir) */}
                 {teamData && (
-                    <div className="details-content-container">
+                    <div className="teams-details-content-container">
                         {/* 1. Header do Time */}
                         <div className="team-header">
-                            {teamData.logoUrl && <img src={teamData.logoUrl} alt={`Logo do ${teamData.name}`} className="team-logo-img" />}
-                            {!teamData.logoUrl && <div className="team-logo"></div>} {/* Fallback para o círculo cinza */}
                             <div>
                                 <h2>{teamData.name}</h2>
                                 <p>{teamData.leaguePosition}</p>

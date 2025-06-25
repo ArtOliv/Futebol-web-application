@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './styles.css';
+import SearchIcon from '../../assets/Search_icon.png'
 
 function Jogadores() {
     const [allPlayersData, setAllPlayersData] = useState([]);
@@ -66,21 +67,23 @@ function Jogadores() {
             <div className='main'>
                 {/* pesquisa */}
                 <div className="search-bar-container">
-                    <input
-                        type="text"
-                        placeholder="Busque por jogador (ex: Cristiano Ronaldo, Messi)..."
-                        className="search-input"
-                        value={searchTerm}
-                        onChange={e => setSearchTerm(e.target.value)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') {
-                                handleSearch();
-                            }
-                        }}
-                    />
-                    <button className="search-button" onClick={handleSearch}>
-                        🔍
-                    </button>
+                    <div className="search-bar-bg">
+                        <input
+                            type="text"
+                            placeholder="Busque por jogador (ex: Cristiano Ronaldo, Messi)..."
+                            className="search-input"
+                            value={searchTerm}
+                            onChange={e => setSearchTerm(e.target.value)}
+                            onKeyDown={e => {
+                                if (e.key === 'Enter') {
+                                    handleSearch();
+                                }
+                            }}
+                            />
+                        <button className="search-button" onClick={handleSearch}>
+                            <img src={SearchIcon} alt='pesquisar'/>
+                        </button>
+                    </div>
                 </div>
 
                 {/* mensagem de erro */}
@@ -97,10 +100,8 @@ function Jogadores() {
                 {playerData && (
                     <div className="details-content-container">
                         <div className="player-header">
-                            <div>
                                 <h2>{playerData.name}</h2>
                                 <p>{playerData.team}</p>
-                            </div>
                         </div>
 
 
