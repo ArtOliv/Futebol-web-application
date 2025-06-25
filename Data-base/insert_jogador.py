@@ -4,7 +4,7 @@ import sys
 
 # --- 1. CONFIGURE SEUS DADOS DE CONEXÃO AO MYSQL ---
 db_user = 'root'
-db_password = #senha
+db_password = 'senha'
 db_host = 'localhost'
 db_name = 'campeonato_futebol'
 db_port = 3306
