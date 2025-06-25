@@ -1,0 +1,381 @@
+data,hora,n_placar_visitante,n_placar_casa,c_nome_estadio,c_time_casa,c_time_visitante,n_rodada,d_ano_campeonato
+2023-04-15,16:01,1,2,Allianz Parque,Palmeiras,Cuiaba,1,2023
+2023-04-15,16:02,3,0,Estádio Raimundo Sampaio,America-MG,Fluminense,1,2023
+2023-04-15,18:31,1,2,Nabizão,Bragantino,Bahia,1,2023
+2023-04-15,18:31,0,2,Ligga Arena,Athletico-PR,Goias,1,2023
+2023-04-15,18:32,1,1,Arena Castelão,Fortaleza,Internacional,1,2023
+2023-04-15,18:33,1,2,Estádio Nilton Santos,Botafogo-RJ,Sao Paulo,1,2023
+2023-04-15,21:00,2,1,Mineirão,Atletico-MG,Vasco,1,2023
+2023-04-16,16:00,0,3,Maracanã,Flamengo,Coritiba,1,2023
+2023-04-16,16:03,1,2,Neo Química Arena,Corinthians,Cruzeiro,1,2023
+2023-04-16,18:30,0,1,Alfredo Jaconi,Gremio,Santos,1,2023
+2023-04-22,16:00,0,2,Maracanã,Fluminense,Athletico-PR,2,2023
+2023-04-22,18:30,1,1,Arena Pantanal,Cuiaba,Bragantino,2,2023
+2023-04-22,18:31,0,3,Morumbi,Sao Paulo,America-MG,2,2023
+2023-04-22,20:59,0,1,Estádio Raimundo Sampaio,Cruzeiro,Gremio,2,2023
+2023-04-23,11:01,1,2,Estádio Beira-Rio,Internacional,Flamengo,2,2023
+2023-04-23,16:00,0,0,Estádio Urbano Caldeira,Santos,Atletico-MG,2,2023
+2023-04-23,16:00,2,2,Maracanã,Vasco,Palmeiras,2,2023
+2023-04-23,18:31,3,0,Couto Pereira,Coritiba,Fortaleza,2,2023
+2023-04-23,19:00,1,3,Estádio Hailé Pinheiro - Serrinha,Goias,Corinthians,2,2023
+2023-04-24,20:00,2,1,Itaipava Arena Fonte Nova,Bahia,Botafogo-RJ,2,2023
+2023-04-29,16:30,1,1,Couto Pereira,Coritiba,Sao Paulo,3,2023
+2023-04-29,16:31,2,4,Arena Castelão,Fortaleza,Fluminense,3,2023
+2023-04-29,18:30,1,2,Allianz Parque,Palmeiras,Corinthians,3,2023
+2023-04-29,18:30,2,3,Estádio Urbano Caldeira,Santos,America-MG,3,2023
+2023-04-29,18:30,3,0,Nabizão,Bragantino,Cruzeiro,3,2023
+2023-04-29,21:00,1,2,Estádio Raimundo Sampaio,Atletico-MG,Athletico-PR,3,2023
+2023-04-30,16:00,3,2,Maracanã,Flamengo,Botafogo-RJ,3,2023
+2023-04-30,18:30,2,1,Arena Pantanal,Cuiaba,Gremio,3,2023
+2023-04-30,18:32,0,1,Estádio Beira-Rio,Internacional,Goias,3,2023
+2023-05-01,20:00,1,0,Estádio São Januário,Vasco,Bahia,3,2023
+2023-05-06,16:00,1,2,Estádio Raimundo Sampaio,Cruzeiro,Santos,4,2023
+2023-05-06,21:01,1,1,Maracanã,Fluminense,Vasco,4,2023
+2023-05-07,11:01,2,1,Estádio Raimundo Sampaio,America-MG,Cuiaba,4,2023
+2023-05-07,16:00,1,3,Itaipava Arena Fonte Nova,Bahia,Coritiba,4,2023
+2023-05-07,16:00,1,2,Ligga Arena,Athletico-PR,Flamengo,4,2023
+2023-05-07,16:02,0,2,Morumbi,Sao Paulo,Internacional,4,2023
+2023-05-07,18:30,3,3,Arena do Grêmio,Gremio,Bragantino,4,2023
+2023-05-07,18:30,0,2,Estádio Nilton Santos,Botafogo-RJ,Atletico-MG,4,2023
+2023-05-07,18:31,5,0,Estádio Hailé Pinheiro - Serrinha,Goias,Palmeiras,4,2023
+2023-05-08,20:00,1,1,Neo Química Arena,Corinthians,Fortaleza,4,2023
+2023-05-10,18:59,0,3,Estádio Urbano Caldeira,Santos,Bahia,5,2023
+2023-05-10,19:00,2,0,Estádio Beira-Rio,Internacional,Athletico-PR,5,2023
+2023-05-10,19:00,2,2,Nabizão,Bragantino,America-MG,5,2023
+2023-05-10,19:59,4,0,Arena Pantanal,Cuiaba,Atletico-MG,5,2023
+2023-05-10,20:00,0,2,Maracanã,Flamengo,Goias,5,2023
+2023-05-10,21:29,2,0,Mineirão,Cruzeiro,Fluminense,5,2023
+2023-05-10,21:29,1,4,Allianz Parque,Palmeiras,Gremio,5,2023
+2023-05-11,19:00,1,1,Couto Pereira,Coritiba,Vasco,5,2023
+2023-05-11,19:30,0,3,Estádio Nilton Santos,Botafogo-RJ,Corinthians,5,2023
+2023-05-11,20:00,0,0,Arena Castelão,Fortaleza,Sao Paulo,5,2023
+2023-05-13,16:00,3,2,Itaipava Arena Fonte Nova,Bahia,Flamengo,6,2023
+2023-05-13,18:30,0,2,Maracanã,Fluminense,Cuiaba,6,2023
+2023-05-13,18:30,1,1,Allianz Parque,Palmeiras,Bragantino,6,2023
+2023-05-13,21:00,0,2,Mineirão,Atletico-MG,Internacional,6,2023
+2023-05-14,16:00,0,0,Arena do Grêmio,Gremio,Fortaleza,6,2023
+2023-05-14,16:00,1,0,Estádio São Januário,Vasco,Santos,6,2023
+2023-05-14,16:02,1,1,Neo Química Arena,Corinthians,Sao Paulo,6,2023
+2023-05-14,18:29,2,3,Ligga Arena,Athletico-PR,Coritiba,6,2023
+2023-05-14,18:29,4,0,Estádio Raimundo Sampaio,America-MG,Cruzeiro,6,2023
+2023-05-14,18:30,1,2,Estádio Hailé Pinheiro - Serrinha,Goias,Botafogo-RJ,6,2023
+2023-05-20,16:02,1,1,Itaipava Arena Fonte Nova,Bahia,Goias,7,2023
+2023-05-20,18:30,0,2,Nabizão,Bragantino,Athletico-PR,7,2023
+2023-05-20,18:30,2,4,Morumbi,Sao Paulo,Vasco,7,2023
+2023-05-20,18:30,1,2,Estádio Raimundo Sampaio,America-MG,Fortaleza,7,2023
+2023-05-20,18:30,0,1,Estádio Nilton Santos,Botafogo-RJ,Fluminense,7,2023
+2023-05-20,18:31,2,1,Couto Pereira,Coritiba,Atletico-MG,7,2023
+2023-05-20,21:00,0,0,Estádio Urbano Caldeira,Santos,Palmeiras,7,2023
+2023-05-21,16:00,0,1,Maracanã,Flamengo,Corinthians,7,2023
+2023-05-21,18:31,1,3,Arena do Grêmio,Gremio,Internacional,7,2023
+2023-05-22,20:00,1,0,Estádio Joaquim Henrique Nogueira-Arena do jacaré,Cruzeiro,Cuiaba,7,2023
+2023-05-27,16:00,2,1,Ligga Arena,Athletico-PR,Gremio,8,2023
+2023-05-27,16:02,0,2,Arena Castelão,Fortaleza,Vasco,8,2023
+2023-05-27,18:31,1,1,Maracanã,Flamengo,Cruzeiro,8,2023
+2023-05-27,18:32,1,1,Arena Pantanal,Cuiaba,Coritiba,8,2023
+2023-05-27,21:02,1,2,Morumbi,Sao Paulo,Goias,8,2023
+2023-05-28,16:02,0,2,Estádio Beira-Rio,Internacional,Bahia,8,2023
+2023-05-28,16:04,0,2,Neo Química Arena,Corinthians,Fluminense,8,2023
+2023-05-28,18:31,0,2,Nabizão,Bragantino,Santos,8,2023
+2023-05-28,18:32,1,1,Mineirão,Atletico-MG,Palmeiras,8,2023
+2023-05-28,19:01,0,2,Estádio Nilton Santos,Botafogo-RJ,America-MG,8,2023
+2023-06-03,16:00,0,0,Arena Castelão,Fortaleza,Bahia,9,2023
+2023-06-03,18:30,0,1,Ligga Arena,Athletico-PR,Botafogo-RJ,9,2023
+2023-06-03,18:30,1,0,Estádio Municipal Parque do Sabiá,Cruzeiro,Atletico-MG,9,2023
+2023-06-03,18:33,0,2,Estádio Raimundo Sampaio,America-MG,Corinthians,9,2023
+2023-06-03,21:01,1,1,Estádio Urbano Caldeira,Santos,Internacional,9,2023
+2023-06-04,16:00,1,2,Maracanã,Fluminense,Bragantino,9,2023
+2023-06-04,16:01,1,2,Arena do Grêmio,Gremio,Sao Paulo,9,2023
+2023-06-04,18:29,1,0,Estádio Hailé Pinheiro - Serrinha,Goias,Cuiaba,9,2023
+2023-06-04,18:29,1,3,Allianz Parque,Palmeiras,Coritiba,9,2023
+2023-06-05,20:00,4,1,Maracanã,Vasco,Flamengo,9,2023
+2023-06-10,16:03,0,0,Couto Pereira,Coritiba,Santos,10,2023
+2023-06-10,18:30,1,1,Mineirão,Atletico-MG,Bragantino,10,2023
+2023-06-10,18:31,2,2,Itaipava Arena Fonte Nova,Bahia,Cruzeiro,10,2023
+2023-06-10,18:32,1,1,Neo Química Arena,Corinthians,Cuiaba,10,2023
+2023-06-10,21:00,0,2,Estádio Nilton Santos,Botafogo-RJ,Fortaleza,10,2023
+2023-06-11,11:00,2,2,Mineirão,America-MG,Athletico-PR,10,2023
+2023-06-11,16:00,2,0,Morumbi,Sao Paulo,Palmeiras,10,2023
+2023-06-11,16:00,1,2,Estádio Beira-Rio,Internacional,Vasco,10,2023
+2023-06-11,18:30,0,3,Maracanã,Flamengo,Gremio,10,2023
+2023-06-11,18:30,2,2,Estádio Hailé Pinheiro - Serrinha,Goias,Fluminense,10,2023
+2023-06-21,19:00,1,0,Mineirão,Cruzeiro,Fortaleza,11,2023
+2023-06-21,19:01,1,2,Morumbi,Sao Paulo,Athletico-PR,11,2023
+2023-06-21,20:01,2,0,Estádio Urbano Caldeira,Santos,Corinthians,11,2023
+2023-06-21,21:31,1,1,Estádio Municipal General Raulino de Oliveira,Fluminense,Atletico-MG,11,2023
+2023-06-21,21:31,0,1,Itaipava Arena Fonte Nova,Bahia,Palmeiras,11,2023
+2023-06-22,19:01,1,3,Arena do Grêmio,Gremio,America-MG,11,2023
+2023-06-22,20:00,1,0,Arena Pantanal,Cuiaba,Botafogo-RJ,11,2023
+2023-06-22,20:00,1,0,Estádio São Januário,Vasco,Goias,11,2023
+2023-06-22,20:02,1,0,Couto Pereira,Coritiba,Internacional,11,2023
+2023-06-22,21:29,0,4,Nabizão,Bragantino,Flamengo,11,2023
+2023-06-24,15:59,0,1,Ligga Arena,Athletico-PR,Corinthians,12,2023
+2023-06-24,18:30,1,2,Maracanã,Fluminense,Bahia,12,2023
+2023-06-24,18:30,1,2,Arena Castelão,Fortaleza,Atletico-MG,12,2023
+2023-06-24,21:00,0,1,Estádio Raimundo Sampaio,Cruzeiro,Sao Paulo,12,2023
+2023-06-25,16:00,1,0,Allianz Parque,Palmeiras,Botafogo-RJ,12,2023
+2023-06-25,16:01,1,5,Arena do Grêmio,Gremio,Coritiba,12,2023
+2023-06-25,18:29,0,2,Nabizão,Bragantino,Goias,12,2023
+2023-06-25,18:30,2,1,Estádio Raimundo Sampaio,America-MG,Internacional,12,2023
+2023-06-25,18:30,3,2,Estádio Urbano Caldeira,Santos,Flamengo,12,2023
+2023-06-26,21:00,0,1,Luso-Brasileiro,Vasco,Cuiaba,12,2023
+2023-07-01,16:01,0,1,Morumbi,Sao Paulo,Fluminense,13,2023
+2023-07-01,18:30,0,2,Maracanã,Flamengo,Fortaleza,13,2023
+2023-07-01,18:30,2,1,Itaipava Arena Fonte Nova,Bahia,Gremio,13,2023
+2023-07-01,21:00,0,0,Estádio Beira-Rio,Internacional,Cruzeiro,13,2023
+2023-07-02,11:00,1,0,Neo Química Arena,Corinthians,Bragantino,13,2023
+2023-07-02,16:00,0,2,Estádio Nilton Santos,Botafogo-RJ,Vasco,13,2023
+2023-07-02,16:00,2,2,Mineirão,Atletico-MG,America-MG,13,2023
+2023-07-02,16:00,2,2,Ligga Arena,Athletico-PR,Palmeiras,13,2023
+2023-07-02,18:32,0,3,Arena Pantanal,Cuiaba,Santos,13,2023
+2023-07-03,19:59,2,1,Estádio Hailé Pinheiro - Serrinha,Goias,Coritiba,13,2023
+2023-07-08,15:59,1,1,Arena Pantanal,Cuiaba,Bahia,14,2023
+2023-07-08,16:00,1,0,Estádio São Januário,Vasco,Cruzeiro,14,2023
+2023-07-08,18:30,1,0,Mineirão,Atletico-MG,Corinthians,14,2023
+2023-07-08,18:30,1,3,Couto Pereira,Coritiba,America-MG,14,2023
+2023-07-08,21:00,1,1,Allianz Parque,Palmeiras,Flamengo,14,2023
+2023-07-09,11:00,3,4,Estádio Urbano Caldeira,Santos,Goias,14,2023
+2023-07-09,15:59,0,0,Nabizão,Bragantino,Sao Paulo,14,2023
+2023-07-09,16:00,0,2,Maracanã,Fluminense,Internacional,14,2023
+2023-07-09,18:30,0,1,Arena Castelão,Fortaleza,Athletico-PR,14,2023
+2023-07-09,18:31,2,0,Arena do Grêmio,Gremio,Botafogo-RJ,14,2023
+2023-07-15,21:00,0,2,Estádio Nilton Santos,Botafogo-RJ,Bragantino,15,2023
+2023-07-16,10:59,0,0,Estádio Raimundo Sampaio,Cruzeiro,Coritiba,15,2023
+2023-07-16,16:00,1,0,Arena Castelão,Fortaleza,Cuiaba,15,2023
+2023-07-16,16:00,0,0,Maracanã,Fluminense,Flamengo,15,2023
+2023-07-16,16:00,1,4,Morumbi,Sao Paulo,Santos,15,2023
+2023-07-16,18:30,0,2,Ligga Arena,Athletico-PR,Bahia,15,2023
+2023-07-16,18:30,0,0,Estádio Beira-Rio,Internacional,Palmeiras,15,2023
+2023-07-17,19:59,0,0,Estádio Hailé Pinheiro - Serrinha,Goias,Atletico-MG,15,2023
+2023-07-22,16:00,1,3,Allianz Parque,Palmeiras,Fortaleza,16,2023
+2023-07-22,16:00,1,1,Maracanã,Flamengo,America-MG,16,2023
+2023-07-22,18:30,1,2,Arena Pantanal,Cuiaba,Sao Paulo,16,2023
+2023-07-22,18:31,0,0,Itaipava Arena Fonte Nova,Bahia,Corinthians,16,2023
+2023-07-22,21:00,0,1,Arena do Grêmio,Gremio,Atletico-MG,16,2023
+2023-07-23,16:00,0,0,Nabizão,Bragantino,Internacional,16,2023
+2023-07-23,16:00,1,0,Estádio Raimundo Sampaio,Cruzeiro,Goias,16,2023
+2023-07-23,16:02,2,2,Estádio Urbano Caldeira,Santos,Botafogo-RJ,16,2023
+2023-07-23,18:30,2,0,Estádio São Januário,Vasco,Athletico-PR,16,2023
+2023-07-24,19:01,0,2,Couto Pereira,Coritiba,Fluminense,16,2023
+2023-07-29,16:00,0,1,Maracanã,Fluminense,Santos,17,2023
+2023-07-29,16:00,3,3,Ligga Arena,Athletico-PR,Cruzeiro,17,2023
+2023-07-29,16:00,2,1,Estádio Beira-Rio,Internacional,Cuiaba,17,2023
+2023-07-29,18:30,3,0,Arena Castelão,Fortaleza,Bragantino,17,2023
+2023-07-29,18:33,1,3,Neo Química Arena,Corinthians,Vasco,17,2023
+2023-07-29,21:00,2,1,Estádio Raimundo Sampaio,Atletico-MG,Flamengo,17,2023
+2023-07-30,11:02,0,0,Morumbi,Sao Paulo,Bahia,17,2023
+2023-07-30,16:00,4,1,Estádio Raimundo Sampaio,America-MG,Palmeiras,17,2023
+2023-07-30,16:00,1,4,Estádio Nilton Santos,Botafogo-RJ,Coritiba,17,2023
+2023-07-30,18:29,1,1,Estádio Hailé Pinheiro - Serrinha,Goias,Gremio,17,2023
+2023-08-05,16:00,1,1,Estádio Urbano Caldeira,Santos,Athletico-PR,18,2023
+2023-08-05,18:32,0,1,Estádio Hailé Pinheiro - Serrinha,Goias,Fortaleza,18,2023
+2023-08-05,18:32,2,2,Estádio Beira-Rio,Internacional,Corinthians,18,2023
+2023-08-05,21:00,1,2,Maracanã,Fluminense,Palmeiras,18,2023
+2023-08-06,16:00,0,1,Estádio São Januário,Vasco,Gremio,18,2023
+2023-08-06,16:02,2,0,Morumbi,Sao Paulo,Atletico-MG,18,2023
+2023-08-06,18:30,1,0,Couto Pereira,Coritiba,Bragantino,18,2023
+2023-08-06,18:30,0,0,Mineirão,Cruzeiro,Botafogo-RJ,18,2023
+2023-08-06,18:31,1,3,Itaipava Arena Fonte Nova,Bahia,America-MG,18,2023
+2023-08-06,20:00,0,3,Arena Pantanal,Cuiaba,Flamengo,18,2023
+2023-08-12,21:01,1,3,Estádio Nilton Santos,Botafogo-RJ,Internacional,19,2023
+2023-08-13,11:00,0,1,Mineirão,Atletico-MG,Bahia,19,2023
+2023-08-13,15:59,1,0,Estádio Raimundo Sampaio,America-MG,Goias,19,2023
+2023-08-13,16:00,1,2,Arena do Grêmio,Gremio,Fluminense,19,2023
+2023-08-13,16:01,1,3,Neo Química Arena,Corinthians,Coritiba,19,2023
+2023-08-13,18:30,0,4,Arena Castelão,Fortaleza,Santos,19,2023
+2023-08-13,18:30,1,1,Maracanã,Flamengo,Sao Paulo,19,2023
+2023-08-14,19:01,0,1,Allianz Parque,Palmeiras,Cruzeiro,19,2023
+2023-08-14,21:00,1,1,Nabizão,Bragantino,Vasco,19,2023
+2023-08-15,20:00,0,2,Ligga Arena,Athletico-PR,Cuiaba,19,2023
+2023-08-19,15:59,1,0,Estádio Beira-Rio,Internacional,Fortaleza,20,2023
+2023-08-19,16:02,0,0,Morumbi,Sao Paulo,Botafogo-RJ,20,2023
+2023-08-19,18:30,2,0,Arena Pantanal,Cuiaba,Palmeiras,20,2023
+2023-08-19,18:30,1,3,Maracanã,Fluminense,America-MG,20,2023
+2023-08-19,21:00,1,1,Mineirão,Cruzeiro,Corinthians,20,2023
+2023-08-20,11:00,0,1,Maracanã,Vasco,Atletico-MG,20,2023
+2023-08-20,16:00,0,4,Itaipava Arena Fonte Nova,Bahia,Bragantino,20,2023
+2023-08-20,16:00,1,2,Estádio Urbano Caldeira,Santos,Gremio,20,2023
+2023-08-20,16:01,3,2,Couto Pereira,Coritiba,Flamengo,20,2023
+2023-08-21,19:59,1,1,Estádio Hailé Pinheiro - Serrinha,Goias,Athletico-PR,20,2023
+2023-08-26,18:31,0,0,Maracanã,Flamengo,Internacional,21,2023
+2023-08-26,21:02,1,1,Neo Química Arena,Corinthians,Goias,21,2023
+2023-08-27,11:00,0,2,Nabizão,Bragantino,Cuiaba,21,2023
+2023-08-27,16:00,0,3,Estádio Nilton Santos,Botafogo-RJ,Bahia,21,2023
+2023-08-27,16:00,1,2,Estádio Raimundo Sampaio,America-MG,Sao Paulo,21,2023
+2023-08-27,16:01,0,2,Arena MRV,Atletico-MG,Santos,21,2023
+2023-08-27,18:30,0,1,Allianz Parque,Palmeiras,Vasco,21,2023
+2023-08-27,18:30,1,3,Estádio Presidente Vargas,Fortaleza,Coritiba,21,2023
+2023-08-27,18:30,2,2,Ligga Arena,Athletico-PR,Fluminense,21,2023
+2023-08-27,18:59,0,3,Arena do Grêmio,Gremio,Cruzeiro,21,2023
+2023-09-02,15:59,0,0,Estádio Hailé Pinheiro - Serrinha,Goias,Internacional,22,2023
+2023-09-02,16:00,1,1,Ligga Arena,Athletico-PR,Atletico-MG,22,2023
+2023-09-02,21:18,2,1,Estádio Nilton Santos,Botafogo-RJ,Flamengo,22,2023
+2023-09-03,11:00,0,2,Arena do Grêmio,Gremio,Cuiaba,22,2023
+2023-09-03,16:00,0,1,Estádio Municipal General Raulino de Oliveira,Fluminense,Fortaleza,22,2023
+2023-09-03,16:03,0,0,Neo Química Arena,Corinthians,Palmeiras,22,2023
+2023-09-03,18:30,1,1,Itaipava Arena Fonte Nova,Bahia,Vasco,22,2023
+2023-09-03,18:30,0,0,Mineirão,Cruzeiro,Bragantino,22,2023
+2023-09-03,18:30,0,2,Estádio Raimundo Sampaio,America-MG,Santos,22,2023
+2023-09-13,21:30,3,0,Kléber Andrade,Flamengo,Athletico-PR,23,2023
+2023-09-13,21:30,1,2,Estádio Beira-Rio,Internacional,Sao Paulo,23,2023
+2023-09-14,19:01,3,0,Estádio Urbano Caldeira,Santos,Cruzeiro,23,2023
+2023-09-14,19:02,1,2,Arena Castelão,Fortaleza,Corinthians,23,2023
+2023-09-14,20:03,4,2,Couto Pereira,Coritiba,Bahia,23,2023
+2023-09-14,21:30,0,2,Nabizão,Bragantino,Gremio,23,2023
+2023-09-15,20:00,2,2,Arena Pantanal,Cuiaba,America-MG,23,2023
+2023-09-15,21:30,0,1,Allianz Parque,Palmeiras,Goias,23,2023
+2023-09-16,16:00,2,4,Estádio Nilton Santos,Vasco,Fluminense,23,2023
+2023-09-16,21:01,0,1,Arena MRV,Atletico-MG,Botafogo-RJ,23,2023
+2023-09-18,21:01,4,4,Neo Química Arena,Corinthians,Gremio,15,2023
+2023-09-18,20:03,2,1,Itaipava Arena Fonte Nova,Bahia,Santos,24,2023
+2023-09-19,21:30,2,0,Estádio Raimundo Sampaio,America-MG,Bragantino,24,2023
+2023-09-20,18:59,0,0,Estádio Hailé Pinheiro - Serrinha,Goias,Flamengo,24,2023
+2023-09-20,21:30,0,1,Maracanã,Fluminense,Cruzeiro,24,2023
+2023-09-20,21:31,2,1,Morumbi,Sao Paulo,Fortaleza,24,2023
+2023-09-21,19:00,1,5,Estádio São Januário,Vasco,Coritiba,24,2023
+2023-09-21,19:30,1,2,Ligga Arena,Athletico-PR,Internacional,24,2023
+2023-09-21,21:31,0,1,Arena do Grêmio,Gremio,Palmeiras,24,2023
+2023-09-22,20:02,0,1,Neo Química Arena,Corinthians,Botafogo-RJ,24,2023
+2023-09-23,21:00,0,1,Arena MRV,Atletico-MG,Cuiaba,24,2023
+2023-09-25,20:00,1,0,Estádio Raimundo Sampaio,America-MG,Vasco,15,2023
+2023-09-27,19:00,1,2,Morumbi,Sao Paulo,Coritiba,22,2023
+2023-09-30,16:00,0,1,Maracanã,Flamengo,Bahia,25,2023
+2023-09-30,16:00,1,1,Arena Castelão,Fortaleza,Gremio,25,2023
+2023-09-30,18:30,1,2,Morumbi,Sao Paulo,Corinthians,25,2023
+2023-09-30,18:30,0,3,Arena Pantanal,Cuiaba,Fluminense,25,2023
+2023-09-30,21:00,2,0,Estádio Beira-Rio,Internacional,Atletico-MG,25,2023
+2023-10-01,16:00,1,1,Mineirão,Cruzeiro,America-MG,25,2023
+2023-10-01,16:00,1,4,Estádio Urbano Caldeira,Santos,Vasco,25,2023
+2023-10-01,16:01,0,2,Couto Pereira,Coritiba,Athletico-PR,25,2023
+2023-10-01,18:29,1,2,Nabizão,Bragantino,Palmeiras,25,2023
+2023-10-02,20:00,1,1,Estádio Nilton Santos,Botafogo-RJ,Goias,25,2023
+2023-10-07,16:01,6,4,Estádio Hailé Pinheiro - Serrinha,Goias,Bahia,26,2023
+2023-10-07,18:32,0,0,Estádio São Januário,Vasco,Sao Paulo,26,2023
+2023-10-07,20:59,1,1,Neo Química Arena,Corinthians,Flamengo,26,2023
+2023-10-08,16:00,2,3,Estádio Beira-Rio,Internacional,Gremio,26,2023
+2023-10-08,16:00,2,0,Maracanã,Fluminense,Botafogo-RJ,26,2023
+2023-10-08,16:01,2,1,Arena Barueri,Palmeiras,Santos,26,2023
+2023-10-08,18:30,1,1,Ligga Arena,Athletico-PR,Bragantino,26,2023
+2023-10-08,18:30,2,1,Arena MRV,Atletico-MG,Coritiba,26,2023
+2023-10-08,18:30,2,3,Arena Castelão,Fortaleza,America-MG,26,2023
+2023-10-14,21:00,0,0,Arena Pantanal,Cuiaba,Cruzeiro,26,2023
+2023-10-18,19:00,2,1,Arena do Grêmio,Gremio,Athletico-PR,27,2023
+2023-10-18,20:00,3,0,Couto Pereira,Coritiba,Cuiaba,27,2023
+2023-10-18,20:00,2,1,Estádio Raimundo Sampaio,America-MG,Botafogo-RJ,27,2023
+2023-10-18,21:30,0,2,Estádio Hailé Pinheiro - Serrinha,Goias,Sao Paulo,27,2023
+2023-10-18,21:30,0,1,Estádio São Januário,Vasco,Fortaleza,27,2023
+2023-10-18,21:31,0,1,Itaipava Arena Fonte Nova,Bahia,Internacional,27,2023
+2023-10-19,19:00,2,0,Mineirão,Cruzeiro,Flamengo,27,2023
+2023-10-19,19:01,2,0,Allianz Parque,Palmeiras,Atletico-MG,27,2023
+2023-10-19,20:00,3,1,Estádio Urbano Caldeira,Santos,Bragantino,27,2023
+2023-10-19,21:30,3,3,Maracanã,Fluminense,Corinthians,27,2023
+2023-10-21,18:30,1,1,Arena Pantanal,Cuiaba,Goias,28,2023
+2023-10-21,18:31,0,3,Morumbi,Sao Paulo,Gremio,28,2023
+2023-10-21,18:32,0,2,Itaipava Arena Fonte Nova,Bahia,Fortaleza,28,2023
+2023-10-22,16:00,1,0,Arena MRV,Atletico-MG,Cruzeiro,28,2023
+2023-10-22,16:00,0,1,Maracanã,Flamengo,Vasco,28,2023
+2023-10-22,16:00,1,7,Estádio Beira-Rio,Internacional,Santos,28,2023
+2023-10-22,18:30,0,1,Nabizão,Bragantino,Fluminense,28,2023
+2023-10-22,18:30,1,1,Neo Química Arena,Corinthians,America-MG,28,2023
+2023-10-22,18:31,2,0,Couto Pereira,Coritiba,Palmeiras,28,2023
+2023-10-22,21:00,1,1,Estádio Nilton Santos,Botafogo-RJ,Athletico-PR,28,2023
+2023-10-25,19:00,2,1,Nabizão,Bragantino,Atletico-MG,29,2023
+2023-10-25,19:00,2,3,Ligga Arena,Athletico-PR,America-MG,29,2023
+2023-10-25,19:00,3,5,Estádio Municipal General Raulino de Oliveira,Fluminense,Goias,29,2023
+2023-10-25,19:59,0,5,Allianz Parque,Palmeiras,Sao Paulo,29,2023
+2023-10-25,20:00,0,3,Mineirão,Cruzeiro,Bahia,29,2023
+2023-10-25,21:30,2,3,Arena do Grêmio,Gremio,Flamengo,29,2023
+2023-10-25,21:30,1,0,Arena Pantanal,Cuiaba,Corinthians,29,2023
+2023-10-26,19:00,2,1,Estádio São Januário,Vasco,Internacional,29,2023
+2023-10-26,21:30,1,2,Estádio Urbano Caldeira,Santos,Coritiba,29,2023
+2023-10-28,18:59,4,3,Estádio Raimundo Sampaio,America-MG,Gremio,30,2023
+2023-10-28,19:00,0,1,Allianz Parque,Palmeiras,Bahia,30,2023
+2023-10-28,22:00,0,2,Arena MRV,Atletico-MG,Fluminense,30,2023
+2023-10-29,16:00,1,1,Ligga Arena,Athletico-PR,Sao Paulo,30,2023
+2023-10-29,16:00,1,1,Estádio Hailé Pinheiro - Serrinha,Goias,Vasco,30,2023
+2023-10-29,18:30,4,3,Estádio Beira-Rio,Internacional,Coritiba,30,2023
+2023-10-29,18:33,1,1,Neo Química Arena,Corinthians,Santos,30,2023
+2023-10-29,20:01,1,0,Estádio Nilton Santos,Botafogo-RJ,Cuiaba,30,2023
+2023-10-31,19:02,0,1,Itaipava Arena Fonte Nova,Bahia,Fluminense,31,2023
+2023-11-01,19:00,1,1,Estádio Beira-Rio,Internacional,America-MG,31,2023
+2023-11-01,19:01,0,1,Neo Química Arena,Corinthians,Athletico-PR,31,2023
+2023-11-01,20:00,2,1,Arena BRB Mané Garrincha,Flamengo,Santos,31,2023
+2023-11-01,20:01,2,1,Couto Pereira,Coritiba,Gremio,31,2023
+2023-11-01,21:30,1,3,Arena MRV,Atletico-MG,Fortaleza,31,2023
+2023-11-01,21:31,4,3,Estádio Nilton Santos,Botafogo-RJ,Palmeiras,31,2023
+2023-11-02,17:00,2,0,Arena Pantanal,Cuiaba,Vasco,31,2023
+2023-11-02,17:59,2,0,Estádio Hailé Pinheiro - Serrinha,Goias,Bragantino,31,2023
+2023-11-02,20:00,0,1,Morumbi,Sao Paulo,Cruzeiro,31,2023
+2023-11-04,19:29,0,1,Arena do Grêmio,Gremio,Bahia,32,2023
+2023-11-04,19:30,1,1,Estádio Municipal Parque do Sabiá,America-MG,Atletico-MG,32,2023
+2023-11-04,21:30,0,1,Arena Barueri,Palmeiras,Athletico-PR,32,2023
+2023-11-05,15:59,2,1,Mineirão,Cruzeiro,Internacional,32,2023
+2023-11-05,16:00,2,0,Arena Castelão,Fortaleza,Flamengo,32,2023
+2023-11-05,16:01,0,1,Nabizão,Bragantino,Corinthians,32,2023
+2023-11-05,18:30,1,0,Couto Pereira,Coritiba,Goias,32,2023
+2023-11-06,19:01,0,1,Estádio São Januário,Vasco,Botafogo-RJ,32,2023
+2023-11-06,21:01,0,0,Estádio Urbano Caldeira,Santos,Cuiaba,32,2023
+2023-11-08,18:59,0,0,Estádio Beira-Rio,Internacional,Fluminense,33,2023
+2023-11-08,19:00,3,0,Estádio Raimundo Sampaio,America-MG,Coritiba,33,2023
+2023-11-08,20:00,1,1,Ligga Arena,Athletico-PR,Fortaleza,33,2023
+2023-11-08,20:01,0,1,Estádio Urbano Caldeira,Sao Paulo,Bragantino,33,2023
+2023-11-08,21:30,0,3,Maracanã,Flamengo,Palmeiras,33,2023
+2023-11-09,19:01,1,0,Estádio Hailé Pinheiro - Serrinha,Goias,Santos,33,2023
+2023-11-09,19:01,1,1,Neo Química Arena,Corinthians,Atletico-MG,33,2023
+2023-11-09,20:00,4,3,Estádio São Januário,Botafogo-RJ,Gremio,33,2023
+2023-11-09,20:03,3,0,Itaipava Arena Fonte Nova,Bahia,Cuiaba,33,2023
+2023-11-11,16:01,0,1,Vila Capanema,Coritiba,Cruzeiro,34,2023
+2023-11-11,18:31,1,1,Maracanã,Flamengo,Fluminense,34,2023
+2023-11-11,21:00,0,3,Arena Barueri,Palmeiras,Internacional,34,2023
+2023-11-12,16:00,2,2,Nabizão,Bragantino,Botafogo-RJ,34,2023
+2023-11-12,16:01,1,0,Arena do Grêmio,Gremio,Corinthians,34,2023
+2023-11-12,18:30,0,0,Estádio Urbano Caldeira,Santos,Sao Paulo,34,2023
+2023-11-12,18:30,1,2,Estádio São Januário,Vasco,America-MG,34,2023
+2023-11-12,18:30,1,2,Arena MRV,Atletico-MG,Goias,34,2023
+2023-11-12,18:30,1,2,Arena Pantanal,Cuiaba,Fortaleza,34,2023
+2023-11-12,18:31,1,1,Itaipava Arena Fonte Nova,Bahia,Athletico-PR,34,2023
+2023-11-18,18:30,1,0,Arena Castelão,Fortaleza,Cruzeiro,30,2023
+2023-11-22,21:30,0,1,Maracanã,Fluminense,Sao Paulo,32,2023
+2023-11-22,19:00,2,2,Mineirão,Cruzeiro,Vasco,33,2023
+2023-11-23,19:00,2,2,Arena Castelão,Fortaleza,Botafogo-RJ,29,2023
+2023-11-23,21:30,0,1,Maracanã,Flamengo,Bragantino,30,2023
+2023-11-24,21:02,5,1,Neo Química Arena,Corinthians,Bahia,35,2023
+2023-11-25,19:30,0,0,Ligga Arena,Athletico-PR,Vasco,35,2023
+2023-11-25,21:00,1,2,Maracanã,Fluminense,Coritiba,35,2023
+2023-11-26,16:00,0,3,Arena MRV,Atletico-MG,Gremio,35,2023
+2023-11-26,16:00,1,1,Estádio Nilton Santos,Botafogo-RJ,Santos,35,2023
+2023-11-26,18:29,0,1,Estádio Beira-Rio,Internacional,Bragantino,35,2023
+2023-11-26,18:30,3,0,Estádio Municipal Parque do Sabiá,America-MG,Flamengo,35,2023
+2023-11-26,18:32,0,0,Morumbi,Sao Paulo,Cuiaba,35,2023
+2023-11-26,18:32,2,2,Arena Castelão,Fortaleza,Palmeiras,35,2023
+2023-11-27,21:01,1,0,Estádio Hailé Pinheiro - Serrinha,Goias,Cruzeiro,35,2023
+2023-11-28,21:30,4,2,Estádio São Januário,Vasco,Corinthians,36,2023
+2023-11-29,19:03,3,0,Estádio Urbano Caldeira,Santos,Fluminense,36,2023
+2023-11-29,19:30,3,0,Maracanã,Flamengo,Atletico-MG,36,2023
+2023-11-29,20:00,2,0,Arena Pantanal,Cuiaba,Internacional,36,2023
+2023-11-29,20:02,1,0,Itaipava Arena Fonte Nova,Bahia,Sao Paulo,36,2023
+2023-11-29,21:30,1,1,Couto Pereira,Coritiba,Botafogo-RJ,36,2023
+2023-11-29,21:30,0,4,Allianz Parque,Palmeiras,America-MG,36,2023
+2023-11-30,18:59,1,2,Arena do Grêmio,Gremio,Goias,36,2023
+2023-11-30,20:00,1,1,Mineirão,Cruzeiro,Athletico-PR,36,2023
+2023-11-30,20:29,2,1,Nabizão,Bragantino,Fortaleza,36,2023
+2023-12-02,18:00,2,1,Neo Química Arena,Corinthians,Internacional,37,2023
+2023-12-02,21:07,1,2,Mineirão,Atletico-MG,Sao Paulo,37,2023
+2023-12-03,16:01,1,2,Maracanã,Flamengo,Cuiaba,37,2023
+2023-12-03,16:02,0,1,Allianz Parque,Palmeiras,Fluminense,37,2023
+2023-12-03,18:30,0,0,Estádio Nilton Santos,Botafogo-RJ,Cruzeiro,37,2023
+2023-12-03,18:30,2,3,Estádio Raimundo Sampaio,America-MG,Bahia,37,2023
+2023-12-03,18:30,0,1,Arena Castelão,Fortaleza,Goias,37,2023
+2023-12-03,18:30,0,1,Nabizão,Bragantino,Coritiba,37,2023
+2023-12-03,18:30,0,3,Ligga Arena,Athletico-PR,Santos,37,2023
+2023-12-03,18:32,0,1,Arena do Grêmio,Gremio,Vasco,37,2023
+2023-12-06,19:00,0,1,Estádio Hailé Pinheiro - Serrinha,Goias,America-MG,38,2023
+2023-12-06,21:32,1,3,Estádio Beira-Rio,Internacional,Botafogo-RJ,38,2023
+2023-12-06,21:32,2,0,Couto Pereira,Coritiba,Corinthians,38,2023
+2023-12-06,21:32,3,2,Maracanã,Fluminense,Gremio,38,2023
+2023-12-06,21:32,1,1,Mineirão,Cruzeiro,Palmeiras,38,2023
+2023-12-06,21:32,1,4,Itaipava Arena Fonte Nova,Bahia,Atletico-MG,38,2023
+2023-12-06,21:32,0,3,Arena Pantanal,Cuiaba,Athletico-PR,38,2023
+2023-12-06,21:32,2,1,Estádio Urbano Caldeira,Santos,Fortaleza,38,2023
+2023-12-06,21:32,0,1,Morumbi,Sao Paulo,Flamengo,38,2023
+2023-12-06,21:32,1,2,Estádio São Januário,Vasco,Bragantino,38,2023
