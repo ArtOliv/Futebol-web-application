@@ -1,6 +1,6 @@
 .admin-footer{
     display: flex;
-    margin: 32px 10px 15px 10px;
+    margin: 35px 10px 15px 10px;
     top: 0;
     left: 0;
     right: 0;
@@ -72,10 +72,12 @@ input:focus{
     background-color: #2E2EB1;
     font-size: 20px;
     font-weight: 700;
+    transition: background-color 0.3s ease;
 }
 
 .submit-button:hover{
     color: #2E2EB1;
     border: 2px solid #2E2EB1;
     background-color: #ffffff;
+    transition: background-color 0.3s ease;
 }

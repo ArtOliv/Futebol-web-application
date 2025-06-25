@@ -1,5 +1,6 @@
 [
-    {
+    {   
+        "jogo": 1,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "QUI",
@@ -24,6 +25,7 @@
         ]
     },
     {
+        "jogo": 2,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "QUI",
@@ -36,6 +38,7 @@
         "visitante": "IRLANDA"
     },
     {
+        "jogo": 3,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "QUI",
@@ -48,6 +51,7 @@
         "visitante": "CANADÁ"
     },
     {
+        "jogo": 4,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEX",
@@ -59,7 +63,8 @@
         "gols_visitante": 2,
         "visitante": "SUÍÇA"
     },
-    {
+    {   
+        "jogo": 5,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEX",
@@ -71,7 +76,8 @@
         "gols_visitante": 5,
         "visitante": "JAPÃO"
     },
-    {
+    {   
+        "jogo": 6,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEX",
@@ -84,6 +90,7 @@
         "visitante": "COSTA RICA"
     },
     {
+        "jogo": 7,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEX",
@@ -96,6 +103,7 @@
         "visitante": "VIETNÃ"
     },
     {
+        "jogo": 8,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SÁB",
@@ -108,6 +116,7 @@
         "visitante": "HAITI"
     },
     {
+        "jogo": 9,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SÁB",
@@ -120,6 +129,7 @@
         "visitante": "CHINA"
     },
     {
+        "jogo": 10,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "DOM",
@@ -132,6 +142,7 @@
         "visitante": "ÁFRICA DO SUL"
     },
     {
+        "jogo": 11,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "DOM",
@@ -144,6 +155,7 @@
         "visitante": "PORTUGAL"
     },
     {
+        "jogo": 12,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "DOM",
@@ -156,6 +168,7 @@
         "visitante": "JAMAICA"
     },
     {
+        "jogo": 13,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEG",
@@ -168,6 +181,7 @@
         "visitante": "ARGENTINA"
     },
     {
+        "jogo": 14,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEG",
@@ -180,6 +194,7 @@
         "visitante": "MARROCOS"
     },
     {
+        "jogo": 15,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEG",
@@ -192,6 +207,7 @@
         "visitante": "PANAMÁ"
     },
     {
+        "jogo": 16,
         "campeonato": "Brasileirão 2023",
         "rodada": 1,
         "dia": "SEG",
@@ -204,6 +220,7 @@
         "visitante": "COREIA DO SUL"
     },
     {
+        "jogo": 17,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "TER",
@@ -216,6 +233,7 @@
         "visitante": "FILIPINAS"
     },
     {
+        "jogo": 18,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "TER",
@@ -228,6 +246,7 @@
         "visitante": "NORUEGA"
     },
     {
+        "jogo": 19,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "QUA",
@@ -240,6 +259,7 @@
         "visitante": "COSTA RICA"
     },
     {
+        "jogo": 20,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "QUA",
@@ -252,6 +272,7 @@
         "visitante": "ZÂMBIA"
     },
     {
+        "jogo": 21,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "QUA",
@@ -264,6 +285,7 @@
         "visitante": "IRLANDA"
     },
     {
+        "jogo": 22,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "QUA",
@@ -276,6 +298,7 @@
         "visitante": "HOLANDA"
     },
     {
+        "jogo": 23,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "QUA",
@@ -288,6 +311,7 @@
         "visitante": "VIETNÃ"
     },
     {
+        "jogo": 24,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "QUA",
@@ -300,6 +324,7 @@
         "visitante": "NIGÉRIA"
     },
     {
+        "jogo": 25,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "QUI",
@@ -312,6 +337,7 @@
         "visitante": "ÁFRICA DO SUL"
     },
     {
+        "jogo": 26,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "SEX",
@@ -324,6 +350,7 @@
         "visitante": "DINAMARCA"
     },
     {
+        "jogo": 27,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "SEX",
@@ -336,6 +363,7 @@
         "visitante": "HAITI"
     },
     {
+        "jogo": 28,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "SÁB",
@@ -348,6 +376,7 @@
         "visitante": "ITÁLIA"
     },
     {
+        "jogo": 29,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "SÁB",
@@ -360,6 +389,7 @@
         "visitante": "BRASIL"
     },
     {
+        "jogo": 30,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "SÁB",
@@ -372,6 +402,7 @@
         "visitante": "JAMAICA"
     },
     {
+        "jogo": 31,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "DOM",
@@ -384,6 +415,7 @@
         "visitante": "MARROCOS"
     },
     {
+        "jogo": 32,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "DOM",
@@ -396,6 +428,7 @@
         "visitante": "NOVA ZELÂNDIA"
     },
     {
+        "jogo": 33,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "DOM",
@@ -408,6 +441,7 @@
         "visitante": "FILIPINAS"
     },
     {
+        "jogo": 34,
         "campeonato": "Brasileirão 2023",
         "rodada": 2,
         "dia": "DOM",
@@ -420,6 +454,7 @@
         "visitante": "COLÔMBIA"
     },
     {
+        "jogo": 35,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "SEG",
@@ -432,6 +467,7 @@
         "visitante": "ESPANHA"
     },
     {
+        "jogo": 36,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "SEG",
@@ -444,6 +480,7 @@
         "visitante": "ZÂMBIA"
     },
     {
+        "jogo": 37,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "SEG",
@@ -456,6 +493,7 @@
         "visitante": "AUSTRÁLIA"
     },
     {
+        "jogo": 38,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "SEG",
@@ -468,6 +506,7 @@
         "visitante": "NIGÉRIA"
     },
     {
+        "jogo": 39,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "TER",
@@ -480,6 +519,7 @@
         "visitante": "ESTADOS UNIDOS"
     },
     {
+        "jogo": 40,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "TER",
@@ -492,6 +532,7 @@
         "visitante": "HOLANDA"
     },
     {
+        "jogo": 41,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "TER",
@@ -504,6 +545,7 @@
         "visitante": "INGLATERRA"
     },
     {
+        "jogo": 42,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "TER",
@@ -516,6 +558,7 @@
         "visitante": "DINAMARCA"
     },
     {
+        "jogo": 43,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "QUA",
@@ -528,6 +571,7 @@
         "visitante": "SUÉCIA"
     },
     {
+        "jogo": 44,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "QUA",
@@ -540,6 +584,7 @@
         "visitante": "ITÁLIA"
     },
     {
+        "jogo": 45,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "QUA",
@@ -552,6 +597,7 @@
         "visitante": "FRANÇA"
     },
     {
+        "jogo": 46,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "QUA",
@@ -564,6 +610,7 @@
         "visitante": "BRASIL"
     },
     {
+        "jogo": 47,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "QUI",
@@ -576,6 +623,7 @@
         "visitante": "ALEMANHA"
     },
     {
+        "jogo": 48,
         "campeonato": "Brasileirão 2023",
         "rodada": 3,
         "dia": "QUI",
@@ -588,6 +636,7 @@
         "visitante": "COLÔMBIA"
     },
     {
+        "jogo": 49,
         "campeonato": "Brasileirão 2023",
         "rodada": 4,
         "dia": "QUI",
