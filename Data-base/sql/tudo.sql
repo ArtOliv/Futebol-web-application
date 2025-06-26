@@ -56,7 +56,7 @@ create table if not exists Estadio(
 create table if not exists Jogo(
     id_jogo INT auto_increment primary key,
     dt_data_horario DATETIME not null,
-    n_rodada INT CHECK (n_rodada>=1 AND n_rodada<=38),
+    n_rodada INT,
     n_placar_casa INT default 0 CHECK (n_placar_casa >= 0),
     n_placar_visitante INT default 0 CHECK (n_placar_visitante >= 0),
     c_nome_campeonato VARCHAR(100) not null,
@@ -64,7 +64,6 @@ create table if not exists Jogo(
     c_nome_estadio VARCHAR(100),
     c_time_casa VARCHAR(100),
     c_time_visitante VARCHAR(100),
-    c_status VARCHAR(20) NOT NULL DEFAULT 'Agendado' CHECK (c_status IN ('Agendado', 'Em Andamento', 'Finalizado')),
     constraint fk_estadio_jogo foreign key (c_nome_estadio) references Estadio(c_nome_estadio)
             ON DELETE SET NULL ON UPDATE CASCADE,
     constraint fk_time_casa_jogo foreign key (c_time_casa) references Time(c_nome_time)
@@ -118,29 +117,28 @@ create table if not exists Classificacao(
 );
 
 DELIMITER $$
-CREATE TRIGGER atualizar_jogo_na_tabela
-AFTER UPDATE ON JOGO
+CREATE TRIGGER inserir_jogo_na_tabela
+AFTER INSERT ON JOGO
 FOR EACH ROW
 BEGIN
-	IF NEW.c_status = 'Finalizado' AND OLD.c_status <> 'Finalizado' THEN
-		UPDATE classificacao
-		SET
-			n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
-			n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
-			n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
-			n_gols_pro = n_gols_pro + NEW.n_placar_casa,
-			n_gols_contra = n_gols_contra + NEW.n_placar_visitante
-		WHERE c_nome_time = NEW.c_time_casa AND NEW.c_nome_campeonato = c_nome_campeonato AND NEW.d_ano_campeonato = d_ano_campeonato;
-		
-		UPDATE classificacao
-		SET 
-			n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
-			n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
-			n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
-			n_gols_pro = n_gols_pro + NEW.n_placar_visitante,
-			n_gols_contra = n_gols_contra + NEW.n_placar_casa
-		WHERE c_nome_time = NEW.c_time_visitante AND NEW.c_nome_campeonato = c_nome_campeonato AND NEW.d_ano_campeonato = d_ano_campeonato;
-	END IF;
+	UPDATE classificacao
+    SET
+        n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
+        n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
+        n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
+        n_gols_pro = n_gols_pro + NEW.n_placar_casa,
+        n_gols_contra = n_gols_contra + NEW.n_placar_visitante
+    WHERE c_nome_time = NEW.c_time_casa;
+	
+	UPDATE classificacao
+    SET 
+		n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
+        n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
+        n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
+		n_gols_pro = n_gols_pro + NEW.n_placar_visitante,
+        n_gols_contra = n_gols_contra + NEW.n_placar_casa
+	WHERE
+		c_nome_time = NEW.c_time_visitante;
 END$$
 DELIMITER ;
 
@@ -227,72 +225,21 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER impedir_inserção_mesmo_jogo
-BEFORE INSERT ON Jogo
+CREATE TRIGGER evitar_gol_duplicado
+BEFORE INSERT ON Gol
 FOR EACH ROW
 BEGIN
-	DECLARE ja_tem INT;
-	SELECT COUNT(*) INTO ja_tem FROM Jogo
-    WHERE dt_data_horario = NEW.dt_data_horario
-		AND c_nome_campeonato = NEW.c_nome_campeonato
-        AND d_ano_campeonato = NEW.d_ano_campeonato
-        AND c_time_casa = NEW.c_time_casa
-        AND c_time_visitante = NEW.c_time_visitante;
-	
-    IF ja_tem > 0 THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Jogo já está armazenado.';
-	END IF;
+  DECLARE ja_tem INT;
+  SELECT COUNT(*) INTO ja_tem FROM Gol
+  WHERE id_jogo = NEW.id_jogo
+    AND id_jogador = NEW.id_jogador
+    AND n_minuto_gol = NEW.n_minuto_gol;
+
+  IF ja_tem > 0 THEN
+    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Gol já registrado para esse minuto.';
+  END IF;
 END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE TRIGGER impedir_gol_por_jogador_inválido
-BEFORE INSERT ON GOL
-FOR EACH ROW
-BEGIN
-	DECLARE time_jogador VARCHAR(100);
-    DECLARE time_casa VARCHAR(100);
-    DECLARE time_visitante VARCHAR(100);
-    
-	SELECT c_nome_time INTO time_jogador
-    FROM jogador 
-    WHERE id_jogador = NEW.id_jogador;
-    
-    SELECT c_time_casa,c_time_visitante INTO time_casa,time_visitante
-    FROM jogo
-    WHERE id_jogo = NEW.id_jogo;
-    
-    IF time_jogador != time_casa AND time_jogador != time_visitante THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Jogador não pertence a nenhum dos times da partida.';
-	END IF;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-
-CREATE TRIGGER impedir_gol_update_por_jogador_inválido
-BEFORE UPDATE ON GOL
-FOR EACH ROW
-BEGIN
-    DECLARE time_jogador VARCHAR(100);
-    DECLARE time_casa VARCHAR(100);
-    DECLARE time_visitante VARCHAR(100);
-
-    SELECT c_nome_time INTO time_jogador
-    FROM jogador
-    WHERE id_jogador = NEW.id_jogador;
-
-    SELECT c_time_casa, c_time_visitante INTO time_casa, time_visitante
-    FROM jogo
-    WHERE id_jogo = NEW.id_jogo;
-
-    IF time_jogador != time_casa AND time_jogador != time_visitante THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Modificação não permitida: Jogador não pertence a nenhum dos times da partida.';
-    END IF;
-END$$
-
-DELIMITER ;
+DELIMITER ;  
 
 INSERT INTO time
 (c_nome_time, c_cidade_time, c_tecnico_time)
@@ -684,79 +631,3 @@ VALUES
 ('Estádio Rei Pelé', 'Maceió', 45000),
 ('Estádio Antônio Accioly', 'Goiânia', 45000),
 ('Vila Capanema','Curitiba','45000');
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Maracanã', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio José Pinheiro Borda', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Condá', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Itaipava Arena Fonte Nova', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Morumbi', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Orlando Scarpelli', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal Parque do Sabiá', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Nacional de Brasília', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Urbano Caldeira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Heriberto Hülse', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Couto Pereira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal Paulo Machado de Carvalho', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio de Pituaçu', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Adelmar da Costa Carvalho', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Barueri', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena do Grêmio', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal Juscelino Kubitschek', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Raimundo Sampaio', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio do Café', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Helenão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Mineirão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Neo Química Arena', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Willie Davids', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Pantanal', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Moacyrzão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Alfredo Jaconi', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Dr. Oswaldo Teixeira Duarte', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio do Governo do Estado de Goiás (Serra Dourada)', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Doutor Adhemar de Barros', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Alberto Oliveira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Francisco Stédile (Centenário)', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Ipatingão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Paulo Constantino', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Vila Capanema', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Primeiro de Maio São Bernardo do Campo', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal General Raulino de Oliveira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Barradão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Joaquim Américo Guimarães', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena de Pernambuco', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena da Amazônia', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Vasco da Gama', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Mangueirão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Allianz Parque', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Castelão de São Luís', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Ressacada', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Joinville', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Moisés Lucarelli', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena das Dunas', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Nilton Santos', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Kléber Andrade', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio do Arruda', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Luso-Brasileiro', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Giulite Coutinho', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Olímpico Pedro Ludovico Teixeira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Castelão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Presidente Vargas', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Rei Pelé', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Brinco de Ouro', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Nabizão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio da Serrinha', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Antônio Accioly', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Ligga Arena', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Beira-Rio', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Hailé Pinheiro - Serrinha', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio São Januário', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Joaquim Henrique Nogueira-Arena do jacaré', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena MRV', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena BRB Mané Garrincha', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('MorumBIS', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Serra Dourada', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Fonte Nova', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Antônio Accioly - Atlético Goianiense', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Francisco Stédile | Centenário', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Independência', NULL, 45000);
-
-INSERT INTO administrador (c_email_adm, c_Pnome_adm, c_Unome_adm, c_senha_adm) VALUES ('adm@gmail.com','Arthur','Silva',123);
