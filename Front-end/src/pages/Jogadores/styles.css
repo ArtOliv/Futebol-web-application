@@ -63,6 +63,49 @@
     height: 30px;
 }
 
+.search-results-list{
+    background-color: #4C4C4C;
+    border-radius: 10px;
+    padding: 20px;
+    color: #333;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.search-results-list h3{
+    color: #ffffff;
+    margin-top: 0;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.search-results-list ul{
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    margin-right: 50px;
+}
+
+.search-results-list ul li{
+    color: #ffffff;
+    border: 2px solid #696969;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 20px;
+    padding-left: 30px;
+    transition: background-color 0.3s ease;
+}
+
+.search-results-list ul li:hover{
+    border: 2px solid #696969;
+    background-color: #3d3d3d;
+    transition: background-color 0.3s ease;
+}
+
 .details-content-container {
     background-color: #4C4C4C;
     border-radius: 10px;
@@ -104,7 +147,8 @@
     flex-direction: column;
     flex-wrap: wrap;
     align-items: flex-start;
-    gap: 20px;
+    justify-content: center;
+    gap: 50px;
     width: 100%;
     margin-top: 20px;
     padding: 0px 100px;
@@ -139,6 +183,7 @@
     padding-bottom: 5px;
     padding-right: 15px;
     padding-left: 15px;
+    height: 100%;
 }
 
 .player-info-card .info-item:last-child {
@@ -192,7 +237,6 @@
     padding: 50px 20px;
     background-color: #4C4C4C;
     border-radius: 10px;
-    margin-top: 20px;
 }
 
 .error-message {

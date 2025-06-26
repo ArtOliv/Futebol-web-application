@@ -58,7 +58,7 @@ function Times() {
             return;
         }
 
-        const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+        const lowerCaseSearchTerm = nameToSearch.toLowerCase().trim();
 
         const foundTeam = allTeamsData.find(team =>
             team.name.toLowerCase().includes(lowerCaseSearchTerm)
@@ -69,7 +69,7 @@ function Times() {
             setError(null);
         } else {
             setTeamData(null);
-            setError(`Time "${searchTerm}" não encontrado na lista. Verifique a grafia.`);
+            setError(`Time "${nameToSearch}" não encontrado na lista. Verifique a grafia.`);
         }
 
         setSearchTerm('');
@@ -126,7 +126,6 @@ function Times() {
                         <div className="team-header">
                             <div>
                                 <h2>{teamData.name}</h2>
-                                <p>{teamData.leaguePosition}</p>
                             </div>
                         </div>
 
@@ -138,7 +137,7 @@ function Times() {
                                         teamData.games.map((game, index) => (
                                             <li key={index}>
                                                 <span className={`game-status-indicator ${game.result}`}></span>
-                                                {game.description}
+                                                <span>{game.description} - {game.campeonato}</span>
                                             </li>
                                         )) : <li>Nenhum jogo recente disponível.</li>
                                     }
@@ -161,11 +160,8 @@ function Times() {
                             <div className="right-column-cards">
                                 <div className="card info-card">
                                     <h3>Informações</h3>
-                                    <p>Fundado em: {teamData.founded}</p>
                                     <p>Cidade: {teamData.city}</p>
                                     <p>Técnico: {teamData.coach}</p>
-                                    {teamData.stadium && <p>Estádio: {teamData.stadium}</p>}
-                                    {teamData.capacity && <p>Capacidade: {teamData.capacity}</p>}
                                 </div>
 
                                 <div className="card titles-card">
