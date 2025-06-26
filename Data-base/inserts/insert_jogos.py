@@ -1,27 +1,14 @@
 import pandas as pd
 from sqlalchemy import create_engine
 import sys
+import os
 
 def importar_jogos():
-    """
-    Importa dados de jogos de um arquivo CSV para uma tabela MySQL de forma inteligente.
-    
-    Este script realiza as seguintes etapas:
-    1. Conecta-se ao banco de dados para buscar dados existentes das tabelas relacionadas
-       (Time, Estadio, Campeonato) para validação de chaves estrangeiras.
-    2. Limpa os dados (remove espaços em branco) tanto do banco quanto do CSV para evitar
-       erros de correspondência.
-    3. Lê o arquivo CSV com os jogos.
-    4. Filtra o CSV, mantendo apenas os jogos cujos times, estádios e campeonatos
-       realmente existem no banco de dados.
-    5. Informa sobre quaisquer jogos que foram ignorados e os motivos.
-    6. Insere o lote de jogos válidos na tabela 'Jogo' de uma só vez.
-    """
-    # --- 1. CONFIGURE SEUS DADOS DE CONEXÃO E ARQUIVOS ---
+
     db_user = 'root'
-    db_password = '37226998casa'  # !! IMPORTANTE: Substitua pela sua senha !!
+    db_password = os.getenv('DB_PASSWORD') 
     db_host = 'localhost'
-    db_name = 'campeonato_futebol' # O nome do seu banco de dados
+    db_name = 'campeonato_futebol' 
     db_port = 3306
 
     csv_file_path = 'jogos_brasileirão.csv'
@@ -93,7 +80,7 @@ def importar_jogos():
             # --- 5. INSERIR OS DADOS VÁLIDOS ---
             # Seleciona e renomeia colunas para corresponder exatamente à tabela do banco
             df_final = df_para_inserir[[
-                'dt_data_horario', 'n_rodada', 'n_placar_casa', 'n_placar_visitante',
+                'dt_data_horario', 'n_rodada',
                 'c_nome_campeonato', 'd_ano_campeonato', 'c_nome_estadio',
                 'c_time_casa', 'c_time_visitante'
             ]]
