@@ -214,6 +214,14 @@
     padding-bottom: 5px;
 }
 
+.titles-card{
+    height: 100%;
+}
+
+.titles-card ul{
+    margin-top: 20px;
+}
+
 .loading-message, .error-message, .no-data-message {
     text-align: center;
     color: #f1f1f1;
@@ -221,7 +229,6 @@
     padding: 50px 20px;
     background-color: #4C4C4C;
     border-radius: 10px;
-    margin-top: 20px;
 }
 
 .error-message {
