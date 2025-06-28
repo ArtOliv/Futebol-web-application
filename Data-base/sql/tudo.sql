@@ -268,7 +268,7 @@ BEGIN
     DECLARE mensagem_erro VARCHAR(255);
     
 	SELECT COUNT(*) INTO expulso
-	FROM cartao
+	FROM Cartao
 	WHERE id_jogo = NEW.id_jogo
 		AND id_jogador = NEW.id_jogador
 		AND e_tipo = 'vermelho'
@@ -291,7 +291,7 @@ BEGIN
 	DECLARE expulso INT;
     
     SELECT COUNT(*) INTO expulso
-    FROM cartao
+    FROM Cartao
     WHERE id_jogo = NEW.id_jogo
 		AND id_jogador = NEW.id_jogador
 		AND e_tipo = 'vermelho'

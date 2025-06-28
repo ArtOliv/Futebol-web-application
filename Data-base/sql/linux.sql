@@ -268,7 +268,7 @@ BEGIN
     DECLARE mensagem_erro VARCHAR(255);
     
 	SELECT COUNT(*) INTO expulso
-	FROM cartao
+	FROM Cartao
 	WHERE id_jogo = NEW.id_jogo
 		AND id_jogador = NEW.id_jogador
 		AND e_tipo = 'vermelho'
@@ -291,7 +291,7 @@ BEGIN
 	DECLARE expulso INT;
     
     SELECT COUNT(*) INTO expulso
-    FROM cartao
+    FROM Cartao
     WHERE id_jogo = NEW.id_jogo
 		AND id_jogador = NEW.id_jogador
 		AND e_tipo = 'vermelho'
@@ -39977,3 +39977,8 @@ VALUES
 ('Amarelo', 25, 3, 4179),
 ('Amarelo', 64, 2, 4179),
 ('Vermelho', 79, 1, 4179);
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE Jogo
+SET c_status = 'Finalizado'
+WHERE dt_data_horario < NOW() AND c_status <> 'Finalizado';
