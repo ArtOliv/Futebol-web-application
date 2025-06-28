@@ -12,20 +12,23 @@ DROP TABLE IF EXISTS Campeonato;
 DROP TABLE IF EXISTS Administrador;
 
 create table if not exists Administrador(
-    c_email_adm VARCHAR(100) primary key,
+    c_email_adm VARCHAR(100),
     c_Pnome_adm VARCHAR(100) not null,
     c_Unome_adm VARCHAR(100) not null,
-    c_senha_adm VARCHAR(100) not null);
+    c_senha_adm VARCHAR(100) not null,
+    CONSTRAINT pk_administrador primary key (c_email_adm)
+);
 
 create table if not exists Campeonato(
     c_nome_campeonato VARCHAR(100) not null,
     d_ano_campeonato YEAR not null,
-    primary key (c_nome_campeonato, d_ano_campeonato));
+    CONSTRAINT pk_campeonato primary key (c_nome_campeonato, d_ano_campeonato));
 
 create table if not exists Time(
-    c_nome_time VARCHAR(100) primary key,
+    c_nome_time VARCHAR(100),
     c_cidade_time VARCHAR(100),
-    c_tecnico_time VARCHAR(100));
+    c_tecnico_time VARCHAR(100),
+    CONSTRAINT pk_time primary key (c_nome_time));
 
 create table if not exists Time_participa_campeonato(
     c_nome_time VARCHAR(100) not null,
@@ -38,52 +41,62 @@ create table if not exists Time_participa_campeonato(
         ON DELETE CASCADE ON UPDATE CASCADE);
 
 create table if not exists Jogador(
-    id_jogador INT auto_increment primary key,
+    id_jogador INT auto_increment,
     c_Pnome_jogador VARCHAR(100),
     c_Unome_jogador VARCHAR(100),
-    n_camisa INT CHECK (n_camisa >= 0 AND n_camisa < 100),
+    n_camisa INT,
     d_data_nascimento DATE,
     c_posicao VARCHAR(100),
     c_nome_time VARCHAR(100),
+    CONSTRAINT pk_jogador primary key (id_jogador),
+    CONSTRAINT chk_jogador_camisa CHECK (n_camisa >= 0 AND n_camisa < 100), 
     CONSTRAINT fk_time_jogador foreign key (c_nome_time) references Time(c_nome_time)
         ON DELETE SET NULL ON UPDATE CASCADE
 	-- CONSTRAINT uq_jogador_identificacao UNIQUE (c_Pnome_jogador, c_Unome_jogador, n_camisa, c_nome_time)
     );
 
 create table if not exists Estadio(
-    c_nome_estadio VARCHAR(100) primary key,
+    c_nome_estadio VARCHAR(100),
     c_cidade_estadio VARCHAR(100),
-    n_capacidade INT NOT NULL CHECK(n_capacidade >= 0));
+    n_capacidade INT NOT NULL,
+    CONSTRAINT pk_estadio primary key (c_nome_estadio),
+    CONSTRAINT chk_estadio_capacidade CHECK (n_capacidade >= 0));
 
 create table if not exists Jogo(
-    id_jogo INT auto_increment primary key,
+    id_jogo INT auto_increment,
     dt_data_horario DATETIME not null,
-    n_rodada INT CHECK (n_rodada>=1 AND n_rodada<=38),
-    n_placar_casa INT DEFAULT 0 CHECK (n_placar_casa >= 0),
-    n_placar_visitante INT DEFAULT 0 CHECK (n_placar_visitante >= 0),
+    n_rodada INT,
+    n_placar_casa INT DEFAULT 0,
+    n_placar_visitante INT DEFAULT 0,
     c_nome_campeonato VARCHAR(100) not null,
     d_ano_campeonato YEAR not null,
     c_nome_estadio VARCHAR(100),
     c_time_casa VARCHAR(100),
     c_time_visitante VARCHAR(100),
-    c_status VARCHAR(20) NOT NULL DEFAULT 'Agendado' CHECK (c_status IN ('Agendado', 'Em Andamento', 'Finalizado')),
-    constraint fk_estadio_jogo foreign key (c_nome_estadio) references Estadio(c_nome_estadio)
+    c_status VARCHAR(20) NOT NULL DEFAULT 'Agendado',
+    CONSTRAINT pk_jogo primary key (id_jogo),
+    CONSTRAINT chk_jogo_rodada CHECK (n_rodada>=1 AND n_rodada<=38),
+    CONSTRAINT chk_jogo_placar_casa CHECK (n_placar_casa >= 0),
+    CONSTRAINT chk_jogo_placar_visitante CHECK (n_placar_visitante >= 0),
+    CONSTRAINT chk_jogo_status CHECK (c_status IN ('Agendado', 'Em Andamento', 'Finalizado')),
+    CONSTRAINT fk_estadio_jogo foreign key (c_nome_estadio) references Estadio(c_nome_estadio)
             ON DELETE SET NULL ON UPDATE CASCADE,
-    constraint fk_time_casa_jogo foreign key (c_time_casa) references Time(c_nome_time)
+    CONSTRAINT fk_time_casa_jogo foreign key (c_time_casa) references Time(c_nome_time)
             ON DELETE RESTRICT ON UPDATE CASCADE,
-    constraint fk_time_visitante_jogo foreign key (c_time_visitante) references Time(c_nome_time)
+    CONSTRAINT fk_time_visitante_jogo foreign key (c_time_visitante) references Time(c_nome_time)
             ON DELETE RESTRICT ON UPDATE CASCADE,
-    constraint fk_campeonato_jogo foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato)
+    CONSTRAINT fk_campeonato_jogo foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato)
             ON DELETE CASCADE ON UPDATE CASCADE,
-	constraint uq_jogo_unico UNIQUE (dt_data_horario, c_nome_campeonato, d_ano_campeonato, c_time_casa, c_time_visitante));
+	CONSTRAINT uq_jogo_unico UNIQUE (dt_data_horario, c_nome_campeonato, d_ano_campeonato, c_time_casa, c_time_visitante));
 
 create table if not exists Gol(
     id_gol INT auto_increment,
-    n_minuto_gol INT not null CHECK (n_minuto_gol>=0 AND n_minuto_gol<=200),
+    n_minuto_gol INT not null,
     id_jogo INT not null,
     id_jogador INT,
-    primary key (id_gol, id_jogo),
-    constraint fk_jogo_gol foreign key (id_jogo) references Jogo(id_jogo)
+    CONSTRAINT pk_gol primary key (id_gol, id_jogo),
+    CONSTRAINT chk_gol_minuto CHECK (n_minuto_gol>=0 AND n_minuto_gol<=200),
+    CONSTRAINT fk_jogo_gol foreign key (id_jogo) references Jogo(id_jogo)
         ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_jogador_gol FOREIGN KEY (id_jogador) REFERENCES Jogador(id_jogador)
         ON DELETE SET NULL ON UPDATE CASCADE
@@ -92,31 +105,32 @@ create table if not exists Gol(
 create table if not exists Cartao(
     id_cartao INT auto_increment,
     e_tipo ENUM('amarelo', 'vermelho') not null,
-    n_minuto_cartao INT not null CHECK (n_minuto_cartao>=0 AND n_minuto_cartao<=200),
+    n_minuto_cartao INT not null,
     id_jogo INT not null,
     id_jogador INT,
-    primary key (id_cartao, id_jogo),
-    constraint fk_jogo_cartao foreign key (id_jogo) references Jogo(id_jogo)
+    CONSTRAINT pk_cartao primary key (id_cartao, id_jogo),
+    CONSTRAINT chk_cartao_minuto CHECK (n_minuto_cartao>=0 AND n_minuto_cartao<=200),
+    CONSTRAINT fk_jogo_cartao foreign key (id_jogo) references Jogo(id_jogo)
             ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_jogador_cartao FOREIGN KEY (id_jogador) REFERENCES Jogador(id_jogador)
             ON DELETE SET NULL ON UPDATE CASCADE);
 
 create table if not exists Classificacao(
     c_nome_campeonato VARCHAR(100) not null,
-    d_ano_campeonato YEAR not null, -- CORRIGIDO AQUI
+    d_ano_campeonato YEAR not null, 
     c_nome_time VARCHAR(100) not null,
-    n_pontos INT generated always AS (3*n_vitorias + n_empates) STORED,
+    n_pontos INT GENERATED ALWAYS AS (3*n_vitorias + n_empates) STORED,
     n_jogos INT GENERATED ALWAYS AS (n_vitorias + n_empates + n_derrotas) STORED,
-    n_vitorias INT default 0,
-    n_empates INT default 0,
-    n_derrotas INT default 0,
-    n_gols_pro INT default 0,
-    n_gols_contra INT default 0,
-    n_saldo_gols INT generated always as (n_gols_pro - n_gols_contra) stored,
-    primary key (c_nome_campeonato,d_ano_campeonato, c_nome_time), -- CORRIGIDO AQUI
-    constraint fk_time_classificacao foreign key (c_nome_time) references Time(c_nome_time)
+    n_vitorias INT DEFAULT 0,
+    n_empates INT DEFAULT 0,
+    n_derrotas INT DEFAULT 0,
+    n_gols_pro INT DEFAULT 0,
+    n_gols_contra INT DEFAULT 0,
+    n_saldo_gols INT GENERATED ALWAYS AS (n_gols_pro - n_gols_contra) STORED,
+    CONSTRAINT pk_classificacao primary key (c_nome_campeonato,d_ano_campeonato, c_nome_time), 
+    CONSTRAINT fk_time_classificacao foreign key (c_nome_time) references Time(c_nome_time)
             ON DELETE RESTRICT ON UPDATE CASCADE,
-    constraint fk_campeonato_classificacao foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato) -- CORRIGIDO AQUI
+    CONSTRAINT fk_campeonato_classificacao foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato) -- CORRIGIDO AQUI
             ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -183,27 +197,6 @@ BEGIN
         0;
 END$$
 DELIMITER ;
-        
-DELIMITER $$
-CREATE TRIGGER cartao_vermelho_automatico
-BEFORE INSERT ON Cartao
-FOR EACH ROW
-BEGIN
-	DECLARE num_cartao INT;
-
-	IF NEW.e_tipo = 'amarelo' AND NEW.id_jogador IS NOT NULL THEN
-		SELECT COUNT(*) INTO num_cartao
-		FROM Cartao
-		WHERE id_jogo = NEW.id_jogo
-		  AND id_jogador = NEW.id_jogador
-		  AND e_tipo = 'amarelo';
-
-		IF num_cartao >= 1 THEN
-			SET NEW.e_tipo = 'vermelho';
-		END IF;
-	END IF;
-END$$
-DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER impedir_jogo_mesmo_time
@@ -264,17 +257,25 @@ CREATE TRIGGER impedir_novo_cartao_apos_vermelho
 BEFORE INSERT ON Cartao
 FOR EACH ROW
 BEGIN
-	DECLARE expulso INT;
+	DECLARE qtd_amarelos INT DEFAULT 0;
+    DECLARE qtd_vermelhos INT DEFAULT 0;
     DECLARE mensagem_erro VARCHAR(255);
     
-	SELECT COUNT(*) INTO expulso
+	SELECT COUNT(*) INTO qtd_amarelos
 	FROM Cartao
 	WHERE id_jogo = NEW.id_jogo
 		AND id_jogador = NEW.id_jogador
 		AND e_tipo = 'vermelho'
         AND n_minuto_cartao < NEW.n_minuto_cartao;
+	
+    SELECT COUNT(*) INTO qtd_vermelhos
+    FROM Cartao
+    WHERE id_jogo = NEW.id_jogo
+		AND id_jogador = NEW.id_jogador
+        AND e_tipo = 'amarelo'
+        AND n_minuto_cartao <= NEW.n_minuto_cartao;
     
-	IF expulso > 0 THEN
+	IF qtd_amarelos > 0 OR qtd_amarelos >= 2 THEN
         SET mensagem_erro = CONCAT('Jogador (ID: ', NEW.id_jogador, ') já foi expulso no jogo (ID: ', NEW.id_jogo, ') e não pode receber novos cartões.');
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = mensagem_erro;
