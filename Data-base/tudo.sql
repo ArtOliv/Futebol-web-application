@@ -31,11 +31,11 @@ create table if not exists Time_participa_campeonato(
     c_nome_time VARCHAR(100) not null,
     c_nome_campeonato VARCHAR(100) not null,
     d_ano_campeonato YEAR not null,
-    primary key (c_nome_time, c_nome_campeonato, d_ano_campeonato),
-    constraint fk_time_camp foreign key (c_nome_time) references Time(c_nome_time)
-        ON UPDATE CASCADE,
-    constraint fk_camp_time foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato)
-        ON UPDATE CASCADE);
+    CONSTRAINT pk_time_participa_campeonato primary key (c_nome_time, c_nome_campeonato, d_ano_campeonato),
+    CONSTRAINT fk_time_camp foreign key (c_nome_time) references Time(c_nome_time)
+        ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT fk_camp_time foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato)
+        ON DELETE CASCADE ON UPDATE CASCADE);
 
 create table if not exists Jogador(
     id_jogador INT auto_increment primary key,
@@ -45,20 +45,22 @@ create table if not exists Jogador(
     d_data_nascimento DATE,
     c_posicao VARCHAR(100),
     c_nome_time VARCHAR(100),
-    constraint fk_time_jogador foreign key (c_nome_time) references Time(c_nome_time)
-        ON DELETE SET NULL ON UPDATE CASCADE);
+    CONSTRAINT fk_time_jogador foreign key (c_nome_time) references Time(c_nome_time)
+        ON DELETE SET NULL ON UPDATE CASCADE
+	-- CONSTRAINT uq_jogador_identificacao UNIQUE (c_Pnome_jogador, c_Unome_jogador, n_camisa, c_nome_time)
+    );
 
 create table if not exists Estadio(
     c_nome_estadio VARCHAR(100) primary key,
     c_cidade_estadio VARCHAR(100),
-    n_capacidade INT);
+    n_capacidade INT NOT NULL CHECK(n_capacidade >= 0));
 
 create table if not exists Jogo(
     id_jogo INT auto_increment primary key,
     dt_data_horario DATETIME not null,
     n_rodada INT CHECK (n_rodada>=1 AND n_rodada<=38),
-    n_placar_casa INT default 0 CHECK (n_placar_casa >= 0),
-    n_placar_visitante INT default 0 CHECK (n_placar_visitante >= 0),
+    n_placar_casa INT DEFAULT 0 CHECK (n_placar_casa >= 0),
+    n_placar_visitante INT DEFAULT 0 CHECK (n_placar_visitante >= 0),
     c_nome_campeonato VARCHAR(100) not null,
     d_ano_campeonato YEAR not null,
     c_nome_estadio VARCHAR(100),
@@ -68,11 +70,12 @@ create table if not exists Jogo(
     constraint fk_estadio_jogo foreign key (c_nome_estadio) references Estadio(c_nome_estadio)
             ON DELETE SET NULL ON UPDATE CASCADE,
     constraint fk_time_casa_jogo foreign key (c_time_casa) references Time(c_nome_time)
-            ON DELETE SET NULL ON UPDATE CASCADE,
+            ON DELETE RESTRICT ON UPDATE CASCADE,
     constraint fk_time_visitante_jogo foreign key (c_time_visitante) references Time(c_nome_time)
-            ON DELETE SET NULL ON UPDATE CASCADE,
+            ON DELETE RESTRICT ON UPDATE CASCADE,
     constraint fk_campeonato_jogo foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato)
-            ON UPDATE CASCADE);
+            ON DELETE CASCADE ON UPDATE CASCADE,
+	constraint uq_jogo_unico UNIQUE (dt_data_horario, c_nome_campeonato, d_ano_campeonato, c_time_casa, c_time_visitante));
 
 create table if not exists Gol(
     id_gol INT auto_increment,
@@ -81,7 +84,7 @@ create table if not exists Gol(
     id_jogador INT,
     primary key (id_gol, id_jogo),
     constraint fk_jogo_gol foreign key (id_jogo) references Jogo(id_jogo)
-        ON UPDATE CASCADE,
+        ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT fk_jogador_gol FOREIGN KEY (id_jogador) REFERENCES Jogador(id_jogador)
         ON DELETE SET NULL ON UPDATE CASCADE
 );
@@ -112,14 +115,14 @@ create table if not exists Classificacao(
     n_saldo_gols INT generated always as (n_gols_pro - n_gols_contra) stored,
     primary key (c_nome_campeonato,d_ano_campeonato, c_nome_time), -- CORRIGIDO AQUI
     constraint fk_time_classificacao foreign key (c_nome_time) references Time(c_nome_time)
-            ON UPDATE CASCADE,
+            ON DELETE RESTRICT ON UPDATE CASCADE,
     constraint fk_campeonato_classificacao foreign key (c_nome_campeonato,d_ano_campeonato) references Campeonato(c_nome_campeonato,d_ano_campeonato) -- CORRIGIDO AQUI
-            ON UPDATE CASCADE
+            ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 DELIMITER $$
 CREATE TRIGGER atualizar_jogo_na_tabela
-AFTER UPDATE ON JOGO
+AFTER UPDATE ON Jogo
 FOR EACH ROW
 BEGIN
 	IF NEW.c_status = 'Finalizado' AND OLD.c_status <> 'Finalizado' THEN
@@ -203,19 +206,6 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER verificar_capacidade_estadio
-BEFORE INSERT ON Jogo
-FOR EACH ROW
-BEGIN
-  DECLARE capacidade INT;
-  SELECT n_capacidade INTO capacidade FROM Estadio WHERE c_nome_estadio = NEW.c_nome_estadio;
-  IF capacidade IS NULL OR capacidade <= 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Estádio com capacidade inválida.';
-  END IF;
-END$$
-DELIMITER ;
-
-DELIMITER $$
 CREATE TRIGGER impedir_jogo_mesmo_time
 BEFORE INSERT ON Jogo
 FOR EACH ROW
@@ -227,66 +217,40 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER impedir_inserção_mesmo_jogo
-BEFORE INSERT ON Jogo
+CREATE TRIGGER impedir_gol_por_jogador_invalido
+BEFORE INSERT ON Gol
 FOR EACH ROW
 BEGIN
-	DECLARE ja_tem INT;
-	SELECT COUNT(*) INTO ja_tem FROM Jogo
-    WHERE dt_data_horario = NEW.dt_data_horario
-		AND c_nome_campeonato = NEW.c_nome_campeonato
-        AND d_ano_campeonato = NEW.d_ano_campeonato
-        AND c_time_casa = NEW.c_time_casa
-        AND c_time_visitante = NEW.c_time_visitante;
-	
-    IF ja_tem > 0 THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Jogo já está armazenado.';
-	END IF;
-END$$
-DELIMITER ;
+    DECLARE jogador_valido INT;
+    
+    SELECT COUNT(*) INTO jogador_valido
+    FROM Jogo JOIN Jogador ON Jogador.id_jogador = NEW.id_jogador
+    WHERE 
+        Jogo.id_jogo = NEW.id_jogo 
+        AND Jogador.c_nome_time IN (Jogo.c_time_casa, Jogo.c_time_visitante);
 
-DELIMITER $$
-CREATE TRIGGER impedir_gol_por_jogador_inválido
-BEFORE INSERT ON GOL
-FOR EACH ROW
-BEGIN
-	DECLARE time_jogador VARCHAR(100);
-    DECLARE time_casa VARCHAR(100);
-    DECLARE time_visitante VARCHAR(100);
-    
-	SELECT c_nome_time INTO time_jogador
-    FROM jogador 
-    WHERE id_jogador = NEW.id_jogador;
-    
-    SELECT c_time_casa,c_time_visitante INTO time_casa,time_visitante
-    FROM jogo
-    WHERE id_jogo = NEW.id_jogo;
-    
-    IF time_jogador != time_casa AND time_jogador != time_visitante THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Jogador não pertence a nenhum dos times da partida.';
-	END IF;
+    IF jogador_valido = 0 THEN
+        SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Jogador não pertence a nenhum dos times da partida.';
+    END IF;
 END$$
 DELIMITER ;
 
 DELIMITER $$
 
-CREATE TRIGGER impedir_gol_update_por_jogador_inválido
-BEFORE UPDATE ON GOL
+CREATE TRIGGER impedir_gol_update_por_jogador_inaálido
+BEFORE UPDATE ON Gol
 FOR EACH ROW
 BEGIN
-    DECLARE time_jogador VARCHAR(100);
-    DECLARE time_casa VARCHAR(100);
-    DECLARE time_visitante VARCHAR(100);
+    DECLARE jogador_valido INT;
+    
+    SELECT COUNT(*) INTO jogador_valido
+    FROM Jogo JOIN Jogador ON Jogador.id_jogador = NEW.id_jogador
+    WHERE 
+        Jogo.id_jogo = NEW.id_jogo 
+        AND Jogador.c_nome_time IN (Jogo.c_time_casa, Jogo.c_time_visitante);
 
-    SELECT c_nome_time INTO time_jogador
-    FROM jogador
-    WHERE id_jogador = NEW.id_jogador;
-
-    SELECT c_time_casa, c_time_visitante INTO time_casa, time_visitante
-    FROM jogo
-    WHERE id_jogo = NEW.id_jogo;
-
-    IF time_jogador != time_casa AND time_jogador != time_visitante THEN
+    IF jogador_valido = 0 THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Modificação não permitida: Jogador não pertence a nenhum dos times da partida.';
     END IF;
@@ -295,28 +259,33 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
+
 CREATE TRIGGER impedir_novo_cartao_apos_vermelho
-BEFORE INSERT ON CARTAO
+BEFORE INSERT ON Cartao
 FOR EACH ROW
 BEGIN
 	DECLARE expulso INT;
+    DECLARE mensagem_erro VARCHAR(255);
     
-    SELECT COUNT(*) INTO expulso
-    FROM cartao
-    WHERE id_jogo = NEW.id_jogo
+	SELECT COUNT(*) INTO expulso
+	FROM cartao
+	WHERE id_jogo = NEW.id_jogo
 		AND id_jogador = NEW.id_jogador
-		AND e_tipo = 'vermelho';
+		AND e_tipo = 'vermelho'
+        AND n_minuto_cartao < NEW.n_minuto_cartao;
     
-    IF expulso > 0 THEN
+	IF expulso > 0 THEN
+        SET mensagem_erro = CONCAT('Jogador (ID: ', NEW.id_jogador, ') já foi expulso no jogo (ID: ', NEW.id_jogo, ') e não pode receber novos cartões.');
 		SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Jogador expulso não pode receber novos cartões';
+        SET MESSAGE_TEXT = mensagem_erro;
 	END IF;
 END$$
+
 DELIMITER ;
 
 DELIMITER $$
 CREATE TRIGGER impedir_gol_apos_cartao_vermelho
-BEFORE INSERT ON GOL
+BEFORE INSERT ON Gol
 FOR EACH ROW
 BEGIN
 	DECLARE expulso INT;
@@ -325,7 +294,8 @@ BEGIN
     FROM cartao
     WHERE id_jogo = NEW.id_jogo
 		AND id_jogador = NEW.id_jogador
-		AND e_tipo = 'vermelho';
+		AND e_tipo = 'vermelho'
+        AND n_minuto_cartao < NEW.n_minuto_gol;
     
     IF expulso > 0 THEN
 		SIGNAL SQLSTATE '45000'
@@ -334,7 +304,7 @@ BEGIN
 END$$
 DELIMITER ;
 
-INSERT INTO time
+INSERT INTO Time
 (c_nome_time, c_cidade_time, c_tecnico_time)
 VALUES
 ('Flamengo', 'Rio de Janeiro', 'Filipe Luís'),
@@ -384,7 +354,7 @@ VALUES
 ('CSA', 'Maceió', 'M. Ribeiro Cabo'),
 ('Barueri', 'Barueri', 'João Batista');
 
-INSERT INTO campeonato
+INSERT INTO Campeonato
 (c_nome_campeonato,d_ano_campeonato)
 VALUES
 ('Brasileirão 2024', 2024),
@@ -400,7 +370,7 @@ VALUES
 ('Brasileirão 2014', 2014);
 
 
-INSERT INTO time_participa_campeonato
+INSERT INTO Time_participa_campeonato
 (c_nome_time, c_nome_campeonato, d_ano_campeonato)
 VALUES
 ('Athletico-PR', 'Brasileirão 2014', 2014),
@@ -624,7 +594,7 @@ VALUES
 ('Vasco', 'Brasileirão 2024', 2024),
 ('Vitoria', 'Brasileirão 2024', 2024);
 
-insert into estadio
+insert into Estadio
 (c_nome_estadio,c_cidade_estadio,n_capacidade)
 VALUES
 ('Allianz Parque', 'São Paulo', '43713'),
@@ -796,4 +766,4 @@ VALUES
 ('Vivaldo Lima', 'Manaus', '31000'),
 ('Wilson de Barros*(PF)', 'Mogi Mirim', '19900');
 
-INSERT INTO administrador (c_email_adm, c_Pnome_adm, c_Unome_adm, c_senha_adm) VALUES ('adm@gmail.com','Arthur','Silva',123);
+INSERT INTO Administrador (c_email_adm, c_Pnome_adm, c_Unome_adm, c_senha_adm) VALUES ('adm@gmail.com','Arthur','Silva',123);
