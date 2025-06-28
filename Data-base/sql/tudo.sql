@@ -56,7 +56,7 @@ create table if not exists Estadio(
 create table if not exists Jogo(
     id_jogo INT auto_increment primary key,
     dt_data_horario DATETIME not null,
-    n_rodada INT,
+    n_rodada INT CHECK (n_rodada>=1 AND n_rodada<=38),
     n_placar_casa INT default 0 CHECK (n_placar_casa >= 0),
     n_placar_visitante INT default 0 CHECK (n_placar_visitante >= 0),
     c_nome_campeonato VARCHAR(100) not null,
@@ -64,6 +64,7 @@ create table if not exists Jogo(
     c_nome_estadio VARCHAR(100),
     c_time_casa VARCHAR(100),
     c_time_visitante VARCHAR(100),
+    c_status VARCHAR(20) NOT NULL DEFAULT 'Agendado' CHECK (c_status IN ('Agendado', 'Em Andamento', 'Finalizado')),
     constraint fk_estadio_jogo foreign key (c_nome_estadio) references Estadio(c_nome_estadio)
             ON DELETE SET NULL ON UPDATE CASCADE,
     constraint fk_time_casa_jogo foreign key (c_time_casa) references Time(c_nome_time)
@@ -117,28 +118,29 @@ create table if not exists Classificacao(
 );
 
 DELIMITER $$
-CREATE TRIGGER inserir_jogo_na_tabela
-AFTER INSERT ON JOGO
+CREATE TRIGGER atualizar_jogo_na_tabela
+AFTER UPDATE ON JOGO
 FOR EACH ROW
 BEGIN
-	UPDATE classificacao
-    SET
-        n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
-        n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
-        n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
-        n_gols_pro = n_gols_pro + NEW.n_placar_casa,
-        n_gols_contra = n_gols_contra + NEW.n_placar_visitante
-    WHERE c_nome_time = NEW.c_time_casa;
-	
-	UPDATE classificacao
-    SET 
-		n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
-        n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
-        n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
-		n_gols_pro = n_gols_pro + NEW.n_placar_visitante,
-        n_gols_contra = n_gols_contra + NEW.n_placar_casa
-	WHERE
-		c_nome_time = NEW.c_time_visitante;
+	IF NEW.c_status = 'Finalizado' AND OLD.c_status <> 'Finalizado' THEN
+		UPDATE classificacao
+		SET
+			n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
+			n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
+			n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
+			n_gols_pro = n_gols_pro + NEW.n_placar_casa,
+			n_gols_contra = n_gols_contra + NEW.n_placar_visitante
+		WHERE c_nome_time = NEW.c_time_casa AND NEW.c_nome_campeonato = c_nome_campeonato AND NEW.d_ano_campeonato = d_ano_campeonato;
+		
+		UPDATE classificacao
+		SET 
+			n_vitorias = n_vitorias + CASE WHEN NEW.n_placar_casa < NEW.n_placar_visitante THEN 1 ELSE 0 END,
+			n_derrotas = n_derrotas + CASE WHEN NEW.n_placar_casa > NEW.n_placar_visitante THEN 1 ELSE 0 END,
+			n_empates = n_empates + CASE WHEN NEW.n_placar_casa = NEW.n_placar_visitante THEN 1 ELSE 0 END,
+			n_gols_pro = n_gols_pro + NEW.n_placar_visitante,
+			n_gols_contra = n_gols_contra + NEW.n_placar_casa
+		WHERE c_nome_time = NEW.c_time_visitante AND NEW.c_nome_campeonato = c_nome_campeonato AND NEW.d_ano_campeonato = d_ano_campeonato;
+	END IF;
 END$$
 DELIMITER ;
 
@@ -225,21 +227,112 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER evitar_gol_duplicado
-BEFORE INSERT ON Gol
+CREATE TRIGGER impedir_inserção_mesmo_jogo
+BEFORE INSERT ON Jogo
 FOR EACH ROW
 BEGIN
-  DECLARE ja_tem INT;
-  SELECT COUNT(*) INTO ja_tem FROM Gol
-  WHERE id_jogo = NEW.id_jogo
-    AND id_jogador = NEW.id_jogador
-    AND n_minuto_gol = NEW.n_minuto_gol;
-
-  IF ja_tem > 0 THEN
-    SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Gol já registrado para esse minuto.';
-  END IF;
+	DECLARE ja_tem INT;
+	SELECT COUNT(*) INTO ja_tem FROM Jogo
+    WHERE dt_data_horario = NEW.dt_data_horario
+		AND c_nome_campeonato = NEW.c_nome_campeonato
+        AND d_ano_campeonato = NEW.d_ano_campeonato
+        AND c_time_casa = NEW.c_time_casa
+        AND c_time_visitante = NEW.c_time_visitante;
+	
+    IF ja_tem > 0 THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Jogo já está armazenado.';
+	END IF;
 END$$
-DELIMITER ;  
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER impedir_gol_por_jogador_inválido
+BEFORE INSERT ON GOL
+FOR EACH ROW
+BEGIN
+	DECLARE time_jogador VARCHAR(100);
+    DECLARE time_casa VARCHAR(100);
+    DECLARE time_visitante VARCHAR(100);
+    
+	SELECT c_nome_time INTO time_jogador
+    FROM jogador 
+    WHERE id_jogador = NEW.id_jogador;
+    
+    SELECT c_time_casa,c_time_visitante INTO time_casa,time_visitante
+    FROM jogo
+    WHERE id_jogo = NEW.id_jogo;
+    
+    IF time_jogador != time_casa AND time_jogador != time_visitante THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Jogador não pertence a nenhum dos times da partida.';
+	END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE TRIGGER impedir_gol_update_por_jogador_inválido
+BEFORE UPDATE ON GOL
+FOR EACH ROW
+BEGIN
+    DECLARE time_jogador VARCHAR(100);
+    DECLARE time_casa VARCHAR(100);
+    DECLARE time_visitante VARCHAR(100);
+
+    SELECT c_nome_time INTO time_jogador
+    FROM jogador
+    WHERE id_jogador = NEW.id_jogador;
+
+    SELECT c_time_casa, c_time_visitante INTO time_casa, time_visitante
+    FROM jogo
+    WHERE id_jogo = NEW.id_jogo;
+
+    IF time_jogador != time_casa AND time_jogador != time_visitante THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Modificação não permitida: Jogador não pertence a nenhum dos times da partida.';
+    END IF;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER impedir_novo_cartao_apos_vermelho
+BEFORE INSERT ON CARTAO
+FOR EACH ROW
+BEGIN
+	DECLARE expulso INT;
+    
+    SELECT COUNT(*) INTO expulso
+    FROM cartao
+    WHERE id_jogo = NEW.id_jogo
+		AND id_jogador = NEW.id_jogador
+		AND e_tipo = 'vermelho';
+    
+    IF expulso > 0 THEN
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Jogador expulso não pode receber novos cartões';
+	END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER impedir_gol_apos_cartao_vermelho
+BEFORE INSERT ON GOL
+FOR EACH ROW
+BEGIN
+	DECLARE expulso INT;
+    
+    SELECT COUNT(*) INTO expulso
+    FROM cartao
+    WHERE id_jogo = NEW.id_jogo
+		AND id_jogador = NEW.id_jogador
+		AND e_tipo = 'vermelho';
+    
+    IF expulso > 0 THEN
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Jogador expulso não pode fazer gol';
+	END IF;
+END$$
+DELIMITER ;
 
 INSERT INTO time
 (c_nome_time, c_cidade_time, c_tecnico_time)
@@ -534,100 +627,173 @@ VALUES
 insert into estadio
 (c_nome_estadio,c_cidade_estadio,n_capacidade)
 VALUES
-('Allianz Parque','São Paulo','43713'),
-('Estádio Raimundo Sampaio','Belo Horizonte','23000'),
-('Nabizão','Bragança Paulista','15010'),
-('Ligga Arena','Curitiba','42372'),
-('Arena Castelão','Fortaleza','63903'),
-('Estádio Nilton Santos','Rio de Janeiro','44661'),
-('Mineirão',' Belo Horizonte','61927'),
-('Maracanã',' Rio de Janeiro','78838'),
-('Neo Química Arena','São Paulo','49205'),
-('Alfredo Jaconi','Caxias do Sul','19924'),
-('Arena Pantanal','Cuiabá','44097'),
-('Morumbi',' São Paulo','66795'),
-('Estádio Beira-Rio','Porto Alegre','50842'),
-('Estádio Urbano Caldeira','Santos','16068'),
-('Couto Pereira','Curitiba','40502'),
-('Estádio Hailé Pinheiro - Serrinha','Goiânia','14450'),
-('Itaipava Arena Fonte Nova','Salvador','48092'),
-('Estádio São Januário','Rio de Janeiro','21880'),
-('Arena do Grêmio','Porto Alegre','55396'),
-('Estádio Joaquim Henrique Nogueira-Arena do jacaré','Sete Lagoas','20000'),
-('Estádio Municipal Parque do Sabiá','Uberlândia','52990'),
-('Estádio Municipal General Raulino de Oliveira','Volta Redonda','18230'),
-('Luso-Brasileiro','Rio de Janeiro','5994'),
-('Arena MRV','Belo Horizonte','44892'),
-('Estádio Presidente Vargas','Fortaleza','20600'),
-('Kléber Andrade','Cariacica','21152'),
-('Arena Barueri','Barueri','31452'),
-('Arena BRB Mané Garrincha','Brasília','72788'),
-('Brinco de Ouro', 'Campinas', 18170),
-('Serra Dourada', 'Goiânia', 50049),
-('Heriberto Hulse', 'Criciúma', 19225),
-('Barradão', 'Salvador', 30793),
-('Pacaembu', 'São Paulo', 25000),
-('Orlando Scarpelli', 'Florianópolis', 19584),
-('Mangueirão', 'Belém', 53635),
-('Moisés Lucarelli', 'Campinas', 17728),
-('Pinheirão', 'Curitiba', 45000),
-('Anacleto Campanella', 'São Caetano do Sul', 16744),
-('Édson Passos', 'Mesquita', 13544),
-('Giulite Coutinho', 'Mesquita', 13544),
-('Santa Cruz', 'Ribeirão Preto', 29292),
-('Willie Davids', 'Maringá', 16226),
-('Municipal Juiz de Fora', 'Juiz de Fora', 31863),
-('Benedito Teixeira', 'São José do Rio Preto', 45000),
-('Estádio do Café', 'Londrina', 45000),
-('Batistão', 'Aracaju', 45000),
-('Ressacada', 'Florianópolis', 45000),
-('Pedro Pedrossian', 'Campo Grande', 45000),
-('Ipatingão', 'Ipatinga', 45000),
-('Caio Martins', 'Niterói', 45000),
-('Wilson de Barros', 'Taubaté', 45000),
-('Mário Helênio', 'Juiz de Fora', 45000),
-('Bento Freitas', 'Pelotas', 45000),
-('Prudentão', 'Presidente Prudente', 45000),
-('Colosso da Lagoa', 'Erechim', 45000),
-('Bruno J Daniel', 'Santo André', 45000),
-('Boca do Jacaré', 'Taguatinga', 45000),
-('Serejão', 'Taguatinga', 45000),
-('Curuzu*(PF)', 'Belém', 45000),
-('Olímpico Regional', 'Cascavel', 45000),
-('Arruda', 'Recife', 45000),
-('Papa J.Paulo II (*PF)', 'Mogi Mirim', 45000),
-('Durival de Brito', 'Curitiba', 45000),
-('Machadão', 'Natal', 45000),
-('Ilha do Retiro', 'Recife', 45000),
-('Aflitos', 'Recife', 45000),
-('Engenheiro Araripe', 'Vitória', 45000),
-('Canindé', 'São Paulo', 45000),
-('Antônio Guimarães', 'Rio Grande', 45000),
-('Juscelino Kubitscheck', 'Itabira', 45000),
-('Bezerrão', 'Gama', 45000),
-('Eduardo José Farah', 'Presidente Prudente', 45000),
-('Luiz Lacerda', 'Caruaru', 45000),
-('Fonte Luminosa', 'Araraquara', 20000),
-('Cláudio Moacyr', 'Macaé', 45000),
-('Pituaçu', 'Salvador', 45000),
-('Morenão', 'Campo Grande', 45000),
-('Romildo Ferreira', 'Mogi Mirim', 45000),
-('Melão', 'Varginha', 45000),
-('Vila Olímpica', 'Goiânia', 45000),
-('Arena Joinville', 'Joinville', 45000),
-('Jóia da Princesa', 'Feira de Santana', 45000),
-('Arena Pernambuco', 'São Lourenço da Mata', 45440),
-('Estádio do Vale', 'Novo Hamburgo', 45000),
-('Romildão', 'Santa Maria', 45000),
-('Novelli Júnior', 'Itu', 45000),
-('Arena Condá', 'Chapecó', 20089),
-('Estádio Doutor Adhemar de Barros', 'Presidente Prudente', 45000),
-('Estádio Alberto Oliveira', 'Feira de Santana', 45000),
-('Estádio Paulo Constantino', 'Presidente Prudente', 45000),
-('Primeiro de Maio São Bernardo do Campo', 'São Bernardo do Campo', 45000),
-('Arena da Amazônia', 'Manaus', 44300),
-('Castelão de São Luís', 'São Luís', 45000),
-('Arena das Dunas', 'Natal', 31375),
-('Estádio Rei Pelé', 'Maceió', 45000),
-('Estádio Antônio Accioly', 'Goiânia', 45000),
-('Vila Capanema','Curitiba','45000');
+('Allianz Parque', 'São Paulo', '43713'),
+('Estádio Raimundo Sampaio', 'Belo Horizonte', '23000'),
+('Nabizão', 'Bragança Paulista', '15010'),
+('Ligga Arena', 'Curitiba', '42372'),
+('Arena Castelão', 'Fortaleza', '63903'),
+('Estádio Nilton Santos', 'Rio de Janeiro', '44661'),
+('Mineirão', ' Belo Horizonte', '61927'),
+('Maracanã', ' Rio de Janeiro', '78838'),
+('Neo Química Arena', 'São Paulo', '49205'),
+('Alfredo Jaconi', 'Caxias do Sul', '19924'),
+('Arena Pantanal', 'Cuiabá', '44097'),
+('Morumbi', ' São Paulo', '66795'),
+('Estádio Beira-Rio', 'Porto Alegre', '50842'),
+('Estádio Urbano Caldeira', 'Santos', '16068'),
+('Couto Pereira', 'Curitiba', '40502'),
+('Estádio Hailé Pinheiro - Serrinha', 'Goiânia', '14450'),
+('Itaipava Arena Fonte Nova', 'Salvador', '48092'),
+('Estádio São Januário', 'Rio de Janeiro', '21880'),
+('Arena do Grêmio', 'Porto Alegre', '55396'),
+('Estádio Joaquim Henrique Nogueira-Arena do jacaré', 'Sete Lagoas', '20000'),
+('Estádio Municipal Parque do Sabiá', 'Uberlândia', '52990'),
+('Estádio Municipal General Raulino de Oliveira', 'Volta Redonda', '18230'),
+('Luso-Brasileiro', 'Rio de Janeiro', '5994'),
+('Arena MRV', 'Belo Horizonte', '44892'),
+('Estádio Presidente Vargas', 'Fortaleza', '20600'),
+('Kléber Andrade', 'Cariacica', '21152'),
+('Arena Barueri', 'Barueri', '31452'),
+('Arena BRB Mané Garrincha', 'Brasília', '72788'),
+('Brinco de Ouro', 'Campinas', '18170'),
+('Serra Dourada', 'Goiânia', '50049'),
+('Heriberto Hulse', 'Criciúma', '19225'),
+('Barradão', 'Salvador', '30793'),
+('Pacaembu', 'São Paulo', '25000'),
+('Orlando Scarpelli', 'Florianópolis', '19584'),
+('Mangueirão', 'Belém', '53635'),
+('Moisés Lucarelli', 'Campinas', '17728'),
+('Pinheirão', 'Curitiba', '45000'),
+('Anacleto Campanella', 'São Caetano do Sul', '16744'),
+('Édson Passos', 'Mesquita', '13544'),
+('Giulite Coutinho', 'Mesquita', '13544'),
+('Santa Cruz', 'Ribeirão Preto', '29292'),
+('Willie Davids', 'Maringá', '16226'),
+('Municipal Juiz de Fora', 'Juiz de Fora', '31863'),
+('Benedito Teixeira', 'São José do Rio Preto', '32168'),
+('Estádio do Café', 'Londrina', '36056'),
+('Batistão', 'Aracaju', '15575'),
+('Ressacada', 'Florianópolis', '17800'),
+('Pedro Pedrossian', 'Campo Grande', '44200'),
+('Ipatingão', 'Ipatinga', '22500'),
+('Caio Martins', 'Niterói', '12000'),
+('Wilson de Barros', 'Mogi Mirim', '19900'),
+('Mário Helênio', 'Juiz de Fora', '31863'),
+('Bento Freitas', 'Pelotas', '18000'),
+('Prudentão', 'Presidente Prudente', '45954'),
+('Colosso da Lagoa', 'Erechim', '22000'),
+('Bruno J Daniel', 'Santo André', '11440'),
+('Boca do Jacaré', 'Taguatinga', '27000'),
+('Serejão', 'Taguatinga', '27000'),
+('Curuzu*(PF)', 'Belém', '16200'),
+('Olímpico Regional', 'Cascavel', '45000'),
+('Arruda', 'Recife', '60044'),
+('Papa J.Paulo II (*PF)', 'Mogi Mirim', '19900'),
+('Durival de Brito', 'Curitiba', '20000'),
+('Machadão', 'Natal', '45000'),
+('Ilha do Retiro', 'Recife', '26418'),
+('Aflitos', 'Recife', '22856'),
+('Engenheiro Araripe', 'Vitória', '7700'),
+('Canindé', 'São Paulo', '21004'),
+('Antônio Guimarães', 'Tombos', '6555'),
+('Juscelino Kubitscheck', 'Itabira', '14445'),
+('Bezerrão', 'Gama', '20310'),
+('Eduardo José Farah', 'Presidente Prudente', '45954'),
+('Luiz Lacerda', 'Caruaru', '19478'),
+('Fonte Luminosa', 'Araraquara', '20000'),
+('Cláudio Moacyr', 'Macaé', '15000'),
+('Pituaçu', 'Salvador', '32157'),
+('Morenão', 'Campo Grande', '44200'),
+('Romildo Ferreira', 'Mogi Mirim', '19900'),
+('Melão', 'Varginha', '15471'),
+('Vila Olímpica', 'Goiânia', '45000'),
+('Arena Joinville', 'Joinville', '22400'),
+('Jóia da Princesa', 'Feira de Santana', '16274'),
+('Arena Pernambuco', 'São Lourenço da Mata', '45440'),
+('Estádio do Vale', 'Novo Hamburgo', '5196'),
+('Romildão', 'Santa Maria', '19900'),
+('Novelli Júnior', 'Itu', '18560'),
+('Arena Condá', 'Chapecó', '20089'),
+('Estádio Doutor Adhemar de Barros', 'Presidente Prudente', '20030'),
+('Estádio Alberto Oliveira', 'Feira de Santana', '16274'),
+('Estádio Paulo Constantino', 'Presidente Prudente', '45954'),
+('Primeiro de Maio São Bernardo do Campo', 'São Bernardo do Campo', '15159'),
+('Arena da Amazônia', 'Manaus', '44300'),
+('Castelão de São Luís', 'São Luís', '40149'),
+('Arena das Dunas', 'Natal', '31375'),
+('Estádio Rei Pelé', 'Maceió', '19105'),
+('Estádio Antônio Accioly', 'Goiânia', '12500'),
+('Vila Capanema', 'Curitiba', '20083'),
+('A Campanella*(PF)', 'São Caetano do Sul', '16744'),
+('A.Campanella*(PF)', 'São Caetano do Sul', '16744'),
+('Adelmar da Costa Carvalho', 'Recife', '26418'),
+('Arena Fonte Nova', 'Salvador', '48092'),
+('Arena da Baixada', 'Curitiba', '42372'),
+('Arena de Pernambuco', 'São Lourenço da Mata', '45440'),
+('Arena do Jacaré', 'Sete Lagoas', '20000'),
+('Beira Rio', 'Porto Alegre', '50842'),
+('Bruno J.Daniel (*PF)', 'Santo André', '11440'),
+('Bruno José Daniel', 'Santo André', '11440'),
+('Castelão', 'Fortaleza', '63903'),
+('Castelão (CE)', 'Fortaleza', '63903'),
+('Centenário (*PF)', 'Caxias do Sul', '22132'),
+('Centenário (RS)', 'Caxias do Sul', '22132'),
+('Centenário*(PF)', 'Caxias do Sul', '22132'),
+('Couto Pereira*(PF)', 'Curitiba', '40502'),
+('Durival de Brito (*PF)', 'Curitiba', '20000'),
+('Engenhão', 'Rio de Janeiro', '44661'),
+('Estádio Antônio Accioly - Atlético Goianiense', 'Goiânia', '12500'),
+('Estádio Brinco de Ouro', 'Campinas', '18170'),
+('Estádio Dr. Oswaldo Teixeira Duarte', 'São Paulo', '21004'),
+('Estádio Francisco Stédile (Centenário)', 'Caxias do Sul', '22132'),
+('Estádio Francisco Stédile | Centenário', 'Caxias do Sul', '22132'),
+('Estádio Giulite Coutinho', 'Mesquita', '13544'),
+('Estádio Heriberto Hülse', 'Criciúma', '19225'),
+('Estádio Independência', 'Belo Horizonte', '23000'),
+('Estádio Ipatingão', 'Ipatinga', '22500'),
+('Estádio Joaquim Américo Guimarães', 'Curitiba', '42372'),
+('Estádio José Pinheiro Borda', 'Porto Alegre', '50842'),
+('Estádio Municipal Juscelino Kubitschek', 'Itabira', '14445'),
+('Estádio Municipal Paulo Machado de Carvalho', 'São Paulo', '25000'),
+('Estádio Nacional de Brasília', 'Brasília', '72788'),
+('Estádio Olímpico Pedro Ludovico Teixeira', 'Goiânia', '13500'),
+('Estádio Serra Dourada', 'Goiânia', '50049'),
+('Estádio Vasco da Gama', 'Rio de Janeiro', '21880'),
+('Estádio Willie Davids', 'Maringá', '16226'),
+('Estádio da Serrinha', 'Goiânia', '14450'),
+('Estádio de Pituaçu', 'Salvador', '32157'),
+('Estádio do Arruda', 'Recife', '60044'),
+('Estádio do Governo do Estado de Goiás (Serra Dourada)', 'Goiânia', '50049'),
+('Fonte Nova', 'Salvador', '48092'),
+('G Coutinho*(PF)', 'Mesquita', '13544'),
+('Helenão', 'Juiz de Fora', '31863'),
+('Independência', 'Belo Horizonte', '23000'),
+('Independência (*PF)', 'Belo Horizonte', '23000'),
+('Independência*(PF)', 'Belo Horizonte', '23000'),
+('Juiz de Fora', 'Juiz de Fora', '31863'),
+('Kyocera Arena', 'Curitiba', '42372'),
+('Luso Brasileiro', 'Rio de Janeiro', '5994'),
+('Luso Brasileiro*(PF)', 'Rio de Janeiro', '5994'),
+('Mané Garrincha', 'Brasília', '72788'),
+('Mj José Levi Sobrinho', 'Limeira', '18000'),
+('Moacyrzão', 'Macaé', '15000'),
+('MorumBIS', 'São Paulo', '66795'),
+('Olímpico', 'Porto Alegre', '45000'),
+('Olímpico Engenhão', 'Rio de Janeiro', '44661'),
+('Pacaembu*(PF)', 'São Paulo', '25000'),
+('Palestra Itália', 'São Paulo', '27650'),
+('Parque Antártica', 'São Paulo', '27650'),
+('Parque Antártica*(PF)', 'São Paulo', '27650'),
+('Parque do Sabiá', 'Uberlândia', '52990'),
+('Plácido Castelo', 'Fortaleza', '63903'),
+('Pres Vargas*(PF)', 'Fortaleza', '20600'),
+('Presidente Vargas', 'Fortaleza', '20600'),
+('R de Oliveira*(PF)', 'Porto Alegre', '50842'),
+('Raulino de Oliveira', 'Volta Redonda', '18230'),
+('São Januário', 'Rio de Janeiro', '21880'),
+('Teixeirão', 'São José do Rio Preto', '32168'),
+('Vila Belmiro', 'Santos', '16068'),
+('Vivaldo Lima', 'Manaus', '31000'),
+('Wilson de Barros*(PF)', 'Mogi Mirim', '19900');
+
+INSERT INTO administrador (c_email_adm, c_Pnome_adm, c_Unome_adm, c_senha_adm) VALUES ('adm@gmail.com','Arthur','Silva',123);
