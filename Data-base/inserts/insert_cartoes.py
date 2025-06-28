@@ -9,12 +9,13 @@ def importar_cartoes():
     # (Altere se necessário)
     db_user = 'root'
     db_password = os.getenv('DB_PASSWORD')
-    db_host = 'localhost'
+    db_host = os.getenv('DB_HOST')
     db_name = 'campeonato_futebol'
-    db_port = 3306
+    db_port = os.getenv('DB_PORT')
 
     # --- CONFIGURE OS ARQUIVOS E A TABELA DE DESTINO ---
-    csv_file_path = 'cartoes_brasileirao.csv'
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_file_path = os.path.join(script_dir, 'cartoes_brasileirao.csv')
     table_name = 'cartao'
 
     print("Iniciando o processo de importação de cartoes com validação...")

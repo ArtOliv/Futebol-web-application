@@ -7,11 +7,12 @@ def importar_jogadores():
         # --- 1. CONFIGURE SEUS DADOS DE CONEXÃO AO MYSQL ---
     db_user = 'root'
     db_password = os.getenv('DB_PASSWORD')
-    db_host = 'localhost'
+    db_host = os.getenv('DB_HOST')
     db_name = 'campeonato_futebol'
-    db_port = 3306
+    db_port = os.getenv('DB_PORT')
 
-    csv_file_path = 'jogadores_brasileirao.csv'
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_file_path = os.path.join(script_dir, 'jogadores_brasileirao.csv')
     table_name = 'jogador'
 
     print("Iniciando o processo de importação inteligente e com limpeza de dados...")

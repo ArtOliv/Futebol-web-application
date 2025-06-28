@@ -7,12 +7,13 @@ def importar_jogos():
 
     db_user = 'root'
     db_password = os.getenv('DB_PASSWORD') 
-    db_host = 'localhost'
+    db_host = os.getenv('DB_HOST')
     db_name = 'campeonato_futebol' 
-    db_port = 3306
+    db_port = os.getenv('DB_PORT')
 
-    csv_file_path = 'jogos_brasileirão.csv'
-    table_name = 'Jogo'
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_file_path = os.path.join(script_dir, 'jogos_brasileirão.csv')
+    table_name = 'jogo'
 
     print("--- Iniciando o processo de importação de jogos ---")
 

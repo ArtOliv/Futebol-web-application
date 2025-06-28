@@ -9,12 +9,13 @@ def importar_gols():
     # (Altere se necessário)
     db_user = 'root'
     db_password = os.getenv('DB_PASSWORD')
-    db_host = 'localhost'
+    db_host = os.getenv('DB_HOST')
     db_name = 'campeonato_futebol'
-    db_port = 3306
+    db_port = os.getenv('DB_PORT')
 
     # --- CONFIGURE OS ARQUIVOS E A TABELA DE DESTINO ---
-    csv_file_path = 'gols_brasileirao.csv'
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    csv_file_path = os.path.join(script_dir, 'gols_brasileirao.csv')
     table_name = 'gol'
 
     print("Iniciando o processo de importação de gols com validação...")
