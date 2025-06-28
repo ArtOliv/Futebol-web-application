@@ -294,6 +294,46 @@ END$$
 
 DELIMITER ;
 
+DELIMITER $$
+CREATE TRIGGER impedir_novo_cartao_apos_vermelho
+BEFORE INSERT ON CARTAO
+FOR EACH ROW
+BEGIN
+	DECLARE expulso INT;
+    
+    SELECT COUNT(*) INTO expulso
+    FROM cartao
+    WHERE id_jogo = NEW.id_jogo
+		AND id_jogador = NEW.id_jogador
+		AND e_tipo = 'vermelho';
+    
+    IF expulso > 0 THEN
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Jogador expulso não pode receber novos cartões';
+	END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER impedir_gol_apos_cartao_vermelho
+BEFORE INSERT ON GOL
+FOR EACH ROW
+BEGIN
+	DECLARE expulso INT;
+    
+    SELECT COUNT(*) INTO expulso
+    FROM cartao
+    WHERE id_jogo = NEW.id_jogo
+		AND id_jogador = NEW.id_jogador
+		AND e_tipo = 'vermelho';
+    
+    IF expulso > 0 THEN
+		SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Jogador expulso não pode fazer gol';
+	END IF;
+END$$
+DELIMITER ;
+
 INSERT INTO time
 (c_nome_time, c_cidade_time, c_tecnico_time)
 VALUES
@@ -587,176 +627,173 @@ VALUES
 insert into estadio
 (c_nome_estadio,c_cidade_estadio,n_capacidade)
 VALUES
-('Allianz Parque','São Paulo','43713'),
-('Estádio Raimundo Sampaio','Belo Horizonte','23000'),
-('Nabizão','Bragança Paulista','15010'),
-('Ligga Arena','Curitiba','42372'),
-('Arena Castelão','Fortaleza','63903'),
-('Estádio Nilton Santos','Rio de Janeiro','44661'),
-('Mineirão',' Belo Horizonte','61927'),
-('Maracanã',' Rio de Janeiro','78838'),
-('Neo Química Arena','São Paulo','49205'),
-('Alfredo Jaconi','Caxias do Sul','19924'),
-('Arena Pantanal','Cuiabá','44097'),
-('Morumbi',' São Paulo','66795'),
-('Estádio Beira-Rio','Porto Alegre','50842'),
-('Estádio Urbano Caldeira','Santos','16068'),
-('Couto Pereira','Curitiba','40502'),
-('Estádio Hailé Pinheiro - Serrinha','Goiânia','14450'),
-('Itaipava Arena Fonte Nova','Salvador','48092'),
-('Estádio São Januário','Rio de Janeiro','21880'),
-('Arena do Grêmio','Porto Alegre','55396'),
-('Estádio Joaquim Henrique Nogueira-Arena do jacaré','Sete Lagoas','20000'),
-('Estádio Municipal Parque do Sabiá','Uberlândia','52990'),
-('Estádio Municipal General Raulino de Oliveira','Volta Redonda','18230'),
-('Luso-Brasileiro','Rio de Janeiro','5994'),
-('Arena MRV','Belo Horizonte','44892'),
-('Estádio Presidente Vargas','Fortaleza','20600'),
-('Kléber Andrade','Cariacica','21152'),
-('Arena Barueri','Barueri','31452'),
-('Arena BRB Mané Garrincha','Brasília','72788'),
-('Brinco de Ouro', 'Campinas', 18170),
-('Serra Dourada', 'Goiânia', 50049),
-('Heriberto Hulse', 'Criciúma', 19225),
-('Barradão', 'Salvador', 30793),
-('Pacaembu', 'São Paulo', 25000),
-('Orlando Scarpelli', 'Florianópolis', 19584),
-('Mangueirão', 'Belém', 53635),
-('Moisés Lucarelli', 'Campinas', 17728),
-('Pinheirão', 'Curitiba', 45000),
-('Anacleto Campanella', 'São Caetano do Sul', 16744),
-('Édson Passos', 'Mesquita', 13544),
-('Giulite Coutinho', 'Mesquita', 13544),
-('Santa Cruz', 'Ribeirão Preto', 29292),
-('Willie Davids', 'Maringá', 16226),
-('Municipal Juiz de Fora', 'Juiz de Fora', 31863),
-('Benedito Teixeira', 'São José do Rio Preto', 45000),
-('Estádio do Café', 'Londrina', 45000),
-('Batistão', 'Aracaju', 45000),
-('Ressacada', 'Florianópolis', 45000),
-('Pedro Pedrossian', 'Campo Grande', 45000),
-('Ipatingão', 'Ipatinga', 45000),
-('Caio Martins', 'Niterói', 45000),
-('Wilson de Barros', 'Taubaté', 45000),
-('Mário Helênio', 'Juiz de Fora', 45000),
-('Bento Freitas', 'Pelotas', 45000),
-('Prudentão', 'Presidente Prudente', 45000),
-('Colosso da Lagoa', 'Erechim', 45000),
-('Bruno J Daniel', 'Santo André', 45000),
-('Boca do Jacaré', 'Taguatinga', 45000),
-('Serejão', 'Taguatinga', 45000),
-('Curuzu*(PF)', 'Belém', 45000),
-('Olímpico Regional', 'Cascavel', 45000),
-('Arruda', 'Recife', 45000),
-('Papa J.Paulo II (*PF)', 'Mogi Mirim', 45000),
-('Durival de Brito', 'Curitiba', 45000),
-('Machadão', 'Natal', 45000),
-('Ilha do Retiro', 'Recife', 45000),
-('Aflitos', 'Recife', 45000),
-('Engenheiro Araripe', 'Vitória', 45000),
-('Canindé', 'São Paulo', 45000),
-('Antônio Guimarães', 'Rio Grande', 45000),
-('Juscelino Kubitscheck', 'Itabira', 45000),
-('Bezerrão', 'Gama', 45000),
-('Eduardo José Farah', 'Presidente Prudente', 45000),
-('Luiz Lacerda', 'Caruaru', 45000),
-('Fonte Luminosa', 'Araraquara', 20000),
-('Cláudio Moacyr', 'Macaé', 45000),
-('Pituaçu', 'Salvador', 45000),
-('Morenão', 'Campo Grande', 45000),
-('Romildo Ferreira', 'Mogi Mirim', 45000),
-('Melão', 'Varginha', 45000),
-('Vila Olímpica', 'Goiânia', 45000),
-('Arena Joinville', 'Joinville', 45000),
-('Jóia da Princesa', 'Feira de Santana', 45000),
-('Arena Pernambuco', 'São Lourenço da Mata', 45440),
-('Estádio do Vale', 'Novo Hamburgo', 45000),
-('Romildão', 'Santa Maria', 45000),
-('Novelli Júnior', 'Itu', 45000),
-('Arena Condá', 'Chapecó', 20089),
-('Estádio Doutor Adhemar de Barros', 'Presidente Prudente', 45000),
-('Estádio Alberto Oliveira', 'Feira de Santana', 45000),
-('Estádio Paulo Constantino', 'Presidente Prudente', 45000),
-('Primeiro de Maio São Bernardo do Campo', 'São Bernardo do Campo', 45000),
-('Arena da Amazônia', 'Manaus', 44300),
-('Castelão de São Luís', 'São Luís', 45000),
-('Arena das Dunas', 'Natal', 31375),
-('Estádio Rei Pelé', 'Maceió', 45000),
-('Estádio Antônio Accioly', 'Goiânia', 45000),
-('Vila Capanema','Curitiba','45000');
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Maracanã', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio José Pinheiro Borda', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Condá', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Itaipava Arena Fonte Nova', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Morumbi', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Orlando Scarpelli', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal Parque do Sabiá', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Nacional de Brasília', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Urbano Caldeira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Heriberto Hülse', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Couto Pereira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal Paulo Machado de Carvalho', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio de Pituaçu', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Adelmar da Costa Carvalho', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Barueri', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena do Grêmio', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal Juscelino Kubitschek', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Raimundo Sampaio', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio do Café', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Helenão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Mineirão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Neo Química Arena', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Willie Davids', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Pantanal', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Moacyrzão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Alfredo Jaconi', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Dr. Oswaldo Teixeira Duarte', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio do Governo do Estado de Goiás (Serra Dourada)', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Doutor Adhemar de Barros', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Alberto Oliveira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Francisco Stédile (Centenário)', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Ipatingão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Paulo Constantino', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Vila Capanema', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Primeiro de Maio São Bernardo do Campo', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Municipal General Raulino de Oliveira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Barradão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Joaquim Américo Guimarães', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena de Pernambuco', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena da Amazônia', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Vasco da Gama', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Mangueirão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Allianz Parque', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Castelão de São Luís', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Ressacada', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Joinville', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Moisés Lucarelli', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena das Dunas', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Nilton Santos', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Kléber Andrade', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio do Arruda', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Luso-Brasileiro', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Giulite Coutinho', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Olímpico Pedro Ludovico Teixeira', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Castelão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Presidente Vargas', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Rei Pelé', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Brinco de Ouro', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Nabizão', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio da Serrinha', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Antônio Accioly', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Ligga Arena', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Beira-Rio', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Hailé Pinheiro - Serrinha', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio São Januário', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Joaquim Henrique Nogueira-Arena do jacaré', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena MRV', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena BRB Mané Garrincha', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('MorumBIS', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Serra Dourada', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Arena Fonte Nova', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Antônio Accioly - Atlético Goianiense', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Francisco Stédile | Centenário', NULL, 45000);
-INSERT IGNORE INTO Estadio (c_nome_estadio, c_cidade_estadio, n_capacidade) VALUES ('Estádio Independência', NULL, 45000);
+('Allianz Parque', 'São Paulo', '43713'),
+('Estádio Raimundo Sampaio', 'Belo Horizonte', '23000'),
+('Nabizão', 'Bragança Paulista', '15010'),
+('Ligga Arena', 'Curitiba', '42372'),
+('Arena Castelão', 'Fortaleza', '63903'),
+('Estádio Nilton Santos', 'Rio de Janeiro', '44661'),
+('Mineirão', ' Belo Horizonte', '61927'),
+('Maracanã', ' Rio de Janeiro', '78838'),
+('Neo Química Arena', 'São Paulo', '49205'),
+('Alfredo Jaconi', 'Caxias do Sul', '19924'),
+('Arena Pantanal', 'Cuiabá', '44097'),
+('Morumbi', ' São Paulo', '66795'),
+('Estádio Beira-Rio', 'Porto Alegre', '50842'),
+('Estádio Urbano Caldeira', 'Santos', '16068'),
+('Couto Pereira', 'Curitiba', '40502'),
+('Estádio Hailé Pinheiro - Serrinha', 'Goiânia', '14450'),
+('Itaipava Arena Fonte Nova', 'Salvador', '48092'),
+('Estádio São Januário', 'Rio de Janeiro', '21880'),
+('Arena do Grêmio', 'Porto Alegre', '55396'),
+('Estádio Joaquim Henrique Nogueira-Arena do jacaré', 'Sete Lagoas', '20000'),
+('Estádio Municipal Parque do Sabiá', 'Uberlândia', '52990'),
+('Estádio Municipal General Raulino de Oliveira', 'Volta Redonda', '18230'),
+('Luso-Brasileiro', 'Rio de Janeiro', '5994'),
+('Arena MRV', 'Belo Horizonte', '44892'),
+('Estádio Presidente Vargas', 'Fortaleza', '20600'),
+('Kléber Andrade', 'Cariacica', '21152'),
+('Arena Barueri', 'Barueri', '31452'),
+('Arena BRB Mané Garrincha', 'Brasília', '72788'),
+('Brinco de Ouro', 'Campinas', '18170'),
+('Serra Dourada', 'Goiânia', '50049'),
+('Heriberto Hulse', 'Criciúma', '19225'),
+('Barradão', 'Salvador', '30793'),
+('Pacaembu', 'São Paulo', '25000'),
+('Orlando Scarpelli', 'Florianópolis', '19584'),
+('Mangueirão', 'Belém', '53635'),
+('Moisés Lucarelli', 'Campinas', '17728'),
+('Pinheirão', 'Curitiba', '45000'),
+('Anacleto Campanella', 'São Caetano do Sul', '16744'),
+('Édson Passos', 'Mesquita', '13544'),
+('Giulite Coutinho', 'Mesquita', '13544'),
+('Santa Cruz', 'Ribeirão Preto', '29292'),
+('Willie Davids', 'Maringá', '16226'),
+('Municipal Juiz de Fora', 'Juiz de Fora', '31863'),
+('Benedito Teixeira', 'São José do Rio Preto', '32168'),
+('Estádio do Café', 'Londrina', '36056'),
+('Batistão', 'Aracaju', '15575'),
+('Ressacada', 'Florianópolis', '17800'),
+('Pedro Pedrossian', 'Campo Grande', '44200'),
+('Ipatingão', 'Ipatinga', '22500'),
+('Caio Martins', 'Niterói', '12000'),
+('Wilson de Barros', 'Mogi Mirim', '19900'),
+('Mário Helênio', 'Juiz de Fora', '31863'),
+('Bento Freitas', 'Pelotas', '18000'),
+('Prudentão', 'Presidente Prudente', '45954'),
+('Colosso da Lagoa', 'Erechim', '22000'),
+('Bruno J Daniel', 'Santo André', '11440'),
+('Boca do Jacaré', 'Taguatinga', '27000'),
+('Serejão', 'Taguatinga', '27000'),
+('Curuzu*(PF)', 'Belém', '16200'),
+('Olímpico Regional', 'Cascavel', '45000'),
+('Arruda', 'Recife', '60044'),
+('Papa J.Paulo II (*PF)', 'Mogi Mirim', '19900'),
+('Durival de Brito', 'Curitiba', '20000'),
+('Machadão', 'Natal', '45000'),
+('Ilha do Retiro', 'Recife', '26418'),
+('Aflitos', 'Recife', '22856'),
+('Engenheiro Araripe', 'Vitória', '7700'),
+('Canindé', 'São Paulo', '21004'),
+('Antônio Guimarães', 'Tombos', '6555'),
+('Juscelino Kubitscheck', 'Itabira', '14445'),
+('Bezerrão', 'Gama', '20310'),
+('Eduardo José Farah', 'Presidente Prudente', '45954'),
+('Luiz Lacerda', 'Caruaru', '19478'),
+('Fonte Luminosa', 'Araraquara', '20000'),
+('Cláudio Moacyr', 'Macaé', '15000'),
+('Pituaçu', 'Salvador', '32157'),
+('Morenão', 'Campo Grande', '44200'),
+('Romildo Ferreira', 'Mogi Mirim', '19900'),
+('Melão', 'Varginha', '15471'),
+('Vila Olímpica', 'Goiânia', '45000'),
+('Arena Joinville', 'Joinville', '22400'),
+('Jóia da Princesa', 'Feira de Santana', '16274'),
+('Arena Pernambuco', 'São Lourenço da Mata', '45440'),
+('Estádio do Vale', 'Novo Hamburgo', '5196'),
+('Romildão', 'Santa Maria', '19900'),
+('Novelli Júnior', 'Itu', '18560'),
+('Arena Condá', 'Chapecó', '20089'),
+('Estádio Doutor Adhemar de Barros', 'Presidente Prudente', '20030'),
+('Estádio Alberto Oliveira', 'Feira de Santana', '16274'),
+('Estádio Paulo Constantino', 'Presidente Prudente', '45954'),
+('Primeiro de Maio São Bernardo do Campo', 'São Bernardo do Campo', '15159'),
+('Arena da Amazônia', 'Manaus', '44300'),
+('Castelão de São Luís', 'São Luís', '40149'),
+('Arena das Dunas', 'Natal', '31375'),
+('Estádio Rei Pelé', 'Maceió', '19105'),
+('Estádio Antônio Accioly', 'Goiânia', '12500'),
+('Vila Capanema', 'Curitiba', '20083'),
+('A Campanella*(PF)', 'São Caetano do Sul', '16744'),
+('A.Campanella*(PF)', 'São Caetano do Sul', '16744'),
+('Adelmar da Costa Carvalho', 'Recife', '26418'),
+('Arena Fonte Nova', 'Salvador', '48092'),
+('Arena da Baixada', 'Curitiba', '42372'),
+('Arena de Pernambuco', 'São Lourenço da Mata', '45440'),
+('Arena do Jacaré', 'Sete Lagoas', '20000'),
+('Beira Rio', 'Porto Alegre', '50842'),
+('Bruno J.Daniel (*PF)', 'Santo André', '11440'),
+('Bruno José Daniel', 'Santo André', '11440'),
+('Castelão', 'Fortaleza', '63903'),
+('Castelão (CE)', 'Fortaleza', '63903'),
+('Centenário (*PF)', 'Caxias do Sul', '22132'),
+('Centenário (RS)', 'Caxias do Sul', '22132'),
+('Centenário*(PF)', 'Caxias do Sul', '22132'),
+('Couto Pereira*(PF)', 'Curitiba', '40502'),
+('Durival de Brito (*PF)', 'Curitiba', '20000'),
+('Engenhão', 'Rio de Janeiro', '44661'),
+('Estádio Antônio Accioly - Atlético Goianiense', 'Goiânia', '12500'),
+('Estádio Brinco de Ouro', 'Campinas', '18170'),
+('Estádio Dr. Oswaldo Teixeira Duarte', 'São Paulo', '21004'),
+('Estádio Francisco Stédile (Centenário)', 'Caxias do Sul', '22132'),
+('Estádio Francisco Stédile | Centenário', 'Caxias do Sul', '22132'),
+('Estádio Giulite Coutinho', 'Mesquita', '13544'),
+('Estádio Heriberto Hülse', 'Criciúma', '19225'),
+('Estádio Independência', 'Belo Horizonte', '23000'),
+('Estádio Ipatingão', 'Ipatinga', '22500'),
+('Estádio Joaquim Américo Guimarães', 'Curitiba', '42372'),
+('Estádio José Pinheiro Borda', 'Porto Alegre', '50842'),
+('Estádio Municipal Juscelino Kubitschek', 'Itabira', '14445'),
+('Estádio Municipal Paulo Machado de Carvalho', 'São Paulo', '25000'),
+('Estádio Nacional de Brasília', 'Brasília', '72788'),
+('Estádio Olímpico Pedro Ludovico Teixeira', 'Goiânia', '13500'),
+('Estádio Serra Dourada', 'Goiânia', '50049'),
+('Estádio Vasco da Gama', 'Rio de Janeiro', '21880'),
+('Estádio Willie Davids', 'Maringá', '16226'),
+('Estádio da Serrinha', 'Goiânia', '14450'),
+('Estádio de Pituaçu', 'Salvador', '32157'),
+('Estádio do Arruda', 'Recife', '60044'),
+('Estádio do Governo do Estado de Goiás (Serra Dourada)', 'Goiânia', '50049'),
+('Fonte Nova', 'Salvador', '48092'),
+('G Coutinho*(PF)', 'Mesquita', '13544'),
+('Helenão', 'Juiz de Fora', '31863'),
+('Independência', 'Belo Horizonte', '23000'),
+('Independência (*PF)', 'Belo Horizonte', '23000'),
+('Independência*(PF)', 'Belo Horizonte', '23000'),
+('Juiz de Fora', 'Juiz de Fora', '31863'),
+('Kyocera Arena', 'Curitiba', '42372'),
+('Luso Brasileiro', 'Rio de Janeiro', '5994'),
+('Luso Brasileiro*(PF)', 'Rio de Janeiro', '5994'),
+('Mané Garrincha', 'Brasília', '72788'),
+('Mj José Levi Sobrinho', 'Limeira', '18000'),
+('Moacyrzão', 'Macaé', '15000'),
+('MorumBIS', 'São Paulo', '66795'),
+('Olímpico', 'Porto Alegre', '45000'),
+('Olímpico Engenhão', 'Rio de Janeiro', '44661'),
+('Pacaembu*(PF)', 'São Paulo', '25000'),
+('Palestra Itália', 'São Paulo', '27650'),
+('Parque Antártica', 'São Paulo', '27650'),
+('Parque Antártica*(PF)', 'São Paulo', '27650'),
+('Parque do Sabiá', 'Uberlândia', '52990'),
+('Plácido Castelo', 'Fortaleza', '63903'),
+('Pres Vargas*(PF)', 'Fortaleza', '20600'),
+('Presidente Vargas', 'Fortaleza', '20600'),
+('R de Oliveira*(PF)', 'Porto Alegre', '50842'),
+('Raulino de Oliveira', 'Volta Redonda', '18230'),
+('São Januário', 'Rio de Janeiro', '21880'),
+('Teixeirão', 'São José do Rio Preto', '32168'),
+('Vila Belmiro', 'Santos', '16068'),
+('Vivaldo Lima', 'Manaus', '31000'),
+('Wilson de Barros*(PF)', 'Mogi Mirim', '19900');
 
 INSERT INTO administrador (c_email_adm, c_Pnome_adm, c_Unome_adm, c_senha_adm) VALUES ('adm@gmail.com','Arthur','Silva',123);
