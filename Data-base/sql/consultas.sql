@@ -2,10 +2,17 @@ select * from gol;
 select * from jogo;
 select * from jogador;
 select * from classificacao;
+select * from estadio;
+select * from time;
+select * from cartao;
 
 SELECT *
 FROM jogador
-WHERE id_jogador = 3842;
+WHERE id_jogador = 957;
+
+SELECT * 
+FROM jogo
+WHERE id_jogo=1;
 
 SELECT *
 FROM jogador
@@ -21,7 +28,11 @@ WHERE c_nome_time = 'Flamengo';
 
 SELECT *
 FROM jogador
-WHERE c_Pnome_jogador = 'Gabriel' AND c_nome_time = 'FLAMENGO';
+WHERE c_Pnome_jogador = 'Wesley' AND c_nome_time = 'FLAMENGO';
+
+SELECT *
+FROM jogador
+WHERE c_Pnome_jogador = 'Gabriel' AND c_Unome_jogador = 'Barbosa';
 
 SELECT *
 FROM jogador
@@ -42,3 +53,8 @@ WHERE c_posicao = 'ATACANTE';
 SELECT COUNT(*)
 FROM jogador
 WHERE c_posicao = 'MEIO-CAMPO';
+
+SET SQL_SAFE_UPDATES = 0;
+UPDATE Jogo
+SET c_status = 'Finalizado'
+WHERE dt_data_horario < NOW() AND c_status <> 'Finalizado';
