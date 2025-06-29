@@ -1,5 +1,11 @@
 import { BASE_URL } from "./config";
 
+export async function getCartoesPorPartida(id_partida) {
+    const res = await fetch(`${BASE_URL}/cartao/?id_partida=${id_partida}`);
+    if (!res.ok) throw new Error("Erro ao buscar cartões");
+    return res.json();
+}
+
 export async function insertCartao(cartao, id_partida, id_jogador) {
     const res = await fetch(`${BASE_URL}/cartao/?id_partida=${id_partida}&id_jogador=${id_jogador}`, {
         method: "POST",

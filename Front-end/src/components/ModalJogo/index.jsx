@@ -31,6 +31,8 @@ function Modal_jogo({jogo, fechar}){
                     <span className="camp-label">{jogo.campeonato}</span>
                     <span>•</span> 
                     <span className="date-label">{jogo.dia} | {jogo.data} | {jogo.hora}</span>
+                    <span>•</span>
+                    <span className="date-label">{jogo.status}</span>
                 </div>
                 <div className="scoreboard-container">
                     <div className="team">{jogo.mandante}</div>
