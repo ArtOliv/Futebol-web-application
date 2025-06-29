@@ -5,17 +5,17 @@ import ShowPassword from '../../assets/Show_password.png'
 import HidePassword from '../../assets/Hide_password.png'
 
 const ADMIN_CREDENTIALS = {
-    cpf: "12345678910",
+    email: "adm@gmail.com",
     senha: "123"
 }
 
-function Footer({cpf, setCpf, senha, setSenha}){
+function Footer({email, setEmail, senha, setSenha}){
     const navigate = useNavigate()
     const [mostrarSenha, setMostrarSenha] = useState(false)
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        if(cpf === ADMIN_CREDENTIALS.cpf && senha === ADMIN_CREDENTIALS.senha){
+        if(email === ADMIN_CREDENTIALS.email && senha === ADMIN_CREDENTIALS.senha){
             navigate('/administrador/criar', { replace: true })
         } else {
             alert("Credenciais de admin inválidas")
@@ -23,7 +23,7 @@ function Footer({cpf, setCpf, senha, setSenha}){
     }
 
     useEffect(() => {
-        setCpf("")
+        setEmail("")
         setSenha("")
         setMostrarSenha(false)
     }, [])
@@ -33,7 +33,7 @@ function Footer({cpf, setCpf, senha, setSenha}){
             <form onSubmit={handleSubmit} className="admin-form">
                 <label>
                     Admin:
-                    <input className="login-input" type="text" value={cpf} onChange={e => setCpf(e.target.value)} placeholder="CPF"/>
+                    <input className="login-input" type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Digite seu email"/>
                 </label>
                 <label>
                     Senha:

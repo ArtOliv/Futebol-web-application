@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import ArrowIcon from '../../../assets/Arrow_icon.png'
 
-function DropDownTimes(){
+function DropDownUpdateTimes(){
     const [aberto, setAberto] = useState(false)
     const [abreJogadores, setAbreJogadores] = useState(false)
     const [posicao, setPosicao] = useState('');
@@ -21,15 +21,11 @@ function DropDownTimes(){
             <div className="dropdown">
                 <button className='dropdown-button' onClick={() => setAberto(!aberto)}>
                     <img src={ArrowIcon} alt='seta' className={`button-arrow ${aberto ? 'rotate' : ''}`}/>
-                    <span className="dropdown-text">Adicionar times</span>
+                    <span className="dropdown-text">Atualizar times</span>
                 </button>
                 {aberto && (
                     <div className="input-container">
                         <form>
-                            <label>Nome:</label>
-                            <input type="text"/>
-                            <label>Cidade:</label>
-                            <input type="text"/>
                             <label>Técnico:</label>
                             <input type="text"/>
                             <button className='sub-dropdown-button' onClick={(e) => {e.preventDefault(); setAbreJogadores(!abreJogadores)}}>
@@ -64,4 +60,4 @@ function DropDownTimes(){
     )
 }
 
-export default DropDownTimes
+export default DropDownUpdateTimes

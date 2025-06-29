@@ -13,7 +13,7 @@
     gap: 5px;
     align-items: center;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: bold;
 }
 
@@ -25,7 +25,7 @@
     gap: 5px;
     align-items: center;
     cursor: pointer;
-    font-size: 15px;
+    font-size: 20px;
     font-weight: bold;
     margin-top: 10px;
 }
@@ -49,6 +49,28 @@
 .input-container form{
     display: flex;
     flex-direction: column;
+}
+
+.input-container label{
+    color: #ffffff;
+    font-size: 20px;
+    margin-bottom: 5px;
+}
+
+.input-container input{
+    margin-bottom: 8px;
+    padding: 3px;
+    width: 100%;
+    max-width: 175px;
+    font-size: 16px;
+}
+
+.input-container select{
+    margin-bottom: 8px;
+    padding: 3px;
+    width: 100%;
+    max-width: 190px;
+    font-size: 16px;
 }
 
 textarea{
@@ -85,7 +107,7 @@ textarea{
     background-color: #ffffff;
 }
 
-.jogadores-content{
+.sub-dropdown-content{
     display: flex;
     flex-direction: column;
     margin: 10px 0 0 25px;
