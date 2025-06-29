@@ -1,5 +1,11 @@
 import { BASE_URL } from "./config";
 
+export async function getGolsPorPartida(id_partida) {
+    const res = await fetch(`${BASE_URL}/gol/?id_partida=${id_partida}`);
+    if (!res.ok) throw new Error("Erro ao buscar gols");
+    return res.json();
+}
+
 export async function postGol(gol, id_partida, id_jogador) {
     const res = await fetch(`${BASE_URL}/gol/?id_partida=${id_partida}&id_jogador=${id_jogador}`, {
         method: "POST",

@@ -1,9 +1,14 @@
 import { useEffect, useState } from "react";
 import './styles.css'
 import ModalJogo from '../../components/ModalJogo'
+import { getCampeonatos } from '../../services/campeonatoService';
+import { getPartidas } from "../../services/jogoService";
+import { getGolsPorPartida } from "../../services/golService";
+import { getCartoesPorPartida } from "../../services/cartaoService";
 
 function Jogos(){
-    const [campeonato, setCampeonato] = useState("brasileirao")
+    const [campeonato, setCampeonato] = useState([])
+    const [selecionado, setSelecionado] = useState({ nome: "", ano: null })
     const [jogos, setJogos] = useState([])
     const [rodadaSelecionada, setRodadaSelecionada] = useState("")
     const [jogoSelecionado, setJogoSelecionado] = useState(null)
@@ -11,26 +16,55 @@ function Jogos(){
     const [error, setError] = useState(null);
 
     useEffect(() => {
+        getCampeonatos()
+            .then(data => {
+                setCampeonato(data);
+                if (data.length > 0) {
+                    setSelecionado({ nome: data[0].c_nome_campeonato, ano: data[0].d_ano_campeonato });
+                }
+            })
+            .catch(err => {
+                console.error("Erro ao carregar campeonatos:", err);
+                setError("Erro ao carregar campeonatos.");
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!selecionado.nome || !selecionado.ano) return;
+
         setCarregando(true)
         setError(null)
-        fetch(`/jogos_${campeonato}.json`)
-        .then(res => {
-            if (!res.ok) {
-                throw new Error(`Erro ao carregar dados dos jogos: ${res.statusText}`);
-            }
-            return res.json();
-        })
-        .then(data => {
-            setJogos(data)
-            setRodadaSelecionada(data.length > 0 ? data[0].rodada : "")
-            setCarregando(false)
-        })
-        .catch(err => { 
-            console.error("Erro ao carregar dados dos jogos:", err);
-            setError("Não foi possível carregar os jogos. Verifique a conexão ou os arquivos."); 
-            setCarregando(false);
-        })
-    }, [campeonato])
+
+        getPartidas(selecionado.nome, selecionado.ano)
+            .then(data => {
+                const formatado = data.map(j => {
+                    const dataHora = new Date(j.dt_data_horario)
+                    return {
+                        campeonato: corrigirEncoding(j.c_nome_campeonato),
+                        id: j.id_jogo,
+                        status: j.c_status,
+                        rodada: j.n_rodada,
+                        mandante: j.c_time_casa,
+                        visitante: j.c_time_visitante,
+                        gols_mandante: j.n_placar_casa,
+                        gols_visitante: j.n_placar_visitante,
+                        local: j.c_nome_estadio,
+                        dataCompleta: j.dt_data_horario,
+                        data: dataHora.toLocaleDateString(),
+                        hora: dataHora.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                        dia: formatarDiaSemana(dataHora.toLocaleDateString('pt-BR', { weekday: 'long' }))
+                    }
+                })
+                setJogos(formatado)
+                setRodadaSelecionada(formatado.length > 0 ? formatado[0].rodada : "")
+                setCarregando(false)
+            })
+            .catch(err => {
+                console.error("Erro ao carregar dados dos jogos:", err);
+                setError("Não foi possível carregar os jogos.");
+                setCarregando(false);
+            });
+    }, [selecionado]);
 
     if(carregando){
         return null
@@ -46,6 +80,41 @@ function Jogos(){
         );
     }
 
+    async function handleAbrirModal(jogoBase){
+        try {
+            const [gols, cartoes] = await Promise.all([
+                getGolsPorPartida(jogoBase.id),
+                getCartoesPorPartida(jogoBase.id)
+            ])
+
+            const eventos_mandante = []
+            const eventos_visitante = []
+
+            gols.forEach(ev => {
+                const evento = { jogador: ev.c_nome_jogador, tempo: ev.n_minuto_gol, tipo: 'gol' }
+                if (ev.c_nome_time === jogoBase.mandante) eventos_mandante.push(evento)
+                else eventos_visitante.push(evento)
+            })
+
+            cartoes.forEach(ev => {
+                if (ev.e_tipo === 'vermelho') {
+                    const evento = { jogador: ev.c_nome_jogador, tempo: ev.n_minuto_cartao, tipo: 'vermelho' }
+                    if (ev.c_nome_time === jogoBase.mandante) eventos_mandante.push(evento)
+                    else eventos_visitante.push(evento)
+                }
+            })
+
+            setJogoSelecionado({
+                ...jogoBase,
+                eventos_mandante,
+                eventos_visitante
+            })
+        } catch (error) {
+            console.error("Erro ao carregar eventos do jogo:", error)
+            setError("Erro ao carregar eventos do jogo.")
+        }
+    }
+
     const jogosPorRodada = jogos.reduce((acc, jogo) => {
         if(!acc[jogo.rodada]){
             acc[jogo.rodada] = []
@@ -54,32 +123,55 @@ function Jogos(){
         return acc
     }, {})
 
-    const rodadas = Object.keys(jogosPorRodada).sort((a, b) => a - b)
+    const rodadas = Object.keys(jogosPorRodada).sort((a, b) => Number(a) - Number(b))
+
+    function formatarDiaSemana(str) {
+        if (!str) return "";
+        const capitalizado = str.charAt(0).toUpperCase() + str.slice(1);
+        if(capitalizado.endsWith("-feira") && !["Domingo", "Sábado"].includes(capitalizado)) {
+            return capitalizado.replace("-feira", "");
+        }
+        return capitalizado;
+    }
+
+    function corrigirEncoding(str){
+        try {
+            const bytes = new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        } catch {
+            return str;
+        }
+    }
 
     return(
         <>
             <div className='main-page'>
-                <select className="select-campeonato" value={campeonato} onChange={e => setCampeonato(e.target.value)}>
-                    <option value="brasileirao">Brasileirão 2023</option>
-                    <option value="libertadores">Libertadores</option>
-                    <option value="mundial">Mundial</option>
+                <select className="select-campeonato" value={`${selecionado.nome}-${selecionado.ano}`} onChange={e => {const [nome, ano] = e.target.value.split("-"); setSelecionado({nome, ano: Number(ano)});}}>
+                    {campeonato.map(camp => (
+                        <option key={`${camp.c_nome_campeonato}-${camp.d_ano_campeonato}`} value={`${camp.c_nome_campeonato}-${camp.d_ano_campeonato}`}>
+                            {corrigirEncoding(camp.c_nome_campeonato)}
+                        </option>
+                    ))}
                 </select>
                 <div className="table-bg">
                     {jogos.length > 0 ? (
                         <>
-                            {rodadas.length > 0 && (
+                            {rodadas.length > 0 ? (
                                 <select className="select-round" value={rodadaSelecionada} onChange={e => setRodadaSelecionada(e.target.value)}>
                                     {rodadas.map(rodada => (
                                         <option key={rodada} value={rodada}>Rodada {rodada}</option>
                                     ))}
                                 </select>
+                            ) : (
+                                <div className="no-data-message">Rodadas indisponíveis</div>
                             )}
                             {rodadaSelecionada && jogosPorRodada[rodadaSelecionada] && (
                                 <div key={rodadaSelecionada} className="round-section">
                                     <div className="match-list">
                                         {jogosPorRodada[rodadaSelecionada].map(jogo => (
-                                            <div className="match-card" key={jogo.jogo} onClick={() => setJogoSelecionado(jogo)}>
-                                                <span className="stadium">{jogo.local}</span>
+                                            <div className="match-card" key={jogo.id} onClick={() => handleAbrirModal(jogo)}>
+                                                <span className="stadium">{corrigirEncoding(jogo.local)}</span>
                                                 <span className="teams">{jogo.mandante}</span>
                                                 <span className="score">{jogo.gols_mandante}</span>
                                                 <span className="score">X</span>

@@ -32,7 +32,7 @@
 .match-card{
     color: #ffffff;
     display: grid;
-    grid-template-columns: 0.1fr 0.4fr 0.1fr 0.0fr 0.1fr 0.4fr auto;
+    grid-template-columns: 0.21fr 0.3fr 0.08fr 0.04fr 0.08fr 0.3fr auto;
     gap: 10px;
     align-items: center;
     text-align: center;
@@ -59,4 +59,15 @@
     gap: 5px;
     justify-content: flex-end;
     font-size: 18px;
+}
+
+.stadium {
+    display: flex;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    max-height: 2.8em;
+    line-height: 1.4em;
+    text-align: left;
 }
