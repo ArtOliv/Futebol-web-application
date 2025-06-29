@@ -13,7 +13,7 @@ function App(){
     const location = useLocation()
     const isAdminPage = location.pathname.startsWith('/administrador')
 
-    const [cpf, setCpf] = useState('')
+    const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
 
     return (
@@ -28,8 +28,9 @@ function App(){
                 <Route path='/administrador' element={<Admin />} />
                 <Route path='/administrador/criar' element={<Admin mode="create"/>} />
                 <Route path='/administrador/atualizar' element={<Admin mode="update"/>} />
+                <Route path='/administrador/deletar' element={<Admin mode="delete"/>} />
             </Routes>
-            {!isAdminPage && <Footer cpf={cpf} setCpf={setCpf} senha={senha} setSenha={setSenha}/>}
+            {!isAdminPage && <Footer email={email} setEmail={setEmail} senha={senha} setSenha={setSenha}/>}
         </>
     )
 }

@@ -2,6 +2,7 @@ import { useNavigate, useLocation } from 'react-router-dom'
 import './styles.css'
 import FormCreate from '../../components/FormCreate'
 import FormUpdate from '../../components/FormUpdate'
+import FormDelete from '../../components/FormDelete'
 
 function Admin({mode}){
     const navigate = useNavigate()
@@ -22,6 +23,7 @@ function Admin({mode}){
                     <hr></hr>
                     <button className={`bar-button ${location.pathname === '/administrador/criar' ? 'active' : ''}`} onClick={() => navigate('/administrador/criar')}>Criar</button>
                     <button className={`bar-button ${location.pathname === '/administrador/atualizar' ? 'active' : ''}`} onClick={() => navigate('/administrador/atualizar')}>Atualizar</button>
+                    <button className={`bar-button ${location.pathname === '/administrador/deletar' ? 'active' : ''}`} onClick={() => navigate('/administrador/deletar')}>Deletar</button>
                     <div className="logout-container">
                         <hr></hr>
                         <button className="logout-button" onClick={handleLogout}>Logout</button>
@@ -29,7 +31,8 @@ function Admin({mode}){
                 </div>
                 <div className="adm-container">
                     {mode === 'create' && <FormCreate />}
-                    {mode === 'update' && <FormUpdate />}  
+                    {mode === 'update' && <FormUpdate />}
+                    {mode === 'delete' && <FormDelete />}
                 </div>
             </div>    
         </>

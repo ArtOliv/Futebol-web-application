@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import ArrowIcon from '../../../assets/Arrow_icon.png'
 
-function DropDownTimes(){
+function DropDownUpdateJogos(){
     const [aberto, setAberto] = useState(false)
     const [abreJogadores, setAbreJogadores] = useState(false)
     const [posicao, setPosicao] = useState('');
+    const [tipoCartao, setTipoCartao] = useState('');
 
     const options = [
         {value: '', label: "-"},
@@ -16,22 +17,36 @@ function DropDownTimes(){
         {value: "5", label: "Atacante"}
     ]
 
+    const tipo = [
+        {value: '', label: "-"},
+        {value: "0", label: "Amarelo"},
+        {value: "1", label: "Vermelho"}
+    ]
+
     return(
         <>
             <div className="dropdown">
                 <button className='dropdown-button' onClick={() => setAberto(!aberto)}>
                     <img src={ArrowIcon} alt='seta' className={`button-arrow ${aberto ? 'rotate' : ''}`}/>
-                    <span className="dropdown-text">Adicionar times</span>
+                    <span className="dropdown-text">Atualizar jogos</span>
                 </button>
                 {aberto && (
                     <div className="input-container">
                         <form>
-                            <label>Nome:</label>
+                            <label>Id da partida:</label>
                             <input type="text"/>
-                            <label>Cidade:</label>
+                            <label>Id do jogador:</label>
                             <input type="text"/>
-                            <label>Técnico:</label>
+                            <label>Minuto:</label>
                             <input type="text"/>
+                            <label>Cartão:</label>
+                            <select value={tipoCartao} onChange={(e) => setTipoCartao(e.target.value)}>
+                                {tipo.map((tipoCartao) => (
+                                    <option key={tipoCartao.value} value={tipoCartao.value}>
+                                        {tipoCartao.label}
+                                    </option>
+                                ))}
+                            </select>
                             <button className='sub-dropdown-button' onClick={(e) => {e.preventDefault(); setAbreJogadores(!abreJogadores)}}>
                                 <img src={ArrowIcon} alt='seta' className={`button-arrow ${abreJogadores ? 'rotate' : ''}`}/>
                                 <span className="sub-dropdown-text">Jogadores</span>
@@ -46,9 +61,9 @@ function DropDownTimes(){
                                     <input type="text"/>
                                     <label>Posição:</label>
                                     <select value={posicao} onChange={(e) => setPosicao(e.target.value)}>
-                                        {options.map((option) => (
-                                            <option key={option.value} value={option.value}>
-                                                {option.label}
+                                        {options.map((posicao) => (
+                                            <option key={posicao.value} value={posicao.value}>
+                                                {posicao.label}
                                             </option>
                                         ))}
                                     </select>
@@ -64,4 +79,4 @@ function DropDownTimes(){
     )
 }
 
-export default DropDownTimes
+export default DropDownUpdateJogos

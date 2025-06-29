@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import ArrowIcon from '../../../assets/Arrow_icon.png'
+
 function DropDownJogos(){
     const [aberto, setAberto] = useState(false)
+    const [abreEstadio, setAbreEstadio] = useState(false)
 
     return(
         <>
@@ -19,12 +21,24 @@ function DropDownJogos(){
                             <input type="text"/>
                             <label>Rodada:</label>
                             <input type="text"/>
-                            <label>Estádio:</label>
-                            <input type="text"/>
                             <label>Data:</label>
-                            <input type="text"/>
+                            <input type="date"/>
                             <label>Horário:</label>
-                            <input type="text"/>
+                            <input type="time"/>
+                            <button className='sub-dropdown-button' onClick={(e) => {e.preventDefault(); setAbreEstadio(!abreEstadio)}}>
+                                <img src={ArrowIcon} alt='seta' className={`button-arrow ${abreEstadio ? 'rotate' : ''}`}/>
+                                <span className="sub-dropdown-text">Estádio</span>
+                            </button>
+                            {abreEstadio && (
+                                <div className="sub-dropdown-content">
+                                    <label>Nome:</label>
+                                    <input type="text"/>
+                                    <label>Cidade:</label>
+                                    <input type="text"/>
+                                    <label>Capacidade:</label>
+                                    <input type="text"/>
+                                </div>
+                            )}
                         </form>
                     </div>
                 )}
