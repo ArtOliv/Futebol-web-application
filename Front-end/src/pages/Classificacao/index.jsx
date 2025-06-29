@@ -1,34 +1,69 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import { getClassificacaoGeral } from "../../services/classificacaoService";
+import { getCampeonatos } from "../../services/campeonatoService";
 import './styles.css'
 
 function Classificacao(){
     const [dados, setDados] = useState([])
-    const [campeonato, setCampeonato] = useState("classificacao")
+    const [campeonato, setCampeonato] = useState([])
+    const [selecionado, setSelecionado] = useState({nome: "", ano: null})
     const [carregando, setCarregando] = useState(true)
     const [error, setError] = useState(null);
     const navigate = useNavigate()
 
+
     useEffect(() => {
-        setCarregando(true)
-        setError(null); 
-        fetch(`/${campeonato}.json`)
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error(`Erro ao carregar os dados da classificação: ${res.statusText}`);
-                }
-                return res.json();
-            })
+        getCampeonatos()
             .then(data => {
-                setDados(data)
-                setCarregando(false)
+                setCampeonato(data);
+                if (data.length > 0) {
+                    setSelecionado({ nome: data[0].c_nome_campeonato, ano: data[0].d_ano_campeonato });
+                }
+            })
+            .catch(err => {
+                console.error("Erro ao carregar campeonatos:", err);
+                setError("Erro ao carregar campeonatos.");
+            });
+    }, []);
+
+    useEffect(() => {
+        if (!selecionado.nome || !selecionado.ano) return;
+
+        setCarregando(true);
+        setError(null);
+
+        getClassificacaoGeral()
+            .then(data => {
+                console.log("Dados da API:", data);
+
+                const dadosFiltrados = data.filter(item =>
+                    item.c_nome_campeonato.toLowerCase() === selecionado.nome.toLowerCase() &&
+                    item.d_ano_campeonato === selecionado.ano
+                );
+
+                const dadosFormatados = dadosFiltrados.map((item, index) => ({
+                    posicao: index + 1,
+                    time: item.c_nome_time,
+                    pontos: item.n_pontos,
+                    jogos: item.n_jogos,
+                    vitorias: item.n_vitorias,
+                    empates: item.n_empates,
+                    derrotas: item.n_derrotas,
+                    gols_pro: item.n_gols_pro,
+                    gols_contra: item.n_gols_contra,
+                    saldo_gols: item.n_saldo_gols
+                }));
+
+                setDados(dadosFormatados);
+                setCarregando(false);
             })
             .catch(err => {
                 console.error("Erro ao carregar dados da classificação:", err);
-                setError("Não foi possível carregar a classificação. Verifique a conexão ou os arquivos."); // Define a mensagem de erro
+                setError("Não foi possível carregar a classificação.");
                 setCarregando(false);
-            })
-    }, [campeonato])
+            });
+    }, [selecionado]);
 
     if(carregando){
         return null
@@ -48,13 +83,25 @@ function Classificacao(){
         navigate(`/times?name=${encodeURIComponent(teamName)}`)
     }
 
+    function corrigirEncoding(str){
+        try {
+            const bytes = new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        } catch {
+            return str;
+        }
+    }
+
     return(
         <>
             <div className='main-page'>
-                <select className="select-campeonato" value={campeonato} onChange={e => setCampeonato(e.target.value)}>
-                    <option value="classificacao">Brasileirão 2023</option>
-                    <option value="libertadores">Libertadores</option>
-                    <option value="mundial">Mundial</option>
+                <select className="select-campeonato" value={`${selecionado.nome}-${selecionado.ano}`} onChange={e => {const [nome, ano] = e.target.value.split("-"); setSelecionado({nome, ano: Number(ano)});}}>
+                    {campeonato.map(camp => (
+                        <option key={`${camp.c_nome_campeonato}-${camp.d_ano_campeonato}`} value={`${camp.c_nome_campeonato}-${camp.d_ano_campeonato}`}>
+                            {corrigirEncoding(camp.c_nome_campeonato)}
+                        </option>
+                    ))}
                 </select>
                 <div className="drop-content">
                     {dados.length > 0 ? (
