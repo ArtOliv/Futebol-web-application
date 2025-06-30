@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Dados de entrada
-csv_path = "../inserts/jogos_brasileirão.csv"  
+csv_path = "../arquivos_csvs/jogos_brasileirão.csv"  
 output_path = "insert_jogos.sql"
 
 # Carrega os dados do CSV
@@ -10,10 +10,10 @@ df = pd.read_csv(csv_path)
 # Junta data e hora no formato datetime do SQL
 df["dt_data_horario"] = pd.to_datetime(df["data"] + " " + df["hora"])
 
-# Cria lista de valores formatados
+# Cria lista de valores formatados (com placares zerados)
 valores = []
 for _, row in df.iterrows():
-    linha = f"('{row['dt_data_horario']}', {row['n_rodada']}, {row['n_placar_casa']}, {row['n_placar_visitante']}, '{row['c_nome_campeonato'].replace("'", "''")}', {row['d_ano_campeonato']}, '{row['c_nome_estadio'].replace("'", "''")}', '{row['c_time_casa'].replace("'", "''")}', '{row['c_time_visitante'].replace("'", "''")}')"
+    linha = f"('{row['dt_data_horario']}', {row['n_rodada']}, 0, 0, '{row['c_nome_campeonato'].replace("'", "''")}', {row['d_ano_campeonato']}, '{row['c_nome_estadio'].replace("'", "''")}', '{row['c_time_casa'].replace("'", "''")}', '{row['c_time_visitante'].replace("'", "''")}')"
     valores.append(linha)
 
 # Junta todos os valores em um único INSERT
