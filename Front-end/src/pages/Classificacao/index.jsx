@@ -35,8 +35,6 @@ function Classificacao(){
 
         getClassificacaoGeral()
             .then(data => {
-                console.log("Dados da API:", data);
-
                 const dadosFiltrados = data.filter(item =>
                     item.c_nome_campeonato.toLowerCase() === selecionado.nome.toLowerCase() &&
                     item.d_ano_campeonato === selecionado.ano
