@@ -2,9 +2,11 @@ import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import './styles.css';
 import SearchIcon from '../../assets/Search_icon.png'
+import { getJogadoresPorNome } from '../../services/jogadorService';
+import { getJogadoresPorId } from '../../services/jogadorService';
+
 
 function Jogadores() {
-    const [allPlayersData, setAllPlayersData] = useState([]);
     const [foundPlayers, setFoundPlayers] = useState([]);
     const [selectedPlayer, setSelectedPlayer] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
@@ -13,74 +15,100 @@ function Jogadores() {
     const location = useLocation()
 
     useEffect(() => {
-        const loadAllPlayers = async () => {
-            setIsLoading(true);
-            setError(null);
-            try {
-                const response = await fetch('/jogadores_data.json'); 
-                if (!response.ok) {
-                    throw new Error(`Erro ao carregar a lista de jogadores: ${response.statusText}`);
-                }
-                const data = await response.json();
-                setAllPlayersData(data); 
-            } catch (err) {
-                console.error("Erro ao carregar dados de todos os jogadores:", err);
-                setError("Não foi possível carregar a lista de jogadores. Verifique o console.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        loadAllPlayers();
-    }, []);
-
-
-    useEffect(() => {
         const params = new URLSearchParams(location.search);
         const playerNameFromUrl = params.get('name');
         const playerIdFromUrl = params.get('id');
 
-        if (allPlayersData.length > 0) {
-            if (playerIdFromUrl) {
-                const playerById = allPlayersData.find(player => player.id === playerIdFromUrl);
-                setSelectedPlayer(playerById || null);
-                setFoundPlayers([]);
-                setError(playerById ? null : `Jogador com ID "${playerIdFromUrl}" não encontrado.`);
-                setSearchTerm('');
-            } else if (playerNameFromUrl) {
-                const decodedPlayerName = decodeURIComponent(playerNameFromUrl);
-                const playersByName = allPlayersData.filter(player =>
-                    player.name.toLowerCase().includes(decodedPlayerName.toLowerCase())
-                );
-                setFoundPlayers(playersByName);
-                setSelectedPlayer(null);
-                setError(playersByName.length > 0 ? null : `Jogador "${decodedPlayerName}" não encontrado.`);
-                setSearchTerm(decodedPlayerName);
-            } else {
-                setFoundPlayers([]);
-                setSelectedPlayer(null);
-                setError(null);
-                setSearchTerm('');
+        const fetchPlayers = async () => {
+            setIsLoading(true);
+            setError(null);
+            
+            try {
+                if (playerIdFromUrl) {
+                    const player = await getJogadoresPorId(playerIdFromUrl);
+                    setSelectedPlayer({
+                        id: player.id_jogador,
+                        name: player.nome_completo,
+                        team: player.c_nome_time,
+                        age: calcularIdade(player.d_data_nascimento),
+                        position: player.c_posicao,
+                        jerseyNumber: player.n_camisa,
+                        statistics: {
+                            goals: player.gols || 0,
+                            wins: player.vitorias || 0,
+                            losses: player.derrotas || 0
+                        }
+                    });
+                    setSearchTerm('');
+                } else if (playerNameFromUrl) {
+                    const decodedName = decodeURIComponent(playerNameFromUrl);
+                    const data = await getJogadoresPorNome(decodedName);
+                    const formatted = data.map(player => ({
+                        id: player.id_jogador,
+                        name: player.nome_completo,
+                        team: player.c_nome_time,
+                        age: calcularIdade(player.d_data_nascimento),
+                        position: player.c_posicao,
+                        jerseyNumber: player.n_camisa,
+                        statistics: {
+                            goals: player.gols || 0,
+                            wins: player.vitorias || 0,
+                            losses: player.derrotas || 0
+                        }
+                    }));
+
+                    setFoundPlayers(formatted);
+                    setSelectedPlayer(null);
+                    setError(formatted.length > 0 ? null : `Jogador "${decodedName}" não encontrado.`);
+                    setSearchTerm(decodedName);
+                }
+            } catch (err) {
+                console.error("Erro ao buscar jogadores:", err);
+                setError("Erro ao buscar jogador.");
+            } finally {
+                setIsLoading(false);
             }
-        }
-    }, [location.search, allPlayersData]);
+        };
 
-    const handleSearch = (term = searchTerm) => {
-        const lowerCaseTerm = term.toLowerCase().trim();
+        fetchPlayers();
+    }, [location.search]);
 
-        if (!lowerCaseTerm) {
+    const handleSearch = async (term = searchTerm) => {
+        const trimmed = term.toLowerCase().trim();
+        if (!trimmed) {
             setFoundPlayers([]);
             setSelectedPlayer(null);
             setError(null);
             return;
         }
 
-        const filteredPlayers = allPlayersData.filter(player =>
-            player.name.toLowerCase().includes(lowerCaseTerm)
-        );
+        setIsLoading(true);
+        setError(null);
+        try {
+            const data = await getJogadoresPorNome(trimmed);
+            const formatted = data.map(player => ({
+                id: player.id_jogador,
+                name: player.nome_completo,
+                team: player.c_nome_time,
+                age: calcularIdade(player.d_data_nascimento),
+                position: player.c_posicao,
+                jerseyNumber: player.n_camisa,
+                statistics: {
+                    goals: player.gols || 0,
+                    wins: player.vitorias || 0,
+                    losses: player.derrotas || 0
+                }
+            }));
 
-        setFoundPlayers(filteredPlayers);
-        setSelectedPlayer(null);
-        setError(filteredPlayers.length > 0 ? null : `Jogador "${term}" não encontrado.`);
+            setFoundPlayers(formatted);
+            setSelectedPlayer(null);
+            setError(formatted.length > 0 ? null : `Jogador "${term}" não encontrado.`);
+        } catch (err) {
+            console.error("Erro ao buscar jogadores:", err);
+            setError("Erro ao buscar jogadores. Verifique o console.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     const handleSelectPlayer = (player) => {
@@ -90,14 +118,26 @@ function Jogadores() {
         setSearchTerm('');
     };
 
-    if (isLoading && allPlayersData.length === 0) {
-        return (
-            <div className="page-wrapper-background">
-                <div className="main">
-                    <div className="loading-message">Carregando lista de jogadores...</div>
-                </div>
-            </div>
-        );
+    const calcularIdade = (dataNascimento) => {
+        if (!dataNascimento) return 'N/A';
+        const hoje = new Date();
+        const nascimento = new Date(dataNascimento);
+        let idade = hoje.getFullYear() - nascimento.getFullYear();
+        const m = hoje.getMonth() - nascimento.getMonth();
+        if (m < 0 || (m === 0 && hoje.getDate() < nascimento.getDate())) {
+            idade--;
+        }
+        return idade;
+    };
+
+    function corrigirEncoding(str){
+        try {
+            const bytes = new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        } catch {
+            return str;
+        }
     }
 
     return (
@@ -107,7 +147,7 @@ function Jogadores() {
                     <div className="search-bar-bg">
                         <input
                             type="text"
-                            placeholder="Busque por jogador (ex: Cristiano Ronaldo, Messi)..."
+                            placeholder="Busque por jogador"
                             className="search-input"
                             value={searchTerm}
                             onChange={e => {
@@ -132,8 +172,7 @@ function Jogadores() {
                     <>
                         {!searchTerm && foundPlayers.length === 0 && (
                             <div className="no-data-message">
-                                Utilize a busca acima para encontrar informações sobre um jogador. <br/>
-                                Tente digitar "Cristiano Ronaldo" ou "Messi".
+                                Utilize a busca acima para encontrar informações sobre um jogador.
                             </div>
                         )}
 
@@ -176,7 +215,7 @@ function Jogadores() {
                                 </div>
                                 <div className="info-item">
                                     <span>Posição:</span>
-                                    <span>{selectedPlayer.position || 'N/A'}</span>
+                                    <span>{corrigirEncoding(selectedPlayer.position) || 'N/A'}</span>
                                 </div>
                                 <div className="info-item">
                                     <span>Camisa:</span>

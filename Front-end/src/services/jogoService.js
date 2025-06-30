@@ -6,6 +6,12 @@ export async function getPartidas(nome, ano) {
     return res.json();
 }
 
+export async function getPartidasPorTime(nome_time) {
+    const res = await fetch(`${BASE_URL}/partidas/time?nome_time=${nome_time}`);
+    if (!res.ok) throw new Error("Erro ao buscar partidas do time");
+    return res.json();
+}
+
 export async function postPartida(partida, nome, ano) {
     const res = await fetch(`${BASE_URL}/partidas/?nome_campeonato=${nome}&ano_campeonato=${ano}`, {
         method: "POST",
