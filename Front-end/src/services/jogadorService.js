@@ -1,5 +1,17 @@
 import { BASE_URL } from "./config";
 
+export async function getJogadoresPorNome(name) {
+    const res = await fetch(`${BASE_URL}/jogador/?name=${encodeURIComponent(name)}`);
+    if (!res.ok) throw new Error("Erro ao buscar jogadores");
+    return res.json();
+}
+
+export async function getJogadoresPorId(id) {
+    const res = await fetch(`${BASE_URL}/jogador/${id}`);
+    if (!res.ok) throw new Error("Erro ao buscar jogador por ID");
+    return res.json();
+}
+
 export async function insertJogador(jogador, nome_time) {
     const res = await fetch(`${BASE_URL}/jogador/?nome_time=${nome_time}`, {
         method: "POST",

@@ -23,6 +23,16 @@ function Modal_jogo({jogo, fechar}){
         return Object.entries(agrupado).map(([jogador, tempo]) => ({jogador, tempo: tempo.join(', ')}))
     }
 
+    function corrigirEncoding(str){
+        try {
+            const bytes = new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        } catch {
+            return str;
+        }
+    }
+
     return (
         <div className="modal-overlay" onClick={fechar}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -48,7 +58,7 @@ function Modal_jogo({jogo, fechar}){
                         <div className="event-line">
                             <div className="left">
                                 {agruparEventosJogador(jogo.eventos_mandante, 'gol').map((ev, idx) => (
-                                    <div key={idx}>{ev.jogador} {ev.tempo}</div>
+                                    <div key={idx}>{corrigirEncoding(ev.jogador)} {ev.tempo}</div>
                                 ))}
                             </div>
                             <div className="central-icon">
@@ -56,7 +66,7 @@ function Modal_jogo({jogo, fechar}){
                             </div>
                             <div className="right">
                                 {agruparEventosJogador(jogo.eventos_visitante, 'gol').map((ev, idx) => (
-                                    <div key={idx}>{ev.jogador} {ev.tempo}</div>
+                                    <div key={idx}>{corrigirEncoding(ev.jogador)} {ev.tempo}</div>
                                 ))}
                             </div>
                         </div>
@@ -66,7 +76,7 @@ function Modal_jogo({jogo, fechar}){
                         <div className="event-line">
                             <div className="left">
                                 {agruparEventosJogador(jogo.eventos_mandante, 'vermelho').map((ev, idx) => (
-                                    <div key={idx}>{ev.jogador} {ev.tempo}</div>
+                                    <div key={idx}>{corrigirEncoding(ev.jogador)} {ev.tempo}</div>
                                 ))}
                             </div>
                             <div className="central-icon">
@@ -74,7 +84,7 @@ function Modal_jogo({jogo, fechar}){
                             </div>
                             <div className="right">
                                 {agruparEventosJogador(jogo.eventos_visitante, 'vermelho').map((ev, idx) => (
-                                    <div key={idx}>{ev.jogador} {ev.tempo}</div>
+                                    <div key={idx}>{corrigirEncoding(ev.jogador)} {ev.tempo}</div>
                                 ))}
                             </div>
                         </div>
