@@ -1,8 +1,16 @@
-import { useState } from 'react'
-import ArrowIcon from '../../../assets/Arrow_icon.png'
+import React, { useState } from 'react'; 
+import ArrowIcon from '../../../assets/Arrow_icon.png';
 
-function DropDownCampeonato(){
-    const [aberto, setAberto] = useState(false)
+
+function DropDownCampeonato({
+    nomeCampeonato, 
+    anoCampeonato,  
+    onNomeChange,   
+    onAnoChange     
+}) {
+    const [aberto, setAberto] = useState(false); 
+    console.log("Estado 'aberto':", aberto); 
+
 
     return(
         <>
@@ -13,17 +21,34 @@ function DropDownCampeonato(){
                 </button>
                 {aberto && (
                     <div className="input-container">
-                        <form>
-                            <label>Nome:</label>
-                            <input type="text"/>
-                            <label>Ano:</label>
-                            <input type="text"/>
-                        </form>
+ 
+                        <div className="form-group"> 
+                            <label htmlFor='nomeCampeonato'>Nome:</label>
+                            <input
+                                type="text"
+                                id="nomeCampeonato"
+                                value={nomeCampeonato} 
+                                onChange={onNomeChange} 
+                                autoComplete="off"
+                            />
+                        </div>
+                        
+                        <div className="form-group"> 
+                            <label htmlFor="anoCampeonato">Ano:</label>
+                            <input
+                                type="number"
+                                id="anoCampeonato"
+                                value={anoCampeonato} 
+                                onChange={onAnoChange} 
+                                min = "0"
+                                autoComplete="off"
+                            />
+                        </div>
                     </div>
                 )}
             </div>
         </>
-    )
+    );
 }
 
-export default DropDownCampeonato
+export default DropDownCampeonato;
