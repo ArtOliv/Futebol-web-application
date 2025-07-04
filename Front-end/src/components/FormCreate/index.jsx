@@ -5,6 +5,8 @@ import './styles.css';
 import { postCampeonato, getCampeonatos } from '../../services/campeonatoService';
 import { getTime as checkTeamExists, postTime } from '../../services/timeService'; 
 import { insertJogador } from '../../services/jogadorService'; 
+import { postPartida } from '../../services/jogoService';
+
 // Importa os componentes DropDown
 import DropDownCampeonato from './DropdownCampeonato'; 
 import DropDownTimes from './DropdownTimes'; 
@@ -38,14 +40,19 @@ function FormCreate(){
     const [loadingCampeonatos, setLoadingCampeonatos] = useState(true);
     const [errorLoadingCampeonatos, setErrorLoadingCampeonatos] = useState(null);
 
-    // --- NOVOS ESTADOS PARA CADASTRAR JOGOS ---
+    // --- NOVOS ESTADOS PARA PARTIDAS DISPONÍVEIS (para dropdown) ---
+    const [availablePartidas, setAvailablePartidas] = useState([]); 
+    const [loadingPartidas, setLoadingPartidas] = useState(true);   
+    const [errorLoadingPartidas, setErrorLoadingPartidas] = useState(null); 
+
+    // --- NOVOS ESTADOS PARA CADASTRAR JOGOS/PARTIDAS ---
     const [nomeMandante, setNomeMandante] = useState('');
     const [nomeVisitante, setNomeVisitante] = useState('');
     const [rodada, setRodada] = useState('');
-    const [dataJogo, setDataJogo] = useState(''); 
+    const [dataJogo, setDataJogo] = useState('');
     const [horario, setHorario] = useState('');
     const [nomeEstadio, setNomeEstadio] = useState('');
-    const [nomeCidadeEstadio, setNomeCidadeEstadio] = useState(''); 
+    const [nomeCidadeEstadio, setNomeCidadeEstadio] = useState('');
 
     // --- ESTADOS PARA FEEDBACK GERAL DO FORMULÁRIO ---
     const [message, setMessage] = useState('');
@@ -68,6 +75,7 @@ function FormCreate(){
             }
         };
         fetchCampeonatos();
+
     }, []);
 
 
@@ -240,8 +248,52 @@ function FormCreate(){
                 }
             } 
 
-            
+                // --- Lógica para CADASTRAR PARTIDA ---
+            const isMatchDataProvided = nomeMandante || nomeVisitante || rodada || dataJogo || horario || nomeEstadio || nomeCidadeEstadio;
+            const isMatchCampeonatoProvided = nomeCampeonatoForTeam && anoCampeonatoForTeam; // Este é o campeonato selecionado que será usado
 
+            if (isMatchDataProvided) {
+                if (!isMatchCampeonatoProvided) {
+                    operationMessages.push("Para cadastrar uma Partida, os campos de Campeonato (associado) são obrigatórios.");
+                    overallSuccess = false;
+                } else {
+                    // Crie o objeto da partida com os dados do frontend
+                    const partidaObject = {
+                        dt_data_str: dataJogo,
+                        hr_horario_str: horario,
+                        n_rodada: rodada ? parseInt(rodada) : null,
+                        c_nome_estadio: nomeEstadio || null,
+                        c_time_casa: nomeMandante || null,
+                        c_time_visitante: nomeVisitante || null,
+                    };
+                    console.log("Objeto Partida a ser enviado:", partidaObject);
+
+                    try {
+                        const partidaResponseMessage = await postPartida(
+                            partidaObject,
+                            nomeCampeonatoForTeam, // Nome do campeonato associado
+                            parseInt(anoCampeonatoForTeam) // Ano do campeonato associado (garante que é número)
+                        );
+                        operationMessages.push(`Partida: ${partidaResponseMessage}`);
+
+                        // Limpa os campos do formulário de partida após o sucesso
+                        setNomeMandante('');
+                        setNomeVisitante('');
+                        setRodada('');
+                        setDataJogo('');
+                        setHorario('');
+                        setNomeEstadio('');
+                        setNomeCidadeEstadio('');
+
+                        console.log("Cadastro de Partida SUCESSO:", partidaResponseMessage);
+                    } catch (partidaErr) {
+                        operationMessages.push(`Erro ao cadastrar Partida: ${partidaErr.message}`);
+                        console.error("Erro ao cadastrar Partida:", partidaErr);
+                        setError(prev => (prev ? prev + '\n' : '') + `Erro Cadastro Partida: ${partidaErr.message}`);
+                        overallSuccess = false;
+                    }
+                }
+            } 
 
 
             if (operationMessages.length > 0) {
@@ -319,6 +371,15 @@ function FormCreate(){
                     onNomeEstadioChange={(e) => setNomeEstadio(e.target.value)}
                     nomeCidadeEstadio={nomeCidadeEstadio}
                     onNomeCidadeEstadioChange={(e) => setNomeCidadeEstadio(e.target.value)}
+
+                    // ADICIONADAS: Props do Campeonato Associado para DropDownJogos
+                    nomeCampeonatoForTeam={nomeCampeonatoForTeam}
+                    anoCampeonatoForTeam={anoCampeonatoForTeam}
+                    onNomeCampeonatoForTeamChange={(e) => setNomeCampeonatoForTeam(e.target.value)}
+                    onAnoCampeonatoForTeamChange={(e) => setAnoCampeonatoForTeam(e.target.value)}
+                    availableCampeonatos={availableCampeonatos}
+                    loadingCampeonatos={loadingCampeonatos}
+                    errorLoadingCampeonatos={errorLoadingCampeonatos}
                 
                 />
 

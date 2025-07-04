@@ -1,6 +1,9 @@
 from fastapi import APIRouter, HTTPException, Query
 from src.models.jogador.jogador_model import Jogador
 from src.models.cartao.cartao_model import Cartao
+from src.models.partidaDropdown.PartidaDropdown_model import PartidaCreate
+from typing import List, Optional
+
 
 Jogador.model_rebuild()
 Cartao.model_rebuild()
@@ -16,11 +19,11 @@ async def get_all_partidas(nome_campeonato: str = Query(...), ano_campeonato: in
     return result
 
 @router.get("/time")
-async def get_partidas_por_time(nome_time: str = Query(...)):
+async def get_partidas_por_time(nome_time: str = Query(...)):   
     return partida_rep.get_partidas_por_time(nome_time)
 
 @router.post("/")
-async def create_partida(partida: Partida, nome_campeonato: str, ano_campeonato: int):
+async def create_partida(partida: PartidaCreate, nome_campeonato: str, ano_campeonato: int):
     partida_rep.insert_partida(partida, nome_campeonato, ano_campeonato)
     return "Tudo certo"
 

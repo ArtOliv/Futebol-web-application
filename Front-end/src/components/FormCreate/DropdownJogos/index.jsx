@@ -6,19 +6,42 @@ function DropDownJogos({
     onNomeMandanteChange,
     nomeVisitante,
     onNomeVisitanteChange,
-    rodada, // Novo nome
-    onRodadaChange, // Novo nome
-    dataJogo, // Novo nome
-    onDataJogoChange, // Novo nome
+    rodada,
+    onRodadaChange,
+    dataJogo,
+    onDataJogoChange,
     horario,
     onHorarioChange,
     nomeEstadio,
     onNomeEstadioChange,
-    nomeCidadeEstadio, // Novo nome
-    onNomeCidadeEstadioChange, // Novo nome
+    nomeCidadeEstadio,
+    onNomeCidadeEstadioChange,
+
+    nomeCampeonatoForTeam,
+    anoCampeonatoForTeam, 
+    onNomeCampeonatoForTeamChange,
+    onAnoCampeonatoForTeamChange,
+    availableCampeonatos,
+    loadingCampeonatos,
+    errorLoadingCampeonatos,
+
 }) {
     const [aberto, setAberto] = useState(false)
     const [abreEstadio, setAbreEstadio] = useState(false)
+
+     // Handler para o select de campeonatos (copiado de DropDownTimes)
+    const handleCampeonatoSelectChange = (e) => {
+        const selectedValue = e.target.value;
+        if (selectedValue === "") {
+            onNomeCampeonatoForTeamChange({ target: { value: '' } });
+            onAnoCampeonatoForTeamChange({ target: { value: '' } });
+        } else {
+            const [nome, ano] = selectedValue.split('|');
+            onNomeCampeonatoForTeamChange({ target: { value: nome } });
+            onAnoCampeonatoForTeamChange({ target: { value: ano } });
+        }
+    };
+
 
     return(
         <>
@@ -30,6 +53,34 @@ function DropDownJogos({
                 {aberto && (
                     <div className="input-container">
 
+                        {/* NOVO: Campo de seleção para o Campeonato Associado (DUPLICADO DE DropDownTimes) */}
+                        <div className="form-group">
+                            <label htmlFor='campeonatoAssociadoJogos'>Campeonato Associado:</label>
+                            {loadingCampeonatos && <p>Carregando campeonatos...</p>}
+                            {errorLoadingCampeonatos && <p className="error-message">{errorLoadingCampeonatos}</p>}
+                            {!loadingCampeonatos && !errorLoadingCampeonatos && Array.isArray(availableCampeonatos) && (
+                                <select
+                                    id="campeonatoAssociadoJogos" // ID único para este select
+                                    value={nomeCampeonatoForTeam && anoCampeonatoForTeam ? `${nomeCampeonatoForTeam}|${anoCampeonatoForTeam}` : ''} // Lembre-se do typo!
+                                    onChange={handleCampeonatoSelectChange}
+                                    required
+                                >
+                                    <option value="">- Selecione um Campeonato -</option>
+                                    {availableCampeonatos.map((camp, index) => (
+                                        <option
+                                            key={index}
+                                            value={`${camp.c_nome_campeonato}|${camp.d_ano_campeonato}`}
+                                        >
+                                            {camp.c_nome_campeonato} 
+                    
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
+                        </div>
+
+
+                        {/* Campos para CRIAR nova partida */}
                         <div className="form-group">
                             <label htmlFor='nomeMandante'>Mandante:</label>
                             <input
@@ -55,7 +106,7 @@ function DropDownJogos({
                             <input
                                 type="text"
                                 id="Rodada"
-                                value={rodada} // Corrigido: 'Rodada' para 'rodada'
+                                value={rodada}
                                 onChange={onRodadaChange}
                                 autoComplete="off"
                             />
@@ -65,7 +116,7 @@ function DropDownJogos({
                             <input
                                 type="date"
                                 id="data"
-                                value={dataJogo} // Corrigido: 'data' para 'dataJogo'
+                                value={dataJogo}
                                 onChange={onDataJogoChange}
                                 autoComplete="off"
                             />
@@ -88,8 +139,7 @@ function DropDownJogos({
                         </button>
 
                         {abreEstadio && (
-                            <div className="input-container"> {/* Este div é o container da seção Estádio */}
-                                {/* Campo Nome do Estádio */}
+                            <div className="input-container">
                                 <div className="form-group">
                                     <label htmlFor='nomeEstadio'>Estádio:</label>
                                     <input
@@ -100,18 +150,16 @@ function DropDownJogos({
                                         autoComplete="off"
                                     />
                                 </div>
-                                {/* Campo Cidade do Estádio */}
                                 <div className="form-group">
-                                    <label htmlFor='nomeCidade'>Cidade:</label> {/* ID 'nomeCidade' está OK */}
+                                    <label htmlFor='nomeCidade'>Cidade:</label>
                                     <input
                                         type="text"
                                         id="nomeCidade"
-                                        value={nomeCidadeEstadio } // Corrigido para a nova prop
-                                        onChange={onNomeCidadeEstadioChange} // Corrigido para a nova prop
+                                        value={nomeCidadeEstadio }
+                                        onChange={onNomeCidadeEstadioChange}
                                         autoComplete="off"
                                     />
                                 </div>
-                                {/* REMOVIDOS inputs duplicados/incompletos AQUI */}
                             </div>
                         )}
 
