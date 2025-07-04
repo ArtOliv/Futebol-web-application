@@ -12,11 +12,11 @@ export async function getJogadoresPorId(id) {
     return res.json();
 }
 
-export async function insertJogador(jogador, nome_time) {
+export async function insertJogador(jogadorCreate, nome_time) {
     const res = await fetch(`${BASE_URL}/jogador/?nome_time=${nome_time}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(jogador)
+        body: JSON.stringify(jogadorCreate)
     });
     if (!res.ok) throw new Error("Erro ao cadastrar jogador");
     return res.text();

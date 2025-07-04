@@ -9,13 +9,12 @@ function DropDownCampeonato({
     onAnoChange     
 }) {
     const [aberto, setAberto] = useState(false); 
-    console.log("Estado 'aberto':", aberto); 
 
 
     return(
         <>
             <div className="dropdown">
-                <button className='dropdown-button' onClick={() => setAberto(!aberto)}>
+                <button type='button' className='dropdown-button' onClick={() => setAberto(!aberto)}>
                     <img src={ArrowIcon} alt='seta' className={`button-arrow ${aberto ? 'rotate' : ''}`}/>
                     <span className="dropdown-text">Adicionar campeonato</span>
                 </button>
