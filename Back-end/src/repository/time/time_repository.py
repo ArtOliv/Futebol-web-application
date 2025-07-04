@@ -1,4 +1,5 @@
 from fastapi import HTTPException
+from pymysql.err import IntegrityError
 
 import pymysql
 from pymysql.err import IntegrityError
@@ -78,16 +79,18 @@ def insert_time(time: Time, nome_campeonato: str, ano_campeonato: int):
 
     try:
         with conn.cursor() as cursor:
-            query = ("INSERT INTO "
+            # 1. INSERT/UPDATE INTO Time (esta parte está correta)
+            query_time = ("INSERT INTO "
                      "Time (c_nome_time, c_cidade_time, c_tecnico_time)"
-                     f"VALUES (%s, %s, %s) "
+                     "VALUES (%s, %s, %s) "
                      "ON DUPLICATE KEY UPDATE "
                      "c_cidade_time = VALUES(c_cidade_time), "
                      "c_tecnico_time = VALUES(c_tecnico_time);")
-            cursor.execute(query, (time.c_nome_time, time.c_cidade_time, time.c_tecnico_time))
+            cursor.execute(query_time, (time.c_nome_time, time.c_cidade_time, time.c_tecnico_time))
 
+            # 2. INSERT/UPDATE INTO Jogador(es) (esta parte está correta)
             if time.jogadores:
-                query = ("INSERT INTO "
+                query_jogador = ("INSERT INTO "
                         "Jogador "
                         "(c_Pnome_jogador"
                         ", c_Unome_jogador, "
@@ -101,32 +104,73 @@ def insert_time(time: Time, nome_campeonato: str, ano_campeonato: int):
                         "c_posicao = VALUES(c_posicao), "
                         "c_nome_time = VALUES(c_nome_time);")
                 for jogador in time.jogadores:
-                    cursor.execute(query, (
+                    cursor.execute(query_jogador, (
                         jogador.c_Pnome_jogador,
                         jogador.c_Unome_jogador,
                         jogador.n_camisa,
                         jogador.d_data_nascimento,
-                        jogador.c_posicao,
+                        jogador.c_posicao.value,
                         time.c_nome_time
                     ))
-            query = ("INSERT INTO "
+            # 3. INSERT INTO Time_participa_campeonato (esta parte está correta)
+            query_participa = ("INSERT INTO "
                     "Time_participa_campeonato (c_nome_time, c_nome_campeonato, d_ano_campeonato) "
                     "VALUES (%s, %s, %s);")
-            cursor.execute(query, (time.c_nome_time, nome_campeonato, ano_campeonato))
-            query = ("INSERT INTO "
-                    "Classificacao (c_nome_campeonato, d_ano_campeonato, c_nome_time)"
-                    "VALUES (%s, %s, %s);")
-            cursor.execute(query, (nome_campeonato, ano_campeonato, time.c_nome_time))
+            cursor.execute(query_participa, (time.c_nome_time, nome_campeonato, ano_campeonato))
+
+            # 4. INSERT/UPDATE INTO Classificacao (CORREÇÃO AQUI!)
+            query_classificacao = ("INSERT INTO "
+                    "Classificacao (c_nome_campeonato, d_ano_campeonato, c_nome_time, "
+                    "n_vitorias, n_empates, n_derrotas, n_gols_pro, n_gols_contra) " # Removidas colunas geradas
+                    "VALUES (%s, %s, %s, %s, %s, %s, %s, %s) "
+                    "ON DUPLICATE KEY UPDATE "
+                    "n_vitorias = VALUES(n_vitorias), " # Exemplo de atualização, você pode adicionar outras colunas
+                    "n_empates = VALUES(n_empates), "
+                    "n_derrotas = VALUES(n_derrotas), "
+                    "n_gols_pro = VALUES(n_gols_pro), "
+                    "n_gols_contra = VALUES(n_gols_contra);")
+
+            # Valores iniciais para as estatísticas
+            initial_wins = 0
+            initial_draws = 0
+            initial_losses = 0
+            initial_goals_for = 0
+            initial_goals_against = 0
+
+            cursor.execute(query_classificacao, (
+                nome_campeonato,
+                ano_campeonato,
+                time.c_nome_time,
+                initial_wins,
+                initial_draws,
+                initial_losses,
+                initial_goals_for,
+                initial_goals_against
+            ))
+
             conn.commit()
+
     except IntegrityError as e:
-        if all(s in str(e).lower() for s in ['foreign key constraint fails', 'fk_camp_time']):
-            raise HTTPException(status_code=400, detail="Esse campeonato nao existe.")
-        if all(s in str(e).lower() for s in ['foreign key constraint fails', 'fk_time_jogador']):
-            raise HTTPException(status_code=400, detail="Vocẽ tentou inserir um jogador em um time inexistente.")
-        raise HTTPException(status_code=400, detail="Ocorreu um erro ao cadastrar o time.")
+        print(f"ERRO DE INTEGRIDADE CAPTURADO: {e}")
+        error_message = str(e).lower()
+        if 'foreign key constraint fails' in error_message and 'fk_campeonato_classificacao' in error_message: # Usar o nome correto da FK
+            raise HTTPException(status_code=400, detail="Esse campeonato não existe ou a FK do campeonato na classificacao falhou.")
+        elif 'foreign key constraint fails' in error_message and 'fk_time_classificacao' in error_message: # Usar o nome correto da FK
+            raise HTTPException(status_code=400, detail="O time não existe ou a FK do time na classificacao falhou.")
+        elif 'duplicate entry' in error_message and 'classificacao.primary' in error_message:
+             raise HTTPException(status_code=400, detail="O time já está cadastrado neste campeonato na classificação.")
+        else:
+            raise HTTPException(status_code=400, detail=f"Erro de banco de dados inesperado: {str(e)}")
+
+    except MySQLError as e:
+        print(f"ERRO MYSQL CAPTURADO: {e}")
+        raise HTTPException(status_code=500, detail=f"Erro interno no servidor ao acessar o banco de dados: {str(e)}")
+
+    except Exception as e:
+        print(f"ERRO INESPERADO NA INSERÇÃO: {e}")
+        raise HTTPException(status_code=500, detail=f"Ocorreu um erro interno inesperado no servidor: {str(e)}")
 
     finally:
-
         conn.close()
 
 def delete_time(nome_time: str):
