@@ -5,6 +5,7 @@
 .left-bar{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     background-color: #ffffff;
     width: 100%;
     max-width: 190px;
@@ -14,8 +15,15 @@
     align-self: flex-start;
 }
 
+.buttons-bar-container{
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start;
+    width: 100%;
+}
+
 .menu-label{
-    margin: 20px 0 15px 10px;
+    margin: 20px 0 10px 10px;
     color: #2E2EB1;
     font-weight: bold;
 }
@@ -23,7 +31,7 @@
 hr{
     width: 100%;
     max-width: 164px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
 }
 
 .bar-button{
@@ -48,13 +56,13 @@ hr{
 }
 
 .logout-container{
-    margin: 540px 0px;
     display: flex;
     flex-direction: column;
+    padding-bottom: 10px;
 }
 
 .logout-button{
-    margin: 5px 10px;
+    margin: 0 10px;
     border: none;
     border-radius: 10px;
     color: #2E2EB1;

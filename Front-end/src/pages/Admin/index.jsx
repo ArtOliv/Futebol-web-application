@@ -19,11 +19,13 @@ function Admin({mode}){
         <>
             <div className="main-adm-page">
                 <div className="left-bar">
-                    <h2 className="menu-label">Menu</h2>
-                    <hr></hr>
-                    <button className={`bar-button ${location.pathname === '/administrador/criar' ? 'active' : ''}`} onClick={() => navigate('/administrador/criar')}>Criar</button>
-                    <button className={`bar-button ${location.pathname === '/administrador/atualizar' ? 'active' : ''}`} onClick={() => navigate('/administrador/atualizar')}>Atualizar</button>
-                    <button className={`bar-button ${location.pathname === '/administrador/deletar' ? 'active' : ''}`} onClick={() => navigate('/administrador/deletar')}>Deletar</button>
+                    <div className="buttons-bar-container">
+                        <h2 className="menu-label">Menu</h2>
+                        <hr></hr>
+                        <button className={`bar-button ${location.pathname === '/administrador/criar' ? 'active' : ''}`} onClick={() => navigate('/administrador/criar')}>Criar</button>
+                        <button className={`bar-button ${location.pathname === '/administrador/atualizar' ? 'active' : ''}`} onClick={() => navigate('/administrador/atualizar')}>Atualizar</button>
+                        <button className={`bar-button ${location.pathname === '/administrador/deletar' ? 'active' : ''}`} onClick={() => navigate('/administrador/deletar')}>Deletar</button>
+                    </div>
                     <div className="logout-container">
                         <hr></hr>
                         <button className="logout-button" onClick={handleLogout}>Logout</button>

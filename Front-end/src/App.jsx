@@ -7,6 +7,7 @@ import Classificacao from './pages/Classificacao'
 import Jogos from './pages/Jogos'
 import Times from './pages/Times'
 import Jogadores from './pages/Jogadores'
+import Estatisticas from './pages/Estatisticas'
 import Admin from './pages/Admin'
 
 function App(){
@@ -25,6 +26,7 @@ function App(){
                 <Route path='/jogos' element={<Jogos />} />
                 <Route path='/times' element={<Times />} />
                 <Route path='/jogadores' element={<Jogadores />} />
+                <Route path='/estatisticas' element={<Estatisticas />} />
                 <Route path='/administrador' element={<Admin />} />
                 <Route path='/administrador/criar' element={<Admin mode="create"/>} />
                 <Route path='/administrador/atualizar' element={<Admin mode="update"/>} />
