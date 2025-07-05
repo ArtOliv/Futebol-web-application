@@ -27,3 +27,4 @@ export async function deletePartida(id_partida) {
     if (!res.ok) throw new Error("Erro ao deletar partida");
     return res.text();
 }
+

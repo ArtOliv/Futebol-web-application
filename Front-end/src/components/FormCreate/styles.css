@@ -112,3 +112,19 @@ textarea{
     flex-direction: column;
     margin: 10px 0 0 25px;
 }
+
+.input-container { /* ESPAÇO ENTRE OS PARAMETROS PQ NAO PODE USAR FORMS  */
+    display: grid; 
+    grid-template-columns: 1fr;
+    gap: 15px; /* Adds space between grid items (your form-groups) */
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    box-sizing: border-box;
+}
