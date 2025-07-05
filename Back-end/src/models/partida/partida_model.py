@@ -37,3 +37,13 @@ class Partida(BaseModel):
 
     class Config:
         from_attributes = True
+
+class PartidaResponse(BaseModel):
+    id_jogo: int
+    dt_data_horario: datetime
+    n_rodada: Optional[int] = None
+    c_time_casa: Optional[str] = None
+    c_time_visitante: Optional[str] = None
+    c_nome_campeonato: str
+    d_ano_campeonato: int
+   

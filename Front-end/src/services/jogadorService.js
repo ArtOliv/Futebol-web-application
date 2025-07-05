@@ -27,3 +27,26 @@ export async function deleteJogador(id_jogador) {
     if (!res.ok) throw new Error("Erro ao deletar jogador");
     return res.text();
 }
+
+export async function getJogadoresForDropdown(name = null, nomeTime = null) {
+    let url = `${BASE_URL}/jogador/`;
+    const params = new URLSearchParams();
+
+    if (name) {
+        params.append('name', name);
+    }
+    if (nomeTime) {
+        params.append('nome_time', nomeTime);
+    }
+
+    if (params.toString()) {
+        url += `?${params.toString()}`;
+    }
+
+    const res = await fetch(url);
+    if (!res.ok) {
+        const errorText = await res.text();
+        throw new Error(`Erro ao buscar jogadores para dropdown: ${res.status} - ${errorText}`);
+    }
+    return res.json();
+}

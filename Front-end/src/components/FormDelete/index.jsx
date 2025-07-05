@@ -1,22 +1,20 @@
-import React, { useState } from 'react'; 
-import './styles.css'; 
+import React, { useState, useEffect } from 'react';
+import './styles.css';
 
 // Importa as funções de serviço para deletar diferentes entidades
-import { deleteCampeonato } from '../../services/campeonatoService'; 
-import { deleteTime } from '../../services/timeService'; 
-import { deleteJogador } from '../../services/jogadorService'; 
-import { deletePartida } from '../../services/jogoService'
-import { deleteGol } from '../../services/golService'
-import { deleteCartao } from '../../services/cartaoService'
+import { deleteCampeonato } from '../../services/campeonatoService';
+import { deleteTime } from '../../services/timeService';
+import { deleteJogador, getJogadoresForDropdown } from '../../services/jogadorService';
+import { deletePartida, getPartidasPorTime } from '../../services/jogoService';
+import { deleteGol, getGolsPorPartida } from '../../services/golService';
+import { deleteCartao, getCartoesPorPartida } from '../../services/cartaoService'; 
 
-// Importa os componentes DropDown de deleção para cada entidade
-import DropDownDeleteCampeonato from './DropdownDeleteCampeonato'; 
-import DropdownDeleteTimes from './DropdownDeleteTimes'; 
+import DropDownDeleteCampeonato from './DropdownDeleteCampeonato';
+import DropdownDeleteTimes from './DropdownDeleteTimes';
 import DropdownDeleteJogador from './DropdownDeleteJogador';
 import DropdownDeleteJogos from './DropdownDeleteJogos';
 import DropdownDeleteGols from './DropdownDeleteGols';
 import DropdownDeleteCartao from './DropdownDeleteCartao';
-
 
 
 function FormDelete() {
@@ -28,15 +26,15 @@ function FormDelete() {
     const [nomeTimeToDelete, setNomeTimeToDelete] = useState('');
 
     // --- ESTADO PARA DELETAR JOGADOR ---
-    const [idJogadorToDelete, setIdJogadorToDelete] = useState(''); 
+    const [idJogadorToDelete, setIdJogadorToDelete] = useState('');
 
     // ESTADO PARA DELETAR PARTIDA
     const [idPartidaToDelete, setIdPartidaToDelete] = useState('');
 
-    //ESTADO DELETAR GOLS
+    // ESTADO DELETAR GOLS
     const [idGolToDelete, setIdGolToDelete] = useState('');
 
-    //ESTADO DELETAR CARTAO
+    // ESTADO DELETAR CARTAO
     const [idCartaoToDelete, setIdCartaoToDelete] = useState('');
 
     // --- ESTADOS PARA FEEDBACK GERAL DO FORMULÁRIO ---
@@ -44,151 +42,184 @@ function FormDelete() {
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    // ESTADOS PARA DROPDOWN DE JOGADORES (para filtro e lista)
+    const [availableJogadores, setAvailableJogadores] = useState([]);
+    const [loadingJogadores, setLoadingJogadores] = useState(true);
+    const [errorLoadingJogadores, setErrorLoadingJogadores] = useState(null);
+    const [filterByNomeTime, setFilterByNomeTime] = useState(''); 
+
+    // --- ESTADOS PARA DROPDOWN DE PARTIDAS (para filtro e lista) ---
+    const [availablePartidas, setAvailablePartidas] = useState([]);
+    const [loadingPartidas, setLoadingPartidas] = useState(true);
+    const [errorLoadingPartidas, setErrorLoadingPartidas] = useState(null);
+    const [filterByNomeTimeJogos, setFilterByNomeTimeJogos] = useState(''); 
+
+    // --- ESTADOS PARA DROPDOWN DE GOLS (para filtro e lista) ---
+    const [availableGols, setAvailableGols] = useState([]);
+    const [loadingGols, setLoadingGols] = useState(true);
+    const [errorLoadingGols, setErrorLoadingGols] = useState(null);
+    const [filterByIdPartidaGols, setFilterByIdPartidaGols] = useState(''); 
+
+    // --- NEW: ESTADOS PARA DROPDOWN DE CARTOES (para filtro e lista) ---
+    const [availableCartoes, setAvailableCartoes] = useState([]);
+    const [loadingCartoes, setLoadingCartoes] = useState(true);
+    const [errorLoadingCartoes, setErrorLoadingCartoes] = useState(null);
+    const [filterByIdPartidaCartoes, setFilterByIdPartidaCartoes] = useState(''); 
+
+
+    const handleFilterByNomeTimeChange = (e) => {
+        setFilterByNomeTime(e.target.value);
+        setIdJogadorToDelete('');
+    };
+
+    const handleFilterByNomeTimeJogosChange = (e) => { 
+        setFilterByNomeTimeJogos(e.target.value);
+        setIdPartidaToDelete(''); 
+    };
+
+    const handleFilterByIdPartidaGolsChange = (e) => { 
+        setFilterByIdPartidaGols(e.target.value);
+        setIdGolToDelete('');
+    };
+
+    const handleFilterByIdPartidaCartoesChange = (e) => { 
+        setFilterByIdPartidaCartoes(e.target.value);
+        setIdCartaoToDelete(''); 
+    };
+
+
+    useEffect(() => {
+        const fetchJogadores = async () => {
+            if (!filterByNomeTime) {
+                setAvailableJogadores([]);
+                setLoadingJogadores(false);
+                setErrorLoadingJogadores(null);
+                return;
+            }
+            setLoadingJogadores(true);
+            setErrorLoadingJogadores(null);
+            try {
+                const jogadores = await getJogadoresForDropdown(null, filterByNomeTime);
+                setAvailableJogadores(Array.isArray(jogadores) ? jogadores : []);
+            } catch (err) {
+                console.error("Erro ao carregar jogadores para o dropdown:", err);
+                setErrorLoadingJogadores("Erro ao carregar lista de jogadores.");
+                setAvailableJogadores([]);
+            } finally {
+                setLoadingJogadores(false);
+            }
+        };
+        fetchJogadores();
+    }, [filterByNomeTime]);
+
+    useEffect(() => {
+        const fetchPartidas = async () => {
+            if (!filterByNomeTimeJogos) {
+                setAvailablePartidas([]);
+                setLoadingPartidas(false);
+                setErrorLoadingPartidas(null);
+                return;
+            }
+            setLoadingPartidas(true);
+            setErrorLoadingPartidas(null);
+            try {
+                const partidas = await getPartidasPorTime(filterByNomeTimeJogos);
+                setAvailablePartidas(Array.isArray(partidas) ? partidas : []);
+            } catch (err) {
+                console.error("Erro ao carregar partidas para o dropdown:", err);
+                setErrorLoadingPartidas("Erro ao carregar lista de partidas.");
+                setAvailablePartidas([]);
+            } finally {
+                setLoadingPartidas(false);
+            }
+        };
+        fetchPartidas();
+    }, [filterByNomeTimeJogos]);
+
+    // --- useEffect para carregar gols para o dropdown ---
+    useEffect(() => {
+        const fetchGols = async () => {
+            if (!filterByIdPartidaGols || isNaN(parseInt(filterByIdPartidaGols))) {
+                setAvailableGols([]);
+                setLoadingGols(false);
+                setErrorLoadingGols(null);
+                return;
+            }
+            setLoadingGols(true);
+            setErrorLoadingGols(null);
+            try {
+                const gols = await getGolsPorPartida(parseInt(filterByIdPartidaGols));
+                setAvailableGols(Array.isArray(gols) ? gols : []);
+            } catch (err) {
+                console.error("Erro ao carregar gols para o dropdown:", err);
+                setErrorLoadingGols("Erro ao carregar lista de gols.");
+                setAvailableGols([]);
+            } finally {
+                setLoadingGols(false);
+            }
+        };
+        fetchGols();
+    }, [filterByIdPartidaGols]);
+
+    useEffect(() => {
+        const fetchCartoes = async () => {
+            if (!filterByIdPartidaCartoes || isNaN(parseInt(filterByIdPartidaCartoes))) {
+                setAvailableCartoes([]);
+                setLoadingCartoes(false);
+                setErrorLoadingCartoes(null);
+                return;
+            }
+            setLoadingCartoes(true);
+            setErrorLoadingCartoes(null);
+            try {
+                const cartoes = await getCartoesPorPartida(parseInt(filterByIdPartidaCartoes));
+                setAvailableCartoes(Array.isArray(cartoes) ? cartoes : []);
+            } catch (err) {
+                console.error("Erro ao carregar cartões para o dropdown:", err);
+                setErrorLoadingCartoes("Erro ao carregar lista de cartões.");
+                setAvailableCartoes([]);
+            } finally {
+                setLoadingCartoes(false);
+            }
+        };
+        fetchCartoes();
+    }, [filterByIdPartidaCartoes]);
+
 
     const handleOverallDelete = async (event) => {
-        event.preventDefault(); 
+        event.preventDefault();
 
-        // --- INÍCIO DO DEBUG  ---
         console.log("--- handleOverallDelete INICIADO ---");
-        console.log("Evento que disparou:", event.type); // Deve ser 'submit'
-        if (event.submitter) {
-            console.log("Botão que submeteu:", event.submitter.outerHTML); // Qual botão foi clicado (se houver)
-        } else {
-            console.log("Submissão sem botão específico (ex: Enter key).");
-        }
-        console.log("Nome Campeonato no momento da submissão:", nomeCampeonatoToDelete);
-        console.log("Nome Time no momento da submissão:", nomeTimeToDelete);
-        console.log("ID Jogador no momento da submissão:", idJogadorToDelete);
-        console.log("ID Partida no momento da submissão:", idPartidaToDelete);
-        console.log("ID Gol no momento da submissão:", idGolToDelete);
         console.log("ID Cartao no momento da submissão:", idCartaoToDelete);
-        // --- FIM DO DEBUG CRÍTICO ---
-
 
         setMessage('');
         setError(null);
         setLoading(true);
 
         try {
-            let operationMessages = []; 
-
-            // --- Lógica para DELETAR CAMPEONATO ---
-            // Verifica se os campos de campeonato estão preenchidos para esta operação
-            if (nomeCampeonatoToDelete && anoCampeonatoToDelete) {
-                console.log("Tentando deletar campeonato:", nomeCampeonatoToDelete, anoCampeonatoToDelete); // Log de depuração
-                try {
-                    // Chama a função de serviço para deletar o campeonato
-                    const responseMessage = await deleteCampeonato(
-                        nomeCampeonatoToDelete,
-                        parseInt(anoCampeonatoToDelete) // Converte o ano para um número inteiro
-                    );
-                    operationMessages.push(`Campeonato: ${responseMessage}`); // Adiciona mensagem de sucesso
-                    // Limpa os campos após a deleção bem-sucedida
-                    setNomeCampeonatoToDelete('');
-                    setAnoCampeonatoToDelete('');
-                    console.log("Deleção de Campeonato SUCESSO:", responseMessage); // Log de depuração
-                } catch (campErr) {
-                    // Captura e acumula erros específicos da deleção de campeonato
-                    operationMessages.push(`Erro ao deletar Campeonato: ${campErr.message}`);
-                    console.error("Erro ao deletar Campeonato:", campErr); // Log de erro
-                    setError(prev => (prev ? prev + '\n' : '') + `Erro Campeonato: ${campErr.message}`);
-                }
-            } 
-
-            // --- Lógica para DELETAR TIME ---
-            // Verifica se o campo de nome do time está preenchido para esta operação
-            if (nomeTimeToDelete) {
-                console.log("Tentando deletar time:", nomeTimeToDelete); // Log de depuração
-                try {
-                    // Chama a função de serviço para deletar o time
-                    const responseMessage = await deleteTime(nomeTimeToDelete);
-                    operationMessages.push(`Time: ${responseMessage}`); // Adiciona mensagem de sucesso
-                    setNomeTimeToDelete(''); // Limpa o campo após o sucesso
-                    console.log("Deleção de Time SUCESSO:", responseMessage); // Log de depuração
-                } catch (timeErr) {
-                    // Captura e acumula erros específicos da deleção de time
-                    operationMessages.push(`Erro ao deletar Time: ${timeErr.message}`);
-                    console.error("Erro ao deletar Time:", timeErr); // Log de erro
-                    setError(prev => (prev ? prev + '\n' : '') + `Erro Time: ${timeErr.message}`);
-                }
-            }
-
-            // --- Lógica para DELETAR JOGADOR ---
-            // Verifica se o ID do jogador está preenchido e é um número válido
-            if (idJogadorToDelete && !isNaN(parseInt(idJogadorToDelete))) { // Uso da variável idJogadorToDelete
-                console.log("Tentando deletar jogador com ID:", idJogadorToDelete); // Log de depuração
-                try {
-                    // Chama a função de serviço para deletar o jogador
-                    const responseMessage = await deleteJogador(parseInt(idJogadorToDelete)); // Converte o ID para número inteiro
-                    operationMessages.push(`Jogador: ${responseMessage}`); // Adiciona mensagem de sucesso
-                    setIdJogadorToDelete(''); // Limpa o campo após o sucesso
-                    console.log("Deleção de Jogador SUCESSO:", responseMessage); // Log de depuração
-                } catch (jogadorErr) {
-                    // Captura e acumula erros específicos da deleção de jogador
-                    operationMessages.push(`Erro ao deletar Jogador: ${jogadorErr.message}`);
-                    console.error("Erro ao deletar Jogador:", jogadorErr); // Log de erro
-                    setError(prev => (prev ? prev + '\n' : '') + `Erro Jogador: ${jogadorErr.message}`);
-                }
-            } else if (idJogadorToDelete) { // Se o campo foi preenchido mas não é um número válido
-                operationMessages.push("ID do Jogador inválido. Por favor, insira um número.");
-                setError(prev => (prev ? prev + '\n' : '') + `Erro Jogador: ID inválido.`);
-            } 
+            let operationMessages = [];
 
 
-            // --- Lógica para DELETAR PARTIDA ---
-            // Verifica se o ID da partida está preenchido e é um número válido
-            if (idPartidaToDelete && !isNaN(parseInt(idPartidaToDelete))) {
-                console.log("Tentando deletar partida com ID:", idPartidaToDelete);
-                try {
-                    const responseMessage = await deletePartida(parseInt(idPartidaToDelete)); // Chama a função de serviço
-                    operationMessages.push(`Partida: ${responseMessage}`);
-                    setIdPartidaToDelete(''); // Limpa o campo
-                    console.log("Deleção de Partida SUCESSO:", responseMessage);
-                } catch (partidaErr) {
-                    operationMessages.push(`Erro ao deletar Partida: ${partidaErr.message}`);
-                    console.error("Erro ao deletar Partida:", partidaErr);
-                    setError(prev => (prev ? prev + '\n' : '') + `Erro Partida: ID inválido.`);
-                }
-            } else if (idPartidaToDelete) {
-                operationMessages.push("ID da Partida inválido. Por favor, insira um número.");
-                setError(prev => (prev ? prev + '\n' : '') + `Erro Partida: ID inválido.`);
-            }
-
-            // --- Lógica para DELETAR Gol ---
-            // Verifica se o ID da Gol está preenchido e é um número válido
-            if (idGolToDelete && !isNaN(parseInt(idGolToDelete))) {
-                console.log("Tentando deletar Gol com ID:", idGolToDelete);
-                try {
-                    const responseMessage = await deleteGol(parseInt(idGolToDelete)); // Chama a função de serviço
-                    operationMessages.push(`Gol: ${responseMessage}`);
-                    setIdGolToDelete(''); // Limpa o campo
-                    console.log("Deleção de Gol SUCESSO:", responseMessage);
-                } catch (GolErr) {
-                    operationMessages.push(`Erro ao deletar Gol: ${GolErr.message}`);
-                    console.error("Erro ao deletar Gol:", GolErr);
-                    setError(prev => (prev ? prev + '\n' : '') + `Erro Gol: ID inválido.`);
-                }
-            } else if (idGolToDelete) {
-                operationMessages.push("ID da Gol inválido. Por favor, insira um número.");
-                setError(prev => (prev ? prev + '\n' : '') + `Erro Gol: ID inválido.`);
-            }
 
             // --- Lógica para DELETAR Cartao ---
-            // Verifica se o ID da Cartao está preenchido e é um número válido
             if (idCartaoToDelete && !isNaN(parseInt(idCartaoToDelete))) {
                 console.log("Tentando deletar Cartao com ID:", idCartaoToDelete);
                 try {
-                    const responseMessage = await deleteCartao(parseInt(idCartaoToDelete)); // Chama a função de serviço
+                    const responseMessage = await deleteCartao(parseInt(idCartaoToDelete));
                     operationMessages.push(`Cartao: ${responseMessage}`);
-                    setIdCartaoToDelete(''); // Limpa o campo
-                    console.log("Deleção de Cartao SUCESSO:", responseMessage);
+                    setIdCartaoToDelete(''); 
+                    if (filterByIdPartidaCartoes) {
+                        await getCartoesPorPartida(parseInt(filterByIdPartidaCartoes)).then(setAvailableCartoes);
+                    } else {
+                        setAvailableCartoes([]);
+                    }
                 } catch (CartaoErr) {
                     operationMessages.push(`Erro ao deletar Cartao: ${CartaoErr.message}`);
                     console.error("Erro ao deletar Cartao:", CartaoErr);
-                    setError(prev => (prev ? prev + '\n' : '') + `Erro Cartao: ID inválido.`);
+                    setError(prev => (prev ? prev + '\n' : '') + `Erro Cartao: ${CartaoErr.message}`);
                 }
             } else if (idCartaoToDelete) {
-                operationMessages.push("ID da Cartao inválido. Por favor, insira um número.");
+                operationMessages.push("ID do Cartao inválido. Por favor, selecione um cartão válido."); 
                 setError(prev => (prev ? prev + '\n' : '') + `Erro Cartao: ID inválido.`);
             }
 
@@ -197,22 +228,21 @@ function FormDelete() {
             if (operationMessages.length > 0) {
                 setMessage(operationMessages.join('\n'));
             } else {
-                setMessage("Nenhuma operação de deleção foi solicitada."); // Mensagem se nenhum campo foi preenchido
+                setMessage("Nenhuma operação de deleção foi solicitada.");
             }
 
-        } catch (err) { // Este bloco captura erros inesperados que não foram tratados nos blocos try/catch internos
-            console.error("Erro inesperado na submissão geral:", err); // Log de erro geral
+        } catch (err) {
+            console.error("Erro inesperado na submissão geral:", err);
             setError(err.message || "Ocorreu um erro inesperado durante a deleção.");
         } finally {
-            setLoading(false); // Desativa o estado de carregamento, independentemente do resultado
+            setLoading(false);
         }
     };
 
     return (
         <>
-            {/* O formulário principal que engloba todos os dropdowns de deleção */}
             <form onSubmit={handleOverallDelete}>
-                {/* Componente para deletar Campeonato, recebendo seus estados e handlers */}
+                {/* Componente para deletar Campeonato */}
                 <DropDownDeleteCampeonato
                     nomeCampeonato={nomeCampeonatoToDelete}
                     anoCampeonato={anoCampeonatoToDelete}
@@ -220,45 +250,63 @@ function FormDelete() {
                     onAnoChange={(e) => setAnoCampeonatoToDelete(e.target.value)}
                 />
 
-                {/* Componente para deletar Time, recebendo seus estados e handlers */}
+                {/* Componente para deletar Time */}
                 <DropdownDeleteTimes
                     nomeTime={nomeTimeToDelete}
                     onNomeChange={(e) => setNomeTimeToDelete(e.target.value)}
                 />
-                
-                {/* Componente para deletar Jogador, recebendo seus estados e handlers */}
+
+                {/* Componente para deletar Jogador (com filtro interno) */}
                 <DropdownDeleteJogador
                     idJogador={idJogadorToDelete}
                     onIdChange={(e) => setIdJogadorToDelete(e.target.value)}
+                    availableJogadores={availableJogadores}
+                    loadingJogadores={loadingJogadores}
+                    errorLoadingJogadores={errorLoadingJogadores}
+                    filterByNomeTime={filterByNomeTime}
+                    onFilterByNomeTimeChange={handleFilterByNomeTimeChange}
                 />
 
                 {/* Componente deletar partida */}
                 <DropdownDeleteJogos
-                    idPartida={idJogadorToDelete}
-                    onIdPartidaChange = {(e) => setIdPartidaToDelete(e.target.value)}
-
+                    idPartida={idPartidaToDelete}
+                    onIdPartidaChange={(e) => setIdPartidaToDelete(e.target.value)}
+                    filterByNomeTimeJogos={filterByNomeTimeJogos}
+                    onFilterByNomeTimeJogosChange={handleFilterByNomeTimeJogosChange}
+                    availablePartidas={availablePartidas}
+                    loadingPartidas={loadingPartidas}
+                    errorLoadingPartidas={errorLoadingPartidas}
                 />
 
+                {/* Componente deletar gols */}
                 <DropdownDeleteGols
                     idGol={idGolToDelete}
-                    onIdGolChange = {(e) => setIdGolToDelete(e.target.value)}
-                
+                    onIdGolChange={(e) => setIdGolToDelete(e.target.value)}
+                    filterByIdPartidaGols={filterByIdPartidaGols}
+                    onFilterByIdPartidaGolsChange={handleFilterByIdPartidaGolsChange}
+                    availableGols={availableGols}
+                    loadingGols={loadingGols}
+                    errorLoadingGols={errorLoadingGols}
                 />
+
+                {/* Componente deletar cartões (UPDATED) */}
                 <DropdownDeleteCartao
                     idCartao={idCartaoToDelete}
-                    onIdCartaoChange = {(e) => setIdCartaoToDelete(e.target.value)}
-                
+                    onIdCartaoChange={(e) => setIdCartaoToDelete(e.target.value)}
+                    filterByIdPartidaCartoes={filterByIdPartidaCartoes} // Pass new filter state
+                    onFilterByIdPartidaCartoesChange={handleFilterByIdPartidaCartoesChange} // Pass new filter handler
+                    availableCartoes={availableCartoes} // Pass list of cards
+                    loadingCartoes={loadingCartoes}     // Pass loading state
+                    errorLoadingCartoes={errorLoadingCartoes} // Pass error state
                 />
 
                 <div className="delete-button">
-                    {/* Botão de submissão geral para todas as operações de deleção */}
                     <button type="submit" disabled={loading}>
                         {loading ? 'Deletando...' : 'Deletar'}
                     </button>
                 </div>
             </form>
 
-            {/* Exibe mensagens de sucesso/informação */}
             {message && <p className="success-message">{message}</p>}
             {error && <p className="error-message">{error}</p>}
         </>

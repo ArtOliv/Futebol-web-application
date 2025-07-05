@@ -3,6 +3,7 @@ from pymysql.err import IntegrityError, MySQLError
 from fastapi import HTTPException, status
 from typing import List, Dict, Any, Optional 
 from datetime import datetime 
+from src.database import get_db_connection
 
 from src.models.partida.partida_model import PartidaCreate
 
@@ -78,7 +79,7 @@ def get_partidas_por_time(nome_time: str):
                     "j.c_time_visitante, "
                     "j.n_placar_casa, "
                     "j.n_placar_visitante, "
-                    "j.d_ano_campeonato " # <-- Inclua d_ano_campeonato se necessário
+                    "j.d_ano_campeonato " 
                 "FROM Jogo AS j "
                 "WHERE j.c_time_casa = %s OR j.c_time_visitante = %s "
                 "ORDER BY j.dt_data_horario DESC;"
@@ -95,7 +96,6 @@ def get_partidas_por_time(nome_time: str):
         if conn:
             conn.close()
 
-# --- FUNÇÃO DE INSERÇÃO (insert_partida) ---
 
 def insert_partida(partida_data: PartidaCreate, nome_campeonato: str, ano_campeonato: int) -> Dict[str, Any]:
     conn = None
@@ -112,14 +112,12 @@ def insert_partida(partida_data: PartidaCreate, nome_campeonato: str, ano_campeo
         conn.query("SET NAMES utf8mb4;")
 
         with conn.cursor() as cursor:
-            # 1. Verificar se o CAMPEONATO existe (importante para FK)
             cursor.execute("SELECT c_nome_campeonato FROM Campeonato WHERE c_nome_campeonato = %s AND d_ano_campeonato = %s",
                            (nome_campeonato, ano_campeonato))
             campeonato_exists = cursor.fetchone()
             if not campeonato_exists:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Campeonato '{nome_campeonato} ({ano_campeonato})' não encontrado.")
 
-            # 2. Verificar se os TIMES (Mandante/Visitante) existem (se forem FKs e forem fornecidos)
             if partida_data.c_time_casa:
                 cursor.execute("SELECT c_nome_time FROM Time WHERE c_nome_time = %s", (partida_data.c_time_casa,))
                 if not cursor.fetchone():
@@ -129,21 +127,17 @@ def insert_partida(partida_data: PartidaCreate, nome_campeonato: str, ano_campeo
                 if not cursor.fetchone():
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Time visitante '{partida_data.c_time_visitante}' não encontrado.")
 
-            # 3. Verificar se o ESTÁDIO existe (se for FK e for fornecido)
             if partida_data.c_nome_estadio:
                 cursor.execute("SELECT c_nome_estadio FROM Estadio WHERE c_nome_estadio = %s", (partida_data.c_nome_estadio,))
                 if not cursor.fetchone():
                     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Estádio '{partida_data.c_nome_estadio}' não encontrado.")
 
-            # 4. Combinar data e hora para o campo DATETIME do BD
             try:
-                # dt_data_str: "YYYY-MM-DD", hr_horario_str: "HH:MM"
                 combined_datetime_str = f"{partida_data.dt_data_str} {partida_data.hr_horario_str}:00" # Adiciona segundos
                 dt_data_horario_obj = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
             except ValueError:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Formato de data/hora inválido. Use YYYY-MM-DD e HH:MM.")
 
-            # 5. Inserir a Partida
             sql_insert_partida = """
             INSERT INTO Jogo (
                 dt_data_horario,
@@ -161,25 +155,22 @@ def insert_partida(partida_data: PartidaCreate, nome_campeonato: str, ano_campeo
             values_to_insert = (
                 dt_data_horario_obj,
                 partida_data.n_rodada,
-                0, # n_placar_casa (padrão)
-                0, # n_placar_visitante (padrão)
+                0, 
+                0, 
                 nome_campeonato,
                 ano_campeonato,
                 partida_data.c_nome_estadio,
                 partida_data.c_time_casa,
                 partida_data.c_time_visitante,
-                "Agendado" # c_status (padrão)
+                "Agendado" 
             )
 
             cursor.execute(sql_insert_partida, values_to_insert)
             conn.commit()
 
-            # Opcional: Recuperar a partida recém-inserida para retorno no FastAPI
             cursor.execute("SELECT LAST_INSERT_ID() as id_jogo;")
             last_id = cursor.fetchone()['id_jogo']
-            # Para retornar o objeto completo, você precisaria de uma SELECT para buscar a partida por id_jogo
-            # e mapear para o modelo Partida.
-            # No momento, o router espera uma mensagem simples, então retornamos isso.
+          
             return {"message": "Partida cadastrada com sucesso!"}
 
     except IntegrityError as e:
@@ -215,7 +206,6 @@ def insert_partida(partida_data: PartidaCreate, nome_campeonato: str, ano_campeo
         if conn:
             conn.close()
 
-# --- FUNÇÃO DE DELEÇÃO (delete_partida) ---
 
 def delete_partida(id_partida: int):
     conn = None
@@ -236,7 +226,7 @@ def delete_partida(id_partida: int):
                      "WHERE id_jogo = %s;")
             cursor.execute(query, id_partida)
             conn.commit()
-            return {"message": "Partida deletada com sucesso!"} # Retorne uma mensagem de sucesso
+            return {"message": "Partida deletada com sucesso!"} 
     except MySQLError as e:
         print(f"ERRO MYSQL CAPTURADO (delete_partida): {e}")
         if conn: conn.rollback()
@@ -251,7 +241,6 @@ def delete_partida(id_partida: int):
         if conn:
             conn.close()
 
-# --- FUNÇÃO PARA DROPDOWN (get_partidas_for_dropdown) ---
 
 def get_partidas_for_dropdown(
     nome_campeonato: Optional[str] = None,
@@ -305,5 +294,19 @@ def get_partidas_for_dropdown(
         print(f"ERRO INESPERADO (get_partidas_for_dropdown): {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Ocorreu um erro inesperado ao buscar partidas para dropdown: {str(e)}")
     finally:
+        if conn:
+            conn.close()
+
+def get_partidas_for_dropdown(
+    nome_campeonato: Optional[str] = None,
+    ano_campeonato: Optional[int] = None
+) -> List[Dict[str, Any]]:
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection() 
+    finally:
+        if cursor:
+            cursor.close()
         if conn:
             conn.close()
