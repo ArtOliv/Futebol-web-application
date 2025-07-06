@@ -232,11 +232,11 @@ function Jogadores() {
                                         <span>{selectedPlayer.statistics?.goals || 0}</span>
                                     </div>
                                     <div className="stat-item">
-                                        <span>Vitórias:</span>
+                                        <span>Cartões amarelos:</span>
                                         <span>{selectedPlayer.statistics?.wins || 0}</span>
                                     </div>
                                     <div className="stat-item">
-                                        <span>Derrotas:</span>
+                                        <span>Cartoẽs vermelhos:</span>
                                         <span>{selectedPlayer.statistics?.losses || 0}</span>
                                     </div>
                                 </div>

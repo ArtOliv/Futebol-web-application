@@ -1,0 +1,37 @@
+{
+  "artilheiros": [
+    { "nome": "Giorgian De Arrascaeta", "time": "Flamengo", "gols": 9 },
+    { "nome": "Kalo Jorge", "time": "Cruzeiro", "gols": 8 },
+    { "nome": "Pablo Vegetti", "time": "Vasco da Gama", "gols": 8 },
+    { "nome": "Pedro Raul", "time": "Ceará SC", "gols": 7 },
+    { "nome": "Reinaldo Manoel da Silva", "time": "Mirassol", "gols": 6 }
+  ],
+  "amarelos": [
+    { "nome": "Pimenta", "time": "Vasco", "amarelos": 5 },
+    { "nome": "Outro Jogador", "time": "Time B", "amarelos": 4 },
+    { "nome": "Outro Jogador", "time": "Time C", "amarelos": 3 },
+    { "nome": "Outro Jogador", "time": "Time D", "amarelos": 2 },
+    { "nome": "Outro Jogador", "time": "Time E", "amarelos": 1 }
+  ],
+  "vermelhos": [
+    { "nome": "Emmanuel Martínez", "time": "Fortaleza", "vermelhos": 5 },
+    { "nome": "Outro Jogador", "time": "Time B", "vermelhos": 4 },
+    { "nome": "Outro Jogador", "time": "Time C", "vermelhos": 3 },
+    { "nome": "Outro Jogador", "time": "Time D", "vermelhos": 2 },
+    { "nome": "Outro Jogador", "time": "Time E", "vermelhos": 1 }
+  ],
+  "assistencias": [
+    { "nome": "Abc", "time": "Fortaleza", "assistencias": 5 },
+    { "nome": "Outro Jogador", "time": "Time B", "assistencias": 4 },
+    { "nome": "Outro Jogador", "time": "Time C", "assistencias": 3 },
+    { "nome": "Outro Jogador", "time": "Time D", "assistencias": 2 },
+    { "nome": "Outro Jogador", "time": "Time E", "assistencias": 1 }
+  ],
+  "defesas": [
+    { "nome": "Goleiro X", "time": "Time A", "defesas": 5 },
+    { "nome": "Goleiro Y", "time": "Time B", "defesas": 4 },
+    { "nome": "Goleiro Z", "time": "Time C", "defesas": 3 },
+    { "nome": "Goleiro W", "time": "Time D", "defesas": 2 },
+    { "nome": "Goleiro V", "time": "Time E", "defesas": 1 }
+  ]
+}
