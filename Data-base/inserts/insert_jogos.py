@@ -12,7 +12,7 @@ def importar_jogos():
     db_port = os.getenv('DB_PORT')
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    csv_file_path = os.path.join(script_dir, 'jogos_brasileirão.csv')
+    csv_file_path = os.path.join(script_dir, 'jogos_brasileirão1.csv')
     table_name = 'jogo'
 
     print("--- Iniciando o processo de importação de jogos ---")

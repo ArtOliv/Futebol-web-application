@@ -26,7 +26,7 @@ def main():
 
     print("\n=== Importando cartões ===")
     importar_cartoes()
-
+    
     try:
         print("\n=== Atualizando status dos jogos para 'Finalizado' ===")
         conn = mysql.connector.connect(
@@ -37,7 +37,7 @@ def main():
             database="campeonato_futebol"
         )
         cursor = conn.cursor()
-
+    
         cursor.execute("SET SQL_SAFE_UPDATES = 0;")
         cursor.execute("""
             UPDATE Jogo
@@ -45,9 +45,9 @@ def main():
             WHERE dt_data_horario < NOW() AND c_status <> 'Finalizado';
         """)
         conn.commit()
-
+    
         print("Status dos jogos atualizado com sucesso.")
-
+    
     except mysql.connector.Error as err:
         print(f"Erro ao atualizar status dos jogos: {err}")
     finally:
