@@ -41,3 +41,4 @@ export async function deleteCampeonato(nome, ano) {
     }
     return res.text();
 }
+

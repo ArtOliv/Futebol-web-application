@@ -31,7 +31,7 @@ async def get_partidas_por_time(nome_time: str = Query(...)):
 
 @router.post("/")
 async def create_partida(partida: PartidaCreate, nome_campeonato: str, ano_campeonato: int):
-    response = partida_rep.insert_partida(partida, nome_campeonato, ano_campeamento) # Corrected ano_campeonato var here
+    response = partida_rep.insert_partida(partida, nome_campeonato, ano_campeonato) # Corrected ano_campeonato var here
     return response
 
 @router.delete("/")

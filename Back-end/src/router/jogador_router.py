@@ -41,36 +41,49 @@ async def delete_jogador(id_jogador: int = Query(...)):
     jog_rep.delete_jogador(id_jogador)
     return "Jogador deletado com sucesso."
 
-@router.get("/", response_model=List[JogadorResponse]) # <--- CHANGE THIS LINE to JogadorResponse
+@router.get("/", response_model=List[JogadorResponse])
 async def get_jogadores_por_nome(
     name: Optional[str] = Query(None),
     nome_time: Optional[str] = Query(None)
 ):
     print(f"DEBUG: Endpoint GET /jogador/ executado. Valor de 'name': {name}, Valor de 'nome_time': {nome_time}")
-    # This function from your repository MUST return dictionaries that have 'id_jogador' and 'nome_time'
     result_dicts = jog_rep.get_jogadores_por_nome(name=name, nome_time=nome_time)
 
     processed_results = []
     for row in result_dicts:
         new_row = row.copy()
         if 'c_posicao' in new_row and new_row['c_posicao'] is not None:
-            pos_str_raw = new_row['c_posicao']
-            if isinstance(pos_str_raw, str):
-                pos_str_clean = pos_str_raw.replace('-', '_').upper()
-                if not pos_str_clean:
-                    new_row['c_posicao'] = None
+            pos_from_db = new_row['c_posicao'] 
+
+            try:
+                if isinstance(pos_from_db, int):
+                    new_row['c_posicao'] = Posicao(pos_from_db)
+                elif isinstance(pos_from_db, str):
+                    # Adicione um mapeamento específico para MEIO-CAMPO
+                    if pos_from_db.upper() == 'MEIO-CAMPO':
+                        new_row['c_posicao'] = Posicao.MEIO_CAMPISTA # Mapeia para o enum correto
+                    else:
+                        pos_str_clean = pos_from_db.replace(' ', '_').replace('-', '_').upper()
+
+                        if pos_str_clean in Posicao.__members__:
+                            new_row['c_posicao'] = Posicao[pos_str_clean]
+                        else:
+                            try:
+                                int_val = int(pos_str_clean)
+                                new_row['c_posicao'] = Posicao(int_val)
+                            except (ValueError, KeyError):
+                                print(f"AVISO (Router): Posição '{pos_from_db}' do BD (string) não é um nome/valor de Enum válido. Setando para None.")
+                                new_row['c_posicao'] = None
                 else:
-                    try:
-                        new_row['c_posicao'] = Posicao[pos_str_clean]
-                    except KeyError:
-                        print(f"AVISO (Router): Posição '{pos_str_raw}' do BD não é um nome de Enum válido. Setando para None.")
-                        new_row['c_posicao'] = None
-            else:
+                    print(f"AVISO (Router): Posição '{pos_from_db}' do BD (tipo {type(pos_from_db).__name__}) não é um nome/valor de Enum válido. Setando para None.")
+                    new_row['c_posicao'] = None
+
+            except ValueError: 
+                print(f"AVISO (Router): Posição '{pos_from_db}' do BD não corresponde a um valor numérico válido do Enum. Setando para None.")
                 new_row['c_posicao'] = None
+            except KeyError: 
+                print(f"AVISO (Router): Posição '{pos_from_db}' do BD não corresponde a um nome válido do Enum. Setando para None.")
+                new_row['c_posicao'] = None
+                
         processed_results.append(new_row)
-
-    # FastAPI will automatically convert the `processed_results` (list of dicts)
-    # into a List of `JogadorResponse` instances because of `response_model`.
-    # It will pick up 'id_jogador', 'nome_time', and all fields from JogadorCreate.
-    return processed_results # <--- Return the raw dicts, FastAPI does the Pydantic conversion
-
+    return processed_results

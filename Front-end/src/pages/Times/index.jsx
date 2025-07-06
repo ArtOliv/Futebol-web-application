@@ -124,7 +124,12 @@ function Times() {
                                         jogosTime.map((game, index) => {
                                             const isCasa = game.c_time_casa === teamData.name;
                                             const adversario = isCasa ? game.c_time_visitante : game.c_time_casa;
-                                            const placar = `${game.n_placar_casa} x ${game.n_placar_visitante}`;
+                                            
+                                            // ALTERADO: Lógica para exibir o placar na perspectiva do time visualizado
+                                            const placar = isCasa 
+                                                ? `${game.n_placar_casa} x ${game.n_placar_visitante}` 
+                                                : `${game.n_placar_visitante} x ${game.n_placar_casa}`; 
+
                                             const resultado =
                                                 (isCasa && game.n_placar_casa > game.n_placar_visitante) ||
                                                 (!isCasa && game.n_placar_visitante > game.n_placar_casa)
@@ -134,7 +139,7 @@ function Times() {
                                                     : 'derrota';
 
                                             return (
-                                                <li key={index}>
+                                                <li key={game.id_jogo || index}> {/* ALTERADO: Usando game.id_jogo como key, com fallback para index */}
                                                     <span className={`game-status-indicator ${resultado}`}></span>
                                                     <span>{placar} {adversario} - {corrigirEncoding(game.c_nome_campeonato)}</span>
                                                 </li>

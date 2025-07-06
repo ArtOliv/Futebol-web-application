@@ -9,7 +9,7 @@ from src.database import get_db_connection
 def get_jogadores_por_nome(name: Optional[str] = None, nome_time: Optional[str] = None) -> List[Dict[str, Any]]:
     conn = get_db_connection()
     try:
-        cursor = conn.cursor() 
+        cursor = conn.cursor(pymysql.cursors.DictCursor) # Use DictCursor para retornar dicionários
 
         query = """
             SELECT
@@ -19,29 +19,36 @@ def get_jogadores_por_nome(name: Optional[str] = None, nome_time: Optional[str] 
                 j.n_camisa,
                 j.c_posicao,
                 j.d_data_nascimento,
-                j.c_nome_time AS nome_time -- <--- !!! CRUCIAL CHANGE HERE !!!
-                                          -- Selects from 'j' (jogador alias) and aliases it to 'nome_time'
+                j.c_nome_time AS nome_time
             FROM
-                Jogador j -- Make sure 'Jogador' matches case if your DB is case-sensitive (sometimes it's 'jogador')
+                Jogador j
             WHERE 1=1
         """
         params = []
 
         if name:
-            query += " AND j.c_Pnome_jogador LIKE %s"
+            # CORREÇÃO AQUI: Garante que o nome completo seja construído corretamente
+            # e que a busca seja case-insensitive usando LOWER()
+            query += " AND LOWER(CONCAT(j.c_Pnome_jogador, ' ', IFNULL(j.c_Unome_jogador, ''))) LIKE LOWER(%s)"
             params.append(f"%{name}%")
         if nome_time:
-            query += " AND j.c_nome_time LIKE %s" 
+            query += " AND LOWER(j.c_nome_time) LIKE LOWER(%s)" # Adiciona LOWER() para busca case-insensitive no nome do time
             params.append(f"%{nome_time}%")
 
         cursor.execute(query, tuple(params))
         results = cursor.fetchall()
+        
+        # Adiciona 'nome_completo' ao resultado para o frontend
+        for row in results:
+            row['nome_completo'] = f"{row['c_Pnome_jogador']} {row['c_Unome_jogador'] or ''}".strip()
+
         return results
     finally:
         if cursor:
             cursor.close()
         if conn:
             conn.close()
+
 
 def get_jogador_por_id(jogador_id: int):
     conn = pymysql.connect(

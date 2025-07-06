@@ -13,6 +13,8 @@ function Jogadores() {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
     const location = useLocation()
+    
+
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -27,11 +29,12 @@ function Jogadores() {
                 if (playerIdFromUrl) {
                     const player = await getJogadoresPorId(playerIdFromUrl);
                     setSelectedPlayer({
-                        id: player.id_jogador,
-                        name: player.nome_completo,
+                        id: parseInt(player.id_jogador) || 0,
+                        name: player.nome_completo, // 'nome_completo' é do get_jogador_por_id
                         team: player.c_nome_time,
                         age: calcularIdade(player.d_data_nascimento),
-                        position: player.c_posicao,
+                        // ALTERADO: Apenas use player.c_posicao diretamente se for string
+                        position: player.c_posicao || 'N/A', 
                         jerseyNumber: player.n_camisa,
                         statistics: {
                             goals: player.gols || 0,
@@ -44,11 +47,12 @@ function Jogadores() {
                     const decodedName = decodeURIComponent(playerNameFromUrl);
                     const data = await getJogadoresPorNome(decodedName);
                     const formatted = data.map(player => ({
-                        id: player.id_jogador,
-                        name: player.nome_completo,
-                        team: player.c_nome_time,
+                        id: parseInt(player.id_jogador) || 0,
+                        name: `${player.c_Pnome_jogador || ''} ${player.c_Unome_jogador || ''}`.trim(),
+                        team: player.nome_time,
                         age: calcularIdade(player.d_data_nascimento),
-                        position: player.c_posicao,
+                        // ALTERADO: Apenas use player.c_posicao diretamente se for string
+                        position: player.c_posicao || 'N/A',
                         jerseyNumber: player.n_camisa,
                         statistics: {
                             goals: player.gols || 0,
@@ -87,11 +91,12 @@ function Jogadores() {
         try {
             const data = await getJogadoresPorNome(trimmed);
             const formatted = data.map(player => ({
-                id: player.id_jogador,
-                name: player.nome_completo,
-                team: player.c_nome_time,
+                id: parseInt(player.id_jogador) || 0,
+                name: `${player.c_Pnome_jogador || ''} ${player.c_Unome_jogador || ''}`.trim(),
+                team: player.nome_time,
                 age: calcularIdade(player.d_data_nascimento),
-                position: player.c_posicao,
+                // ALTERADO: Apenas use player.c_posicao diretamente se for string
+                position: player.c_posicao || 'N/A',
                 jerseyNumber: player.n_camisa,
                 statistics: {
                     goals: player.gols || 0,
@@ -131,6 +136,7 @@ function Jogadores() {
     };
 
     function corrigirEncoding(str){
+        if (typeof str !== 'string') return str;
         try {
             const bytes = new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
             const decoder = new TextDecoder('utf-8');
@@ -181,7 +187,7 @@ function Jogadores() {
                                 <h3>Resultados da Busca:</h3>
                                 <ul>
                                     {foundPlayers.map((player) => (
-                                        <li key={player.id + player.team}
+                                        <li key={player.id} 
                                             onClick={() => handleSelectPlayer(player)}
                                         >
                                             {player.name} ({player.team})
@@ -215,7 +221,8 @@ function Jogadores() {
                                 </div>
                                 <div className="info-item">
                                     <span>Posição:</span>
-                                    <span>{corrigirEncoding(selectedPlayer.position) || 'N/A'}</span>
+                                    {/* ALTERADO: Apenas exibe a string diretamente */}
+                                    <span>{selectedPlayer.position || 'N/A'}</span> 
                                 </div>
                                 <div className="info-item">
                                     <span>Camisa:</span>

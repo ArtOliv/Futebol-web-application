@@ -79,6 +79,7 @@ def get_partidas_por_time(nome_time: str):
                     "j.c_time_visitante, "
                     "j.n_placar_casa, "
                     "j.n_placar_visitante, "
+                    "j.n_rodada,"
                     "j.d_ano_campeonato " 
                 "FROM Jogo AS j "
                 "WHERE j.c_time_casa = %s OR j.c_time_visitante = %s "
@@ -242,7 +243,7 @@ def delete_partida(id_partida: int):
             conn.close()
 
 
-def get_partidas_for_dropdown(
+def get_partidas_for_dropdown( # Esta é a função que você quer que eu use no frontend
     nome_campeonato: Optional[str] = None,
     ano_campeonato: Optional[int] = None
 ) -> List[Dict[str, Any]]:
@@ -268,7 +269,7 @@ def get_partidas_for_dropdown(
                     n_rodada,
                     dt_data_horario,
                     c_nome_campeonato,
-                    d_ano_campeonato
+                    d_ano_campeonato 
                 FROM Jogo
                 WHERE 1=1
             """
@@ -278,7 +279,7 @@ def get_partidas_for_dropdown(
                 query += " AND c_nome_campeonato = %s"
                 params.append(nome_campeonato)
             if ano_campeonato:
-                query += " AND d_ano_campeonato = %s"
+                query += " AND d_ano_campeonato = %s" 
                 params.append(ano_campeonato)
 
             query += " ORDER BY dt_data_horario DESC"
@@ -294,19 +295,5 @@ def get_partidas_for_dropdown(
         print(f"ERRO INESPERADO (get_partidas_for_dropdown): {e}")
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Ocorreu um erro inesperado ao buscar partidas para dropdown: {str(e)}")
     finally:
-        if conn:
-            conn.close()
-
-def get_partidas_for_dropdown(
-    nome_campeonato: Optional[str] = None,
-    ano_campeonato: Optional[int] = None
-) -> List[Dict[str, Any]]:
-    conn = None
-    cursor = None
-    try:
-        conn = get_db_connection() 
-    finally:
-        if cursor:
-            cursor.close()
         if conn:
             conn.close()
