@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Dados de entrada
-csv_path = "../inserts/jogadores_brasileirao.csv"  
+csv_path = "../arquivos_csvs/jogadores_brasileirao_2.csv"  
 output_path = "insert_jogadores.sql"
 
 # Carrega os dados do CSV
