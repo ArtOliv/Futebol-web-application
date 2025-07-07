@@ -4,6 +4,7 @@ from pymysql.err import IntegrityError
 from fastapi import HTTPException, status 
 from typing import Dict, Any, Optional, List 
 from src.database import get_db_connection
+from src.constant.posicao_enum import Posicao
 
 
 def get_jogadores_por_nome(name: Optional[str] = None, nome_time: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -78,6 +79,18 @@ def get_jogador_por_id(jogador_id: int):
 
 def insert_jogador(jogador: Dict[str, Any], nome_time: str):
     conn = None
+    
+    jogador_posicao_para_db = None
+    # Verifica se a posição foi fornecida e não é nula
+    if 'c_posicao' in jogador and jogador['c_posicao'] is not None:
+        try:
+            
+            jogador_posicao_para_db = str(Posicao(jogador['c_posicao']))
+        except (ValueError, KeyError) as e:
+            # Lida com casos onde o número não corresponde a um membro do Enum
+            print(f"AVISO (Repository): Posição numérica '{jogador['c_posicao']}' inválida. Setando para NULL. Erro: {e}")
+            jogador_posicao_para_db = None
+    
     try:
         conn = pymysql.connect(
             host="localhost",
@@ -91,20 +104,18 @@ def insert_jogador(jogador: Dict[str, Any], nome_time: str):
         conn.query("SET NAMES utf8mb4;")
 
         with conn.cursor() as cursor:
-          
             cursor.execute("SELECT c_nome_time FROM Time WHERE c_nome_time = %s", (nome_time,))
             time_exists = cursor.fetchone()
 
             if not time_exists:
                 raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Time '{nome_time}' não encontrado. Não é possível adicionar jogador.")
 
-          
             sql_insert_player = """
             INSERT INTO Jogador (
                 c_Pnome_jogador,
                 c_Unome_jogador,
                 n_camisa,
-                c_posicao,
+                c_posicao, -- <--- A coluna c_posicao no DB é VARCHAR, então aceita string
                 d_data_nascimento,
                 c_nome_time
             ) VALUES (%s, %s, %s, %s, %s, %s)
@@ -113,7 +124,7 @@ def insert_jogador(jogador: Dict[str, Any], nome_time: str):
                 jogador["c_Pnome_jogador"],
                 jogador["c_Unome_jogador"],
                 jogador["n_camisa"],
-                jogador["c_posicao"], 
+                jogador_posicao_para_db, # <--- Usa a string formatada
                 jogador["d_data_nascimento"],
                 nome_time 
             )
@@ -123,13 +134,11 @@ def insert_jogador(jogador: Dict[str, Any], nome_time: str):
             return {"message": "Jogador cadastrado com sucesso!"}
 
     except IntegrityError as e:
-        if conn:
-            conn.rollback()
-      
+        if conn: conn.rollback()
         error_message_lower = str(e).lower()
         if 'duplicate entry' in error_message_lower and 'primary' in error_message_lower and 'id_jogador' in error_message_lower:
             raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Um jogador com este ID já existe.")
-        elif 'foreign key constraint fails' in error_message_lower and 'fk_jogador_time' in error_message_lower: # Verifique o nome da sua FK se for diferente
+        elif 'foreign key constraint fails' in error_message_lower and 'fk_jogador_time' in error_message_lower:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Não foi possível associar o jogador ao time. Verifique se o nome do time está correto.")
         else:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro de integridade ao cadastrar jogador: {e}")
@@ -157,6 +166,7 @@ def insert_jogador(jogador: Dict[str, Any], nome_time: str):
     finally:
         if conn:
             conn.close()
+    
 
 
 def delete_jogador(id_jogador: int):

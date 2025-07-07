@@ -13,6 +13,16 @@ import DropDownTimes from './DropdownTimes';
 import DropDownJogos from './DropdownJogos'; 
 
 
+function corrigirEncoding(str){
+        try {
+            const bytes = new Uint8Array(str.split('').map(c => c.charCodeAt(0)));
+            const decoder = new TextDecoder('utf-8');
+            return decoder.decode(bytes);
+        } catch {
+            return str;
+        }
+    }
+
 function FormCreate(){
     // --- ESTADOS PARA CADASTRAR CAMPEONATO (para o DropDownCampeonato independente) ---
     const [nomeCampeonato, setNomeCampeonato] = useState('');
@@ -73,11 +83,16 @@ function FormCreate(){
             try {
                 const camps = await getCampeonatos();
                 console.log("Fetched campeonatos from service (camps):", camps);
-                setAvailableCampeonatos(Array.isArray(camps) ? camps : []);
+                // ALTERADO: Aplica corrigirEncoding ao nome do campeonato ao formatar a lista
+                const formattedCamps = Array.isArray(camps) ? camps.map(camp => ({
+                    ...camp,
+                    c_nome_campeonato: corrigirEncoding(camp.c_nome_campeonato) // Aplica a correção aqui
+                })) : [];
+                setAvailableCampeonatos(formattedCamps);
             } catch (err) {
                 console.error("Erro ao carregar campeonatos para o dropdown:", err);
                 setErrorLoadingCampeonatos("Erro ao carregar lista de campeonatos.");
-                setAvailableCampeonatos([]); // E
+                setAvailableCampeonatos([]); 
             } finally {
                 setLoadingCampeonatos(false);
             }

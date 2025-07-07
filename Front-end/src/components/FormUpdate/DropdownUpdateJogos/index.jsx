@@ -114,7 +114,7 @@ function DropDownUpdateJogos({
     // Handler para submissão dos dados (gol/cartão)
     const handleSubmitAcao = (e) => {
         e.preventDefault(); // Evita o recarregamento da página
-
+        console.log("handleSubmitAcao executado!"); // ADICIONE ESTE LOG
         // Validações básicas antes de chamar o handler pai
         if (!idPartidaUpdate || isNaN(parseInt(idPartidaUpdate))) {
             setErrorLoadingMatch("ID da Partida é obrigatório.");

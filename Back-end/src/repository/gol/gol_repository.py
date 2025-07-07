@@ -200,6 +200,7 @@ def insert_gol_action(gol_data: Dict[str, Any]) -> str:
                 UPDATE Jogo
                 SET 
                     {score_to_update_column} = {score_to_update_column} + 1,
+                    {score_to_update_column} = {score_to_update_column} -1,
                     c_status = 'Finalizado' -- <--- ALTERADO: Altera o status para 'Finalizado'
                 WHERE id_jogo = %s;
             """
