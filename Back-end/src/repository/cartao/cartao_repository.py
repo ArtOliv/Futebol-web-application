@@ -40,39 +40,58 @@ def get_cartoes_por_partida(id_partida: int) -> List[Dict[str, Any]]:
         if conn:
             conn.close()
 
-def insert_cartao(cartao: Cartao, id_partida: int, id_jogador: int) -> Dict[str, str]:
+# Função para inserir cartão (POST) - Adaptada para receber um dicionário (do model_dump)
+def insert_cartao_action(cartao_data: Dict[str, Any]) -> str: # Renomeada para ser específica da ação
     conn = None
     cursor = None
     try:
-        conn = get_db_connection() 
+        conn = get_db_connection()
         cursor = conn.cursor()
-        query = ("INSERT INTO "
-                    "Cartao (e_tipo, n_minuto_cartao, id_jogo, id_jogador) "
-                 "VALUES (%s, %s, %s, %s);")
-        cursor.execute(query, (str(cartao.e_tipo.value), cartao.n_minuto_cartao,id_partida,id_jogador)) 
+
+        # Validações de existência de jogo/jogador (essencial!)
+        cursor.execute("SELECT id_jogo FROM Jogo WHERE id_jogo = %s", (cartao_data['id_jogo'],))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Jogo com ID {cartao_data['id_jogo']} não encontrado.")
+        
+        cursor.execute("SELECT id_jogador FROM Jogador WHERE id_jogador = %s", (cartao_data['id_jogador'],))
+        if not cursor.fetchone():
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Jogador com ID {cartao_data['id_jogador']} não encontrado.")
+
+        query = """
+            INSERT INTO Cartao (
+                id_jogo,
+                id_jogador,
+                n_minuto_cartao,
+                e_tipo -- Corrigido de c_tipo_cartao para e_tipo (conforme seu DB)
+                -- Adicione outras colunas se necessário
+            ) VALUES (%s, %s, %s, %s)
+        """
+        values = (
+            cartao_data['id_jogo'],
+            cartao_data['id_jogador'],
+            cartao_data['n_minuto_cartao'],
+            cartao_data['c_tipo_cartao'] # O frontend envia c_tipo_cartao, que mapeia para e_tipo no DB
+        )
+
+        cursor.execute(query, values)
         conn.commit()
-        return {"message": "Cartão inserido com sucesso."}
+        return "Cartão adicionado com sucesso!"
+
     except IntegrityError as e:
         if conn: conn.rollback()
-        error_message_lower = str(e).lower()
-        if all(s in error_message_lower for s in ['foreign key constraint fails', 'fk_jogo_cartao']):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Essa partida não existe.")
-        elif all(s in error_message_lower for s in ['foreign key constraint fails', 'fk_jogador_cartao']):
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Esse jogador não existe.")
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro de integridade do banco ao inserir o cartão: {e}")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Erro de integridade ao adicionar cartão: {e}")
     except MySQLError as e:
-        print(f"ERRO MYSQL CAPTURADO (insert_cartao): {e}")
+        print(f"ERRO MYSQL CAPTURADO (insert_cartao_action): {e}") # Alterado: Nome da função no log
         if conn: conn.rollback()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno do servidor ao inserir cartão: {e}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno do servidor ao adicionar cartão: {e}")
     except HTTPException as e:
+        if conn: conn.rollback()
         raise e
     except Exception as e:
-        print(f"ERRO INESPERADO NA INSERÇÃO (Cartao): {e}")
+        print(f"ERRO INESPERADO (insert_cartao_action): {e}")
         if conn: conn.rollback()
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Ocorreu um erro interno inesperado no servidor: {str(e)}")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Ocorreu um erro inesperado ao adicionar cartão: {str(e)}")
     finally:
-        if cursor:
-            cursor.close()
         if conn:
             conn.close()
 

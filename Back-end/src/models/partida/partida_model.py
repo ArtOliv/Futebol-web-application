@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
 from typing import Optional, List
 from datetime import datetime, date, time
 
@@ -47,3 +47,16 @@ class PartidaResponse(BaseModel):
     c_nome_campeonato: str
     d_ano_campeonato: int
    
+
+#PARA UPDATE JOGO
+class PartidaUpdate(BaseModel):
+    # Todos os campos são opcionais para atualização
+    dt_data_str: Optional[str] = None
+    hr_horario_str: Optional[str] = None
+    n_rodada: Optional[int] = Field(None, ge=1)
+    n_placar_casa: Optional[int] = Field(None, ge=0)
+    n_placar_visitante: Optional[int] = Field(None, ge=0)
+    c_nome_estadio: Optional[str] = None
+    c_time_casa: Optional[str] = None
+    c_time_visitante: Optional[str] = None
+    c_status: Optional[str] = None

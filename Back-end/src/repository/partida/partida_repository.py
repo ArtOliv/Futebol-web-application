@@ -297,3 +297,90 @@ def get_partidas_for_dropdown( # Esta é a função que você quer que eu use no
     finally:
         if conn:
             conn.close()
+
+#UPDATE JOGO
+# Função para obter partida por ID (para getPartidaPorId no frontend)
+def get_partida_by_id(id_partida: int) -> Optional[Dict[str, Any]]:
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor(pymysql.cursors.DictCursor)
+        query = """
+            SELECT 
+                id_jogo, dt_data_horario, n_rodada, n_placar_casa, n_placar_visitante,
+                c_nome_campeonato, d_ano_campeonato, c_nome_estadio, c_time_casa, c_time_visitante, c_status
+            FROM Jogo
+            WHERE id_jogo = %s;
+        """
+        cursor.execute(query, (id_partida,))
+        result = cursor.fetchone()
+        return result
+    finally:
+        conn.close()
+
+def update_partida(id_partida: int, partida_data: Dict[str, Any]) -> str:
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        set_clauses = []
+        values = []
+
+        if 'dt_data_str' in partida_data and 'hr_horario_str' in partida_data:
+            combined_datetime_str = f"{partida_data['dt_data_str']} {partida_data['hr_horario_str']}:00"
+            try:
+                dt_data_horario_obj = datetime.strptime(combined_datetime_str, '%Y-%m-%d %H:%M:%S')
+                set_clauses.append("dt_data_horario = %s")
+                values.append(dt_data_horario_obj)
+            except ValueError:
+                raise HTTPException(status_code=400, detail="Formato de data/hora inválido. Use YYYY-MM-DD e HH:MM.")
+        elif 'dt_data_str' in partida_data: # Se só a data foi dada
+            set_clauses.append("dt_data_horario = %s")
+            values.append(partida_data['dt_data_str']) # Vai depender se o DB pode converter só data
+
+        if 'n_rodada' in partida_data:
+            set_clauses.append("n_rodada = %s")
+            values.append(partida_data['n_rodada'])
+        if 'n_placar_casa' in partida_data:
+            set_clauses.append("n_placar_casa = %s")
+            values.append(partida_data['n_placar_casa'])
+        if 'n_placar_visitante' in partida_data:
+            set_clauses.append("n_placar_visitante = %s")
+            values.append(partida_data['n_placar_visitante'])
+        if 'c_nome_estadio' in partida_data:
+            set_clauses.append("c_nome_estadio = %s")
+            values.append(partida_data['c_nome_estadio'])
+        if 'c_time_casa' in partida_data:
+            set_clauses.append("c_time_casa = %s")
+            values.append(partida_data['c_time_casa'])
+        if 'c_time_visitante' in partida_data:
+            set_clauses.append("c_time_visitante = %s")
+            values.append(partida_data['c_time_visitante'])
+        if 'c_status' in partida_data:
+            set_clauses.append("c_status = %s")
+            values.append(partida_data['c_status'])
+
+        if not set_clauses:
+            return "Nenhum campo fornecido para atualização da partida."
+
+        query = f"UPDATE Jogo SET {', '.join(set_clauses)} WHERE id_jogo = %s;"
+        values.append(id_partida)
+
+        cursor.execute(query, tuple(values))
+
+        if cursor.rowcount == 0:
+            raise HTTPException(status_code=404, detail=f"Partida com ID {id_partida} não encontrada para atualização.")
+        
+        conn.commit()
+        return "Partida atualizada com sucesso!"
+
+    except MySQLError as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Erro no banco de dados ao atualizar partida: {str(e)}")
+    except HTTPException as e:
+        conn.rollback() # HTTPExceptions também podem indicar que rollback é necessário
+        raise e
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=f"Ocorreu um erro inesperado ao atualizar partida: {str(e)}")
+    finally:
+        conn.close()

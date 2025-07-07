@@ -4,9 +4,11 @@ from pydantic import BaseModel
 from typing import Optional
 
 class GolCreate(BaseModel): 
-    n_minuto_gol: Optional[int] = None
+    id_jogo: int
+    id_jogador: int
+    n_minuto_gol: int
 
-class Gol(BaseModel): #
+class Gol(BaseModel): 
     id_gol: Optional[int] = None
     n_minuto_gol: Optional[int] = None
     jogador: Optional[Jogador] = None 
