@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from src.router import time_routes, campeonato_router, partida_router, gol_router, jogador_router, cartao_router, classificacao_router
+from src.router import time_routes, campeonato_router, partida_router, gol_router, jogador_router, cartao_router, classificacao_router, adm_router, estatistica_router
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
@@ -28,7 +28,8 @@ app.include_router(partida_router.router)
 app.include_router(gol_router.router)
 app.include_router(jogador_router.router)
 app.include_router(cartao_router.router)
-
+app.include_router(adm_router.router)
+app.include_router(estatistica_router.router)
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
