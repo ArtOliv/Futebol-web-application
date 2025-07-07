@@ -59,6 +59,14 @@ function FormCreate(){
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const positionNameToValue = {
+        "GOLEIRO": 0,
+        "ZAGUEIRO": 1,
+        "LATERAL_ESQUERDO": 2,
+        "LATERAL_DIREITO": 3,
+        "MEIO_CAMPISTA": 4,
+        "ATACANTE": 5,
+    };
 
     useEffect(() => {
         const fetchCampeonatos = async () => {
@@ -178,7 +186,7 @@ function FormCreate(){
                                     c_Pnome_jogador: pNomeJogador,
                                     c_Unome_jogador: uNomeJogador || null,
                                     n_camisa: parseInt(camisa),
-                                    c_posicao: parseInt(posicao),
+                                    c_posicao: positionNameToValue[posicao],
                                     d_data_nascimento: dataNascimento, 
                                 }] : [] 
                             };
@@ -216,7 +224,7 @@ function FormCreate(){
                     c_Pnome_jogador: pNomeJogador,
                     c_Unome_jogador: uNomeJogador || null, // Garante que seja null se vazio
                     n_camisa: camisa ? parseInt(camisa) : null, // Se 'camisa' for string vazia, parseInt() resulta em NaN.
-                    c_posicao: posicao !== '' ? parseInt(posicao) : null, // Se 'posicao' for string vazia, envia null.
+                    c_posicao: posicao !== '' ? positionNameToValue[posicao] : null, // Se 'posicao' for string vazia, envia null.
                     d_data_nascimento: dataNascimento || null, // Se 'dataNascimento' for string vazia, envia null.
                 };
                 console.log("Objeto Jogador a ser enviado (jogadorObject):", jogadorObject);

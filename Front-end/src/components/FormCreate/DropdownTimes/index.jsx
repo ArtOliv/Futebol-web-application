@@ -33,15 +33,17 @@ function DropDownTimes({
     const [aberto, setAberto] = useState(false);
     const [abreJogadores, setAbreJogadores] = useState(false);
 
+    // ALTERADO: Valores das opções para as STRINGS DOS NOMES EXATOS DO ENUM
     const options = [
         { value: '', label: "- Selecione a Posição -" }, 
-        { value: '0', label: "Goleiro" }, 
-        { value: '1', label: "Zagueiro" },
-        { value: '2', label: "Lateral Esquerdo" },
-        { value: '3', label: "Lateral Direito" },
-        { value: '4', label: "Meio Campo" },
-        { value: '5', label: "Atacante" }
+        { value: "GOLEIRO", label: "Goleiro" }, 
+        { value: "ZAGUEIRO", label: "Zagueiro" },
+        { value: "LATERAL_ESQUERDO", label: "Lateral Esquerdo" },
+        { value: "LATERAL_DIREITO", label: "Lateral Direito" },
+        { value: "MEIO_CAMPISTA", label: "Meio Campo" }, 
+        { value: "ATACANTE", label: "Atacante" }
     ];
+
 
     const handleCampeonatoSelectChange = (e) => {
         const selectedValue = e.target.value;

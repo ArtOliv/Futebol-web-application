@@ -155,3 +155,80 @@ def delete_gol(id_gol: int) -> Dict[str, str]:
             cursor.close()
         if conn:
             conn.close()    
+
+# Função para inserir gol (POST) - Adaptada para receber um dicionário (do model_dump)
+def insert_gol_action(gol_data: Dict[str, Any]) -> str: 
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection() 
+        cursor = conn.cursor()
+
+        # 1. Validar existência de jogo e jogador
+        cursor.execute("SELECT id_jogo, c_time_casa, c_time_visitante FROM Jogo WHERE id_jogo = %s", (gol_data['id_jogo'],))
+        jogo_details = cursor.fetchone()
+        if not jogo_details:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Jogo com ID {gol_data['id_jogo']} não encontrado.")
+        
+        cursor.execute("SELECT c_nome_time FROM Jogador WHERE id_jogador = %s", (gol_data['id_jogador'],))
+        jogador_details = cursor.fetchone()
+        if not jogador_details:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Jogador com ID {gol_data['id_jogador']} não encontrado.")
+
+        # 2. Inserir o Gol
+        query_insert_gol = ("INSERT INTO "
+                    "Gol (n_minuto_gol, id_jogo, id_jogador) " 
+                 "VALUES (%s, %s, %s);")
+        values_insert_gol = (gol_data['n_minuto_gol'], gol_data['id_jogo'], gol_data['id_jogador']) 
+
+        cursor.execute(query_insert_gol, values_insert_gol)
+        
+        # 3. Determinar qual placar incrementar (casa ou visitante)
+        time_do_gol = jogador_details['c_nome_time']
+        score_to_update_column = None
+        if time_do_gol == jogo_details['c_time_casa']:
+            score_to_update_column = "n_placar_casa"
+        elif time_do_gol == jogo_details['c_time_visitante']:
+            score_to_update_column = "n_placar_visitante"
+        else:
+            # Esta validação é importante: o time do jogador deve ser um dos times do jogo.
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"O time do jogador ('{time_do_gol}') não participa da partida com ID {gol_data['id_jogo']}.")
+
+        # 4. Incrementar o placar e atualizar o status do jogo
+        if score_to_update_column:
+            query_update_placar_status = f"""
+                UPDATE Jogo
+                SET 
+                    {score_to_update_column} = {score_to_update_column} + 1,
+                    c_status = 'Finalizado' -- <--- ALTERADO: Altera o status para 'Finalizado'
+                WHERE id_jogo = %s;
+            """
+            cursor.execute(query_update_placar_status, (gol_data['id_jogo'],))
+            
+            if cursor.rowcount == 0:
+                print(f"WARNING: Jogo com ID {gol_data['id_jogo']} não encontrado para atualização de placar/status após adicionar gol.")
+
+        conn.commit()
+        return "Gol adicionado com sucesso e status da partida atualizado para Finalizado!"
+    except IntegrityError as e:
+        if conn: conn.rollback()
+        error_message_lower = str(e).lower()
+        if 'foreign key constraint fails' in error_message_lower and 'fk_jogador_gol' in error_message_lower:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Esse jogador não existe.")
+        elif 'foreign key constraint fails' in error_message_lower and 'fk_jogo_gol' in error_message_lower:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Essa partida não existe.")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Ocorreu um erro ao inserir o gol: {e}")
+    except MySQLError as e:
+        print(f"ERRO MYSQL CAPTURADO (insert_gol_action): {e}") 
+        if conn: conn.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno do servidor ao cadastrar gol: {e}")
+    except HTTPException as e:
+        if conn: conn.rollback() 
+        raise e
+    except Exception as e:
+        print(f"ERRO INESPERADO NA INSERÇÃO (Gol): {e}")
+        if conn: conn.rollback()
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Ocorreu um erro inesperado ao adicionar gol: {str(e)}")
+    finally:
+        if conn:
+            conn.close()

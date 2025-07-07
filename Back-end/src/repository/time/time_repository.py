@@ -13,9 +13,8 @@ from src.constant.posicao_enum import Posicao
 from src.models.jogador.jogador_model import Jogador
 from src.models.classificacao.classific_model import Classificacao
 
-def get_time(nome_time: str):
-    import pymysql
 
+def get_time(nome_time: str):
     conn = pymysql.connect(
         host="localhost",
         port=3308,
@@ -36,7 +35,10 @@ def get_time(nome_time: str):
                     t.c_cidade_time, 
                     t.c_tecnico_time,
                     j.id_jogador,
-                    CONCAT(j.c_Pnome_jogador, ' ', IFNULL(j.c_Unome_jogador, '')) AS nome_jogador
+                    CONCAT(j.c_Pnome_jogador, ' ', IFNULL(j.c_Unome_jogador, '')) AS nome_jogador,
+                    j.c_posicao, -- <--- ALTERADO: Seleciona c_posicao
+                    j.n_camisa,  -- <--- ALTERADO: Seleciona n_camisa para o display
+                    t.c_nome_time AS nome_time_jogador -- <--- ALTERADO: Seleciona o nome do time para o jogador, se precisar
                 FROM Time t
                 LEFT JOIN Jogador j ON j.c_nome_time = t.c_nome_time
                 WHERE t.c_nome_time = %s;
@@ -47,7 +49,7 @@ def get_time(nome_time: str):
         conn.close()
 
     if not rows:
-        return None
+        return None # Retorna None se o time não for encontrado
 
     time_info = {
         "name": rows[0]["c_nome_time"],
@@ -56,11 +58,32 @@ def get_time(nome_time: str):
         "players": []
     }
 
+    # Mapeamento para labels de posição (igual ao que você tem no frontend)
+    positionLabels = {
+        0: 'Goleiro',
+        1: 'Zagueiro',
+        2: 'Lateral Esquerdo',
+        3: 'Lateral Direito',
+        4: 'Meio Campista',
+        5: 'Atacante',
+    }
+
     for row in rows:
-        if row["nome_jogador"]:
+        if row["id_jogador"]: 
+            jogador_posicao_num = row["c_posicao"] 
+            jogador_posicao_label = None
+            if jogador_posicao_num is not None:
+                try:
+                    jogador_posicao_label = positionLabels.get(jogador_posicao_num, 'N/A')
+                except Exception:
+                    jogador_posicao_label = 'N/A' 
+
             time_info["players"].append({
                 "id": row["id_jogador"],
-                "nome": row["nome_jogador"]
+                "nome": row["nome_jogador"], 
+                "posicao_label": jogador_posicao_label, 
+                "n_camisa": row["n_camisa"], 
+                "nome_time": row["nome_time_jogador"]
             })
 
     return time_info
