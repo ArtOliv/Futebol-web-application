@@ -1,0 +1,5 @@
+INSERT INTO Campeonato
+(c_nome_campeonato,d_ano_campeonato)
+VALUES
+('Premier League 2020-2021', 2021),
+('Premier League 2021-2022', 2022);

@@ -5,6 +5,7 @@ select * from classificacao;
 select * from estadio;
 select * from time;
 select * from cartao;
+select * from campeonato;
 
 SELECT *
 FROM jogador
