@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Query, status
-from typing import List, Optional 
+from typing import List, Optional
+from fastapi import HTTPException
 
 from src.repository.cartao import cartao_repository as cartao_rep
 from src.models.cartao.cartao_model import Cartao, CartaoResponse, CartaoCreate
