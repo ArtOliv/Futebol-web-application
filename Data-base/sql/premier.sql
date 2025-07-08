@@ -135,7 +135,7 @@ create table if not exists Classificacao(
 );
 
 DELIMITER $$
-CREATE TRIGGER atualizar_jogo_na_tabela
+CREATE TRIGGER tg_atualizar_jogo_na_tabela
 AFTER UPDATE ON Jogo
 FOR EACH ROW
 BEGIN
@@ -162,7 +162,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER atulizar_pontuacao_no_jogo
+CREATE TRIGGER tg_atulizar_pontuacao_no_jogo
 AFTER INSERT ON Gol
 FOR EACH ROW
 BEGIN
@@ -180,7 +180,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER criar_classificacao
+CREATE TRIGGER tg_criar_classificacao
 AFTER INSERT ON Time_participa_campeonato 
 FOR EACH ROW
 BEGIN
@@ -199,7 +199,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER impedir_jogo_mesmo_time
+CREATE TRIGGER tg_impedir_jogo_mesmo_time
 BEFORE INSERT ON Jogo
 FOR EACH ROW
 BEGIN
@@ -210,7 +210,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER impedir_gol_por_jogador_invalido
+CREATE TRIGGER tg_impedir_gol_por_jogador_invalido
 BEFORE INSERT ON Gol
 FOR EACH ROW
 BEGIN
@@ -231,7 +231,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE TRIGGER impedir_gol_update_por_jogador_invalido
+CREATE TRIGGER tg_impedir_gol_update_por_jogador_invalido
 BEFORE UPDATE ON Gol
 FOR EACH ROW
 BEGIN
@@ -253,7 +253,7 @@ DELIMITER ;
 
 DELIMITER $$
 
-CREATE TRIGGER impedir_novo_cartao_apos_vermelho
+CREATE TRIGGER tg_impedir_novo_cartao_apos_vermelho
 BEFORE INSERT ON Cartao
 FOR EACH ROW
 BEGIN
@@ -285,7 +285,7 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE TRIGGER impedir_gol_apos_cartao_vermelho
+CREATE TRIGGER tg_impedir_gol_apos_cartao_vermelho
 BEFORE INSERT ON Gol
 FOR EACH ROW
 BEGIN
@@ -302,6 +302,42 @@ BEGIN
 		SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Jogador expulso não pode fazer gol';
 	END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER tg_impedir_update_jogo_finalizado
+BEFORE UPDATE ON Jogo
+FOR EACH ROW
+BEGIN
+    IF OLD.c_status = 'Finalizado' THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Modificação não permitida: O jogo já foi finalizado.';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER tg_impedir_insercao_gol_em_jogo_finalizado
+BEFORE INSERT ON Gol
+FOR EACH ROW
+BEGIN
+    IF (SELECT c_status FROM Jogo WHERE id_jogo = NEW.id_jogo) = 'Finalizado' THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Inserção não permitida: O jogo já foi finalizado.';
+    END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE TRIGGER tg_impedir_insercao_cartao_em_jogo_finalizado
+BEFORE INSERT ON Cartao
+FOR EACH ROW
+BEGIN
+    IF (SELECT c_status FROM Jogo WHERE id_jogo = NEW.id_jogo) = 'Finalizado' THEN
+        SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Inserção não permitida: O jogo já foi finalizado.';
+    END IF;
 END$$
 DELIMITER ;
 
