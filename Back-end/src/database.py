@@ -5,7 +5,7 @@ from pymysql.err import Error as PyMySQLError # Para capturar erros específicos
 # Detalhes da conexão com o banco de dados
 DB_CONFIG = {
     "host": "mysql",
-    "port": 3308,
+    "port": 3306,
     "user": "root",
     "password": "root",
     "database": "meu_banco",
