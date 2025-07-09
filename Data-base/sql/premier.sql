@@ -40015,30 +40015,30 @@ VALUES
 ('Amarelo', 64, 2, 4179),
 ('Vermelho', 79, 1, 4179);
 
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Fulham', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Crystal Palace', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Liverpool', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('West Ham', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('West Brom', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Tottenham', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Brighton', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Sheffield United', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Everton', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Leeds', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Man United', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Arsenal', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Southampton', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Newcastle', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Chelsea', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Leicester', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Aston Villa', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Wolves', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Burnley', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Man City', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Brentford', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Watford', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Norwich', NULL, NULL);
-INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Wolves', NULL, NULL);
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Fulham', 'Fulham', 'Marco Silva');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Crystal Palace', 'Londres', 'Oliver Glasner');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Liverpool', 'Liverpool', 'Arne Slot');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('West Ham', 'East End', 'Graham Potter');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('West Brom', 'West Bromwich', 'Ryan Mason');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Tottenham', 'Londres', 'Thomas Frank');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Brighton', 'Brighton and Hove', 'Fabian Hurzeler');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Sheffield United', 'Sheffield', 'Ruben Selles');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Everton', 'Liverpoo', 'David Moyes');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Leeds', 'Leeds', 'Daniel Farke');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Man United', 'Manchester', 'Ruben Amorim');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Arsenal', 'Londres', 'Mikel Arteta');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Southampton', 'Hampshire', 'Will Still');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Newcastle', 'Newcastle', 'Eddie Howe');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Chelsea', 'Londres', 'Enzo Maresca');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Leicester', 'Leicester', 'Ruud van Nistelrooy');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Aston Villa', 'Birmingham', 'Unai Emery');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Wolves', 'Wolverhampton', 'Vitor Pereira');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Burnley', 'Burnley', 'Scott Parker');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Man City', 'Manchester', 'Josep Guardiola');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Brentford', 'Brentford', 'Keith Andrews');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Watford', 'Watford', 'Paulo Pezzolano');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Norwich', 'Norwich', 'Liam Manning');
+INSERT IGNORE INTO Time (c_nome_time, c_cidade_time, c_tecnico_time) VALUES ('Wolves', 'Wolverhampton', 'Vitor Pereira');
 
 INSERT INTO Campeonato
 (c_nome_campeonato,d_ano_campeonato)
