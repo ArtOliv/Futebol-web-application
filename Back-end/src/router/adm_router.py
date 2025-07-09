@@ -14,11 +14,11 @@ async def login(adm: Adm):
 
 def authenticate(email: str, senha: str):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
     try:
@@ -39,11 +39,11 @@ def authenticate(email: str, senha: str):
 @router.post("/signup")
 async def signup(adm: Adm):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
     hash_senha = bcrypt.hashpw(adm.c_senha_adm.encode("utf-8"), bcrypt.gensalt())

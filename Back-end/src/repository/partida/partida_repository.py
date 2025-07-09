@@ -13,11 +13,11 @@ def get_all_ordered_partida(nome_campeonato: str, ano_campeonato: int):
     conn = None
     try:
         conn = pymysql.connect(
-            host="localhost",
+            host="mysql",
             user="root",
-            port=3308,
+            port=3306,
             password="root",
-            database="campeonato_futebol",
+            database="meu_banco",
             cursorclass=pymysql.cursors.DictCursor,
             charset="utf8mb4"
         )
@@ -59,11 +59,11 @@ def get_partidas_por_time(nome_time: str):
     conn = None
     try:
         conn = pymysql.connect(
-            host="localhost",
+            host="mysql",
             user="root",
-            port=3308,
+            port=3306,
             password="root",
-            database="campeonato_futebol",
+            database="meu_banco",
             cursorclass=pymysql.cursors.DictCursor,
             charset="utf8mb4"
         )
@@ -102,11 +102,11 @@ def insert_partida(partida_data: PartidaCreate, nome_campeonato: str, ano_campeo
     conn = None
     try:
         conn = pymysql.connect(
-            host="localhost",
+            host="mysql",
             user="root",
-            port=3308,
+            port=3306,
             password="root",
-            database="campeonato_futebol",
+            database="meu_banco",
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -212,11 +212,11 @@ def delete_partida(id_partida: int):
     conn = None
     try:
         conn = pymysql.connect(
-            host="localhost",
+            host="mysql",
             user="root",
-            port=3308,
+            port=3306,
             password="root",
-            database="campeonato_futebol",
+            database="meu_banco",
             charset="utf8mb4"
         )
         conn.query("SET NAMES utf8mb4;")
@@ -250,11 +250,11 @@ def get_partidas_for_dropdown( # Esta é a função que você quer que eu use no
     conn = None
     try:
         conn = pymysql.connect(
-            host="localhost",
+            host="mysql",
             user="root",
-            port=3308,
+            port=3306,
             password="root",
-            database="campeonato_futebol",
+            database="meu_banco",
             cursorclass=pymysql.cursors.DictCursor,
             charset="utf8mb4"
         )

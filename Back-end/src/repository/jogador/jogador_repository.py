@@ -53,11 +53,11 @@ def get_jogadores_por_nome(name: Optional[str] = None, nome_time: Optional[str] 
 
 def get_jogador_por_id(jogador_id: int):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )
@@ -93,11 +93,11 @@ def insert_jogador(jogador: Dict[str, Any], nome_time: str):
     
     try:
         conn = pymysql.connect(
-            host="localhost",
+            host="mysql",
             user="root",
-            port=3308,
+            port=3306,
             password="root",
-            database="campeonato_futebol",
+            database="meu_banco",
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor
         )
@@ -171,11 +171,11 @@ def insert_jogador(jogador: Dict[str, Any], nome_time: str):
 
 def delete_jogador(id_jogador: int):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
 

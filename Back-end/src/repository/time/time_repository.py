@@ -16,11 +16,11 @@ from src.models.classificacao.classific_model import Classificacao
 
 def get_time(nome_time: str):
     conn = pymysql.connect(
-        host="localhost",
-        port=3308,
+        host="mysql",
+        port=3306,
         user="root",
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )
@@ -90,11 +90,11 @@ def get_time(nome_time: str):
 
 def insert_time(time: Time, nome_campeonato: str, ano_campeonato: int):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
 
@@ -198,11 +198,11 @@ def insert_time(time: Time, nome_campeonato: str, ano_campeonato: int):
 
 def delete_time(nome_time: str):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
 
@@ -220,11 +220,11 @@ def delete_time(nome_time: str):
 
 def update_time(time: Time):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
     try:

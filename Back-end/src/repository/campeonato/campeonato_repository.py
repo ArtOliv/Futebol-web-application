@@ -3,11 +3,11 @@ from src.parser.camp_parser import parse_campeonato, parse_campeonato_for_dropdo
 
 def insert_campeonato(nome_campeonato: str, ano_campeonato: int):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
 
@@ -26,11 +26,11 @@ def insert_campeonato(nome_campeonato: str, ano_campeonato: int):
 
 def get_all_campeonato():
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )
@@ -50,11 +50,11 @@ def get_all_campeonato():
 
 def get_campeonato_by_name(nome_campeonato: str):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )
@@ -79,11 +79,11 @@ def get_campeonato_by_name(nome_campeonato: str):
 # Função para buscar campeonato por nome E ano
 def get_campeonato_by_name_and_year(nome_campeonato: str, ano_campeonato: int):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )
@@ -107,11 +107,11 @@ def get_campeonato_by_name_and_year(nome_campeonato: str, ano_campeonato: int):
 
 def delete_campeonato(nome_campeonato: str, ano_campeonato: int):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         charset="utf8mb4"
     )
 

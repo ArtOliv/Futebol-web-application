@@ -6,11 +6,11 @@ router = APIRouter(prefix="/stats", tags=["stats"])
 @router.get("/jogador")
 async def get_jogador_stats(nome_campeonato: str = Query(...), ano_campeonato: int = Query(...)):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )
@@ -97,11 +97,11 @@ async def get_jogador_stats(nome_campeonato: str = Query(...), ano_campeonato: i
 @router.get("/partidas")
 async def get_estatisticas_times(nome_campeonato: str = Query(...), ano_campeonato: int = Query(...)):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )

@@ -1,0 +1,42 @@
+
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-container
+    restart: always
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: meu_banco
+    volumes:
+      - ./database_tp/init:/docker-entrypoint-initdb.d
+  api:
+    build: ./Back-end
+    container_name: fastapi
+    depends_on:
+      - mysql
+    ports:
+      - "8000:8000"
+    environment:
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_NAME: meu_banco
+    volumes:
+      - ./Back-end:/app
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+  
+  web:
+    build: ./Front-end
+    container_name: react
+    depends_on:
+      - api
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./Front-end:/app
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+   

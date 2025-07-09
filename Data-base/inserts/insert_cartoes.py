@@ -10,7 +10,7 @@ def importar_cartoes():
     db_user = 'root'
     db_password = os.getenv('DB_PASSWORD')
     db_host = os.getenv('DB_HOST')
-    db_name = 'campeonato_futebol'
+    db_name = 'meu_banco'
     db_port = os.getenv('DB_PORT')
 
     # --- CONFIGURE OS ARQUIVOS E A TABELA DE DESTINO ---
@@ -78,7 +78,7 @@ def importar_cartoes():
         print(f"\nERRO: Ocorreu um problema durante a execução: {e}")
         print("\nDicas:")
         print("- Verifique se as credenciais do banco de dados estão corretas.")
-        print("- Confirme se as tabelas 'jogo' e 'jogador' existem no banco 'campeonato_futebol'.")
+        print("- Confirme se as tabelas 'jogo' e 'jogador' existem no banco 'meu_banco'.")
         print("- Veja se as colunas no CSV ('id_jogo', 'n_minuto_cartao', 'id_jogador') correspondem exatamente.")
     pass
 

@@ -4,11 +4,11 @@ from pymysql.err import Error as PyMySQLError # Para capturar erros específicos
 
 # Detalhes da conexão com o banco de dados
 DB_CONFIG = {
-    "host": "localhost",
+    "host": "mysql",
     "port": 3308,
     "user": "root",
     "password": "root",
-    "database": "campeonato_futebol",
+    "database": "meu_banco",
     "charset": "utf8mb4",
 }
 

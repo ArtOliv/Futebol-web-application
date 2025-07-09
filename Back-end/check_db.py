@@ -3,11 +3,11 @@ import sys
 
 try:
     conn = pymysql.connect(
-        host="localhost",
-        port=3308,
+        host="mysql",
+        port=3306,
         user="root",
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor, # Opcional, mas útil
         charset="utf8mb4"
     )

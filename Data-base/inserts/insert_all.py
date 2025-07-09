@@ -30,11 +30,11 @@ def main():
     try:
         print("\n=== Atualizando status dos jogos para 'Finalizado' ===")
         conn = mysql.connector.connect(
-            host="localhost",
+            host="mysql",
             port=3306,
             user="root",
             password=senha,
-            database="campeonato_futebol"
+            database="meu_banco"
         )
         cursor = conn.cursor()
     

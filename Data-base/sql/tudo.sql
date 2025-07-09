@@ -1,4 +1,4 @@
-use campeonato_futebol;
+use meu_banco;
 
 DROP TABLE IF EXISTS Cartao;
 DROP TABLE IF EXISTS Gol;

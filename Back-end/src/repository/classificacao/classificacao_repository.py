@@ -3,11 +3,11 @@ import traceback
 
 def get_all_ordered_classificacao():
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )
@@ -34,11 +34,11 @@ def get_all_ordered_classificacao():
 
 def get_classificacao(nome_time: str):
     conn = pymysql.connect(
-        host="localhost",
+        host="mysql",
         user="root",
-        port=3308,
+        port=3306,
         password="root",
-        database="campeonato_futebol",
+        database="meu_banco",
         cursorclass=pymysql.cursors.DictCursor,
         charset="utf8mb4"
     )

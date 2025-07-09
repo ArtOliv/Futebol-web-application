@@ -8,7 +8,7 @@ def importar_jogos():
     db_user = 'root'
     db_password = os.getenv('DB_PASSWORD') 
     db_host = os.getenv('DB_HOST')
-    db_name = 'campeonato_futebol' 
+    db_name = 'meu_banco' 
     db_port = os.getenv('DB_PORT')
 
     script_dir = os.path.dirname(os.path.abspath(__file__))
