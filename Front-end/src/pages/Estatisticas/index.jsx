@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCampeonatos } from "../../services/campeonatoService";
+import { getEstatisticasJogadores, getEstatisticasPartidas } from "../../services/estatisticasService";
 import './styles.css'
 
 function Estatisticas(){
@@ -25,21 +26,52 @@ function Estatisticas(){
     }, []);
 
     useEffect(() => {
-    async function carregarEstatisticas() {
-      try {
-        const resposta = await fetch('/estatisticas.json');
-        const json = await resposta.json();
-        setEstatisticas(json);
-        setCarregando(false);
-      } catch (err) {
-        console.error('Erro ao carregar JSON:', err);
-        setError('Erro ao carregar dados.');
-        setCarregando(false);
-      }
-    }
+        if(!selecionado.nome || !selecionado.ano){
+            return
+        }
 
-    carregarEstatisticas();
-  }, []);
+        async function carregarEstatisticas() {
+            setCarregando(true)
+            try{
+                const [jogadores, partidas] = await Promise.all([
+                    getEstatisticasJogadores(selecionado.nome, selecionado.ano),
+                    getEstatisticasPartidas(selecionado.nome, selecionado.ano)
+                ])
+
+                const formatar = (lista, campo) =>
+                    lista.map(j => ({
+                        nome: `${j.c_Pnome_jogador} ${j.c_Unome_jogador}`,
+                        time: j.c_nome_time,
+                        [campo]: j[campo]
+                    }))
+
+                const formatarTimes = (lista, campo) => 
+                    lista.map(t => ({
+                        nome: t.c_nome_time,
+                        time: "",
+                        [campo]: t[campo]
+                    }))
+                
+                setEstatisticas({
+                    artilheiros: formatar(jogadores.jogadores_mais_gols, "total_gols"),
+                    amarelos: formatar(jogadores.jogadores_mais_cartoes_amarelos, "total_cartoes_amarelos"),
+                    vermelhos: formatar(jogadores.jogadores_mais_cartoes_vermelhos, "total_cartoes_vermelhos"),
+                    vitorias_casa: formatarTimes(partidas.times_mais_vencem_casa, "vitorias_casa"),
+                    vitorias_fora: formatarTimes(partidas.times_mais_vencem_fora, "vitorias_fora"),
+                    fair_play: formatarTimes(partidas.times_fair_play, "total_cartoes"),
+                    violentos: formatarTimes(partidas.times_violentos, "total_cartoes")
+                });
+
+                setError(null)
+            } catch(err) {
+                console.error("Erro ao carregar estatísticas:", err)
+            } finally {
+                setCarregando(false);
+            }
+        }
+
+        carregarEstatisticas();
+    }, [selecionado]);
 
     if(carregando){
         return null
@@ -66,11 +98,13 @@ function Estatisticas(){
     }
 
     const blocos = [
-        { titulo: 'Artilheiros', campo: 'gols', dados: estatisticas.artilheiros || [] },
-        { titulo: 'Cartões Amarelos', campo: 'amarelos', dados: estatisticas.amarelos || [] },
-        { titulo: 'Cartões Vermelhos', campo: 'vermelhos', dados: estatisticas.vermelhos || [] },
-        { titulo: 'Assistências', campo: 'assistencias', dados: estatisticas.assistencias || [] },
-        { titulo: 'Defesas', campo: 'defesas', dados: estatisticas.defesas || [] }
+        { titulo: 'Artilheiro', campo: 'total_gols', coluna: 'Gols', dados: estatisticas.artilheiros || [] },
+        { titulo: 'Cartões Amarelos', campo: 'total_cartoes_amarelos', coluna: 'Cartões', dados: estatisticas.amarelos || [] },
+        { titulo: 'Cartões Vermelhos', campo: 'total_cartoes_vermelhos', coluna: 'Cartões', dados: estatisticas.vermelhos || [] },
+        { titulo: 'Time que mais vence em casa', campo: 'vitorias_casa', coluna: 'Vitórias', dados: estatisticas.vitorias_casa || [] },
+        { titulo: 'Time que mais vence fora', campo: 'vitorias_fora', coluna: 'Vitórias', dados: estatisticas.vitorias_fora || [] },
+        { titulo: 'Time Fair Play', campo: 'total_cartoes', coluna: 'Cartões', dados: estatisticas.fair_play || [] },
+        { titulo: 'Time mais violento', campo: 'total_cartoes', coluna: 'Cartões', dados: estatisticas.violentos || [] }
     ];
 
     return(
@@ -94,9 +128,9 @@ function Estatisticas(){
                                 </colgroup>
                                 <thead>
                                     <tr>
-                                        <th>Jogador</th>
-                                        <th style={{ textAlign: 'center', paddingLeft: '115px' }}>
-                                            {bloco.titulo.includes('Cartões') ? 'Cartões' : bloco.campo[0].toUpperCase() + bloco.campo.slice(1)}
+                                        <th>{bloco.titulo.startsWith("Times") || bloco.titulo.startsWith("Time") ? "Time" : "Jogador"}</th>
+                                        <th style={{ textAlign: 'center', paddingLeft: '10px' }}>
+                                            {bloco.coluna[0].toUpperCase() + bloco.coluna.slice(1)}
                                         </th>
                                     </tr>
                                 </thead>
@@ -108,7 +142,7 @@ function Estatisticas(){
                                                     <span className="rank">{i + 1}</span> 
                                                     <span className="row-text">
                                                         {item.nome} 
-                                                        <span className="time-menor">{item.time}</span>
+                                                        {item.time && <span className="time-menor">{item.time}</span>}
                                                     </span>
                                                 </div>
                                             </td>

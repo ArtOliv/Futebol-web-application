@@ -94,6 +94,40 @@ async def get_jogador_stats(nome_campeonato: str = Query(...), ano_campeonato: i
 
     return response_data
 
+@router.get("/jogador/{id_jogador}")
+async def get_all_jogador_stats(id_jogador: int):
+    conn = pymysql.connect(
+        host="mysql",
+        user="root",
+        port=3306,
+        password="root",
+        database="meu_banco",
+        cursorclass=pymysql.cursors.DictCursor,
+        charset="utf8mb4"
+    )
+
+    data = {
+        "gols": 0,
+        "cartoes_amarelos": 0,
+        "cartoes_vermelhos": 0
+    }
+
+    try:
+        with conn.cursor() as cursor:
+            cursor.execute("SELECT COUNT(*) AS gols FROM Gol WHERE id_jogador = %s", (id_jogador,))
+            data["gols"] = cursor.fetchone()["gols"]
+
+            cursor.execute("SELECT COUNT(*) AS amarelos FROM Cartao WHERE id_jogador = %s AND e_tipo = 'amarelo'", (id_jogador,))
+            data["cartoes_amarelos"] = cursor.fetchone()["amarelos"]
+
+            cursor.execute("SELECT COUNT(*) AS vermelhos FROM Cartao WHERE id_jogador = %s AND e_tipo = 'vermelho'", (id_jogador,))
+            data["cartoes_vermelhos"] = cursor.fetchone()["vermelhos"]
+
+    finally:
+        conn.close()
+
+    return data
+
 @router.get("/partidas")
 async def get_estatisticas_times(nome_campeonato: str = Query(...), ano_campeonato: int = Query(...)):
     conn = pymysql.connect(
