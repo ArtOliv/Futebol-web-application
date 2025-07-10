@@ -803,8 +803,6 @@ VALUES
 ('Vivaldo Lima', 'Manaus', '31000'),
 ('Wilson de Barros*(PF)', 'Mogi Mirim', '19900');
 
-INSERT INTO Administrador (c_email_adm, c_Pnome_adm, c_Unome_adm, c_senha_adm) VALUES ('adm@gmail.com','Arthur','Silva',123);
-
 INSERT INTO Jogo
 (dt_data_horario, n_rodada, n_placar_casa, n_placar_visitante, c_nome_campeonato, d_ano_campeonato, c_nome_estadio, c_time_casa, c_time_visitante)
 VALUES

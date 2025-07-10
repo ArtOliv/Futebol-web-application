@@ -129,7 +129,7 @@ function Estatisticas(){
                                 <thead>
                                     <tr>
                                         <th>{bloco.titulo.startsWith("Times") || bloco.titulo.startsWith("Time") ? "Time" : "Jogador"}</th>
-                                        <th style={{ textAlign: 'center', paddingLeft: '10px' }}>
+                                        <th style={{ textAlign: 'center', paddingLeft: '100px' }}>
                                             {bloco.coluna[0].toUpperCase() + bloco.coluna.slice(1)}
                                         </th>
                                     </tr>
