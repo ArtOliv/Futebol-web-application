@@ -294,7 +294,7 @@ function FormDelete() {
 
                 } catch (golErr) {
                     operationMessages.push(`Erro ao deletar Gol: ${golErr.message}`);
-                    console.error("Erro ao deletar Gol:", golErr);
+                    console.error("Jogo já finalizado:", golErr);
                     setError(prev => (prev ? prev + '\n' : '') + `Erro Gol: ${golErr.message}`);
                 }
             } else if (idGolToDelete) {

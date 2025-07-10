@@ -115,6 +115,7 @@ function DropDownUpdateJogos({
     const handleSubmitAcao = (e) => {
         e.preventDefault(); // Evita o recarregamento da página
         console.log("handleSubmitAcao executado!"); // ADICIONE ESTE LOG
+
         // Validações básicas antes de chamar o handler pai
         if (!idPartidaUpdate || isNaN(parseInt(idPartidaUpdate))) {
             setErrorLoadingMatch("ID da Partida é obrigatório.");
@@ -137,13 +138,37 @@ function DropDownUpdateJogos({
             id_partida: parseInt(idPartidaUpdate),
             id_jogador: parseInt(idJogadorAcao),
             minuto: parseInt(minutoAcao),
-            // Outros campos serão adicionados no FormUpdate
+            adicionarGol: adicionarGol,
+            adicionarCartao: adicionarCartao,
+            tipoCartao: tipoCartao,
         };
-        
-        // Chama a função de submissão no componente pai (FormUpdate)
-        onUpdateSubmit(dataToSend, adicionarGol, adicionarCartao, tipoCartao);
+        console.log("Dados a serem enviados:", dataToSend);
+        onUpdateSubmit(dataToSend, 'add_action');
 
         resetAcaoFields(); // Limpa os campos após a submissão
+    };
+
+
+
+    // Handler para finalizar o jogo
+    const handleFinalizarJogo = (e) => {
+        e.preventDefault(); // Evita o recarregamento da página
+        setErrorLoadingMatch(null);
+
+        if (!idPartidaUpdate || isNaN(parseInt(idPartidaUpdate))) {
+            setErrorLoadingMatch("ID da Partida é obrigatório para finalizar o jogo.");
+            return;
+        }
+
+        // Prepara o payload para atualizar o status e placares (usando os atuais da matchData)
+        const finalizePayload = {
+            id_partida: parseInt(idPartidaUpdate),
+            c_status: "Finalizado", // Status a ser enviado
+            n_placar_casa: matchData?.n_placar_casa, // Reusa o placar atual carregado
+            n_placar_visitante: matchData?.n_placar_visitante // Reusa o placar atual carregado
+        };
+        // Chama a função de submissão no componente pai, indicando que é para finalizar o jogo
+        onUpdateSubmit(finalizePayload, 'finalize_game');
     };
 
     return (
@@ -155,138 +180,143 @@ function DropDownUpdateJogos({
                 </button>
                 {aberto && (
                     <div className="input-container">
-                        <form onSubmit={handleSubmitAcao}> {/* Form para a ação de gol/cartão */}
-                            <div className="form-group">
-                                <label htmlFor='updateIdPartida'>ID da Partida:</label>
-                                <input
-                                    type="number"
-                                    id="updateIdPartida"
-                                    value={idPartidaUpdate}
-                                    onChange={onIdPartidaUpdateChange} // Atualiza o ID no FormUpdate
-                                    placeholder="Digite o ID da partida"
-                                    min="1"
-                                />
-                                {loadingMatch && <p>Carregando partida...</p>}
-                                {errorLoadingMatch && <p className="error-message">{errorLoadingMatch}</p>}
-                                {matchData && !errorLoadingMatch && (
-                                    <p className="info-message">Partida: {matchData.c_time_casa} vs {matchData.c_time_visitante} ({new Date(matchData.dt_data_horario).toLocaleDateString()})</p>
-                                )}
-                                {!loadingMatch && !matchData && idPartidaUpdate && (
-                                    <p className="info-message">Partida não encontrada para o ID informado.</p>
-                                )}
-                            </div>
-
-                            {matchData && ( // Somente mostra se a partida foi carregada
-                                <>
-                                    <button type="button" className='sub-dropdown-button' onClick={() => setAbreAcaoAdicional(!abreAcaoAdicional)}>
-                                        <img src={ArrowIcon} alt='seta' className={`button-arrow ${abreAcaoAdicional ? 'rotate' : ''}`}/>
-                                        <span className="sub-dropdown-text">Adicionar Gol/Cartão</span>
-                                    </button>
-
-                                    {abreAcaoAdicional && (
-                                        <div className="sub-dropdown-content">
-                                            {/* Campo Nome do Time para filtrar jogadores */}
-                                            <div className="form-group">
-                                                <label htmlFor='filterNomeTimeAcao'>Nome do Time (Jogador/Cartão):</label>
-                                                <input
-                                                    type="text"
-                                                    id="filterNomeTimeAcao"
-                                                    value={filterByNomeTimeAcao}
-                                                    onChange={(e) => {
-                                                        setFilterByNomeTimeAcao(e.target.value);
-                                                        setIdJogadorAcao(''); // Limpa seleção de jogador ao mudar o time
-                                                    }}
-                                                    placeholder="Time do jogador/cartão"
-                                                />
-                                            </div>
-
-                                            {/* Select de Jogador, similar ao delete */}
-                                            <div className="form-group">
-                                                <label htmlFor='selectJogadorAcao'>Selecionar Jogador:</label>
-                                                {loadingJogadoresAcao && <p>Carregando jogadores...</p>}
-                                                {errorLoadingJogadoresAcao && <p className="error-message">{errorLoadingJogadoresAcao}</p>}
-                                                {!loadingJogadoresAcao && !errorLoadingJogadoresAcao && Array.isArray(availableJogadoresAcao) && (
-                                                    <select
-                                                        id="selectJogadorAcao"
-                                                        value={idJogadorAcao}
-                                                        onChange={(e) => setIdJogadorAcao(e.target.value)}
-                                                    >
-                                                        <option key="select-empty-jogador-acao" value="">- Selecione um Jogador -</option>
-                                                        {availableJogadoresAcao.map(jogador => (
-                                                            <option key={jogador.id_jogador} value={jogador.id_jogador}>
-                                                                {jogador.c_Pnome_jogador} {jogador.c_Unome_jogador ? jogador.c_Unome_jogador : ''} ({jogador.nome_time})
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                )}
-                                                {!loadingJogadoresAcao && !errorLoadingJogadoresAcao && availableJogadoresAcao.length === 0 && filterByNomeTimeAcao && (
-                                                    <p className="info-message">Nenhum jogador encontrado para este time.</p>
-                                                )}
-                                                {!loadingJogadoresAcao && !errorLoadingJogadoresAcao && availableJogadoresAcao.length === 0 && !filterByNomeTimeAcao && (
-                                                    <p className="info-message">Digite o nome do time para buscar jogadores.</p>
-                                                )}
-                                            </div>
-
-                                            {idJogadorAcao && ( // Campos de ação só aparecem se um jogador for selecionado
-                                                <>
-                                                    <div className="form-group">
-                                                        <label htmlFor='minutoAcao'>Minuto:</label>
-                                                        <input
-                                                            type="number"
-                                                            id="minutoAcao"
-                                                            value={minutoAcao}
-                                                            onChange={(e) => setMinutoAcao(e.target.value)}
-                                                            min="1"
-                                                            placeholder="Minuto da ação"
-                                                        />
-                                                    </div>
-
-                                                    {/* Checkbox para Adicionar Gol */}
-                                                    <div className="form-group checkbox-group">
-                                                        <label htmlFor='adicionarGol'>Adicionar Gol?</label>
-                                                        <input
-                                                            type="checkbox"
-                                                            id="adicionarGol"
-                                                            checked={adicionarGol}
-                                                            onChange={(e) => setAdicionarGol(e.target.checked)}
-                                                        />
-                                                    </div>
-
-                                                    {/* Campos de Cartão (visíveis se Adicionar Cartão ou Adicionar Gol não está marcado) */}
-                                                    <div className="form-group checkbox-group">
-                                                        <label htmlFor='adicionarCartao'>Adicionar Cartão?</label>
-                                                        <input
-                                                            type="checkbox"
-                                                            id="adicionarCartao"
-                                                            checked={adicionarCartao}
-                                                            onChange={(e) => setAdicionarCartao(e.target.checked)}
-                                                        />
-                                                    </div>
-
-                                                    {adicionarCartao && ( // Select do tipo de cartão só se adicionarCartao está marcado
-                                                        <div className="form-group">
-                                                            <label htmlFor='tipoCartao'>Tipo de Cartão:</label>
-                                                            <select
-                                                                id="tipoCartao"
-                                                                value={tipoCartao}
-                                                                onChange={(e) => setTipoCartao(e.target.value)}
-                                                            >
-                                                                {tipoCartaoOptions.map((option) => (
-                                                                    <option key={option.value} value={option.value}>
-                                                                        {option.label}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
-                                                        </div>
-                                                    )}
-                                                </>
-                                            )}
-                                            <button type="submit">Adicionar Ação</button> {/* Botão para submeter apenas a ação */}
-                                        </div>
-                                    )}
-                                </>
+                        <div className="form-group">
+                            <label htmlFor='updateIdPartida'>ID da Partida:</label>
+                            <input
+                                type="number"
+                                id="updateIdPartida"
+                                value={idPartidaUpdate}
+                                onChange={onIdPartidaUpdateChange} // Atualiza o ID no FormUpdate
+                                placeholder="Digite o ID da partida"
+                                min="1"
+                            />
+                            {/* --- NOVO BOTÃO: Finalizar Jogo --- */}
+                            {idPartidaUpdate && matchData && !loadingMatch && !errorLoadingMatch && matchData.c_status !== "Finalizado" && (
+                                <button type="button" onClick={handleFinalizarJogo} className="finalize-game-button">Finalizar Jogo</button>
                             )}
-                        </form>
+                        </div>
+
+                        {loadingMatch && <p>Carregando partida...</p>}
+                        {errorLoadingMatch && <p className="error-message">{errorLoadingMatch}</p>}
+                        {matchData && !errorLoadingMatch && (
+                            <p className="info-message">Partida: {matchData.c_time_casa} vs {matchData.c_time_visitante} ({new Date(matchData.dt_data_horario).toLocaleDateString()}) - Status: {matchData.c_status}</p>
+                        )}
+                        {!loadingMatch && !matchData && idPartidaUpdate && (
+                            <p className="info-message">Partida não encontrada para o ID informado.</p>
+                        )}
+                        {!idPartidaUpdate && (
+                            <p className="info-message">Digite o ID da partida para carregar seus detalhes.</p>
+                        )}
+
+                        {/* Seção Adicionar Gol/Cartão - Agora um formulário separado */}
+                        {matchData && (
+                            <form onSubmit={handleSubmitAcao}> {/* Este formulário é apenas para adicionar ações */}
+                                <button type="button" className='sub-dropdown-button' onClick={() => setAbreAcaoAdicional(!abreAcaoAdicional)}>
+                                    <img src={ArrowIcon} alt='seta' className={`button-arrow ${abreAcaoAdicional ? 'rotate' : ''}`}/>
+                                    <span className="sub-dropdown-text">Adicionar Gol/Cartão</span>
+                                </button>
+
+                                {abreAcaoAdicional && (
+                                    <div className="sub-dropdown-content">
+                                        {/* Campos de filtro e seleção de jogador */}
+                                        <div className="form-group">
+                                            <label htmlFor='filterNomeTimeAcao'>Nome do Time (Jogador/Cartão):</label>
+                                            <input
+                                                type="text"
+                                                id="filterNomeTimeAcao"
+                                                value={filterByNomeTimeAcao}
+                                                onChange={(e) => {
+                                                    setFilterByNomeTimeAcao(e.target.value);
+                                                    setIdJogadorAcao(''); // Limpa seleção de jogador
+                                                }}
+                                                placeholder="Time do jogador/cartão"
+                                            />
+                                        </div>
+                                        <div className="form-group">
+                                            <label htmlFor='selectJogadorAcao'>Selecionar Jogador:</label>
+                                            {loadingJogadoresAcao && <p>Carregando jogadores...</p>}
+                                            {errorLoadingJogadoresAcao && <p className="error-message">{errorLoadingJogadoresAcao}</p>}
+                                            {!loadingJogadoresAcao && !errorLoadingJogadoresAcao && Array.isArray(availableJogadoresAcao) && (
+                                                <select
+                                                    id="selectJogadorAcao"
+                                                    value={idJogadorAcao}
+                                                    onChange={(e) => setIdJogadorAcao(e.target.value)}
+                                                >
+                                                    <option key="select-empty-jogador-acao" value="">- Selecione um Jogador -</option>
+                                                    {availableJogadoresAcao.map(jogador => (
+                                                        <option key={jogador.id_jogador} value={jogador.id_jogador}>
+                                                            {jogador.c_Pnome_jogador} {jogador.c_Unome_jogador ? jogador.c_Unome_jogador : ''} ({jogador.nome_time})
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            )}
+                                            {!loadingJogadoresAcao && !errorLoadingJogadoresAcao && availableJogadoresAcao.length === 0 && filterByNomeTimeAcao && (
+                                                <p className="info-message">Nenhum jogador encontrado para este time.</p>
+                                            )}
+                                            {!loadingJogadoresAcao && !errorLoadingJogadoresAcao && availableJogadoresAcao.length === 0 && !filterByNomeTimeAcao && (
+                                                <p className="info-message">Digite o nome do time para buscar jogadores.</p>
+                                            )}
+                                        </div>
+
+                                        {/* Campos de ação só aparecem se um jogador for selecionado */}
+                                        {idJogadorAcao && (
+                                            <>
+                                                <div className="form-group">
+                                                    <label htmlFor='minutoAcao'>Minuto:</label>
+                                                    <input
+                                                        type="number"
+                                                        id="minutoAcao"
+                                                        value={minutoAcao}
+                                                        onChange={(e) => setMinutoAcao(e.target.value)}
+                                                        min="1"
+                                                        placeholder="Minuto da ação"
+                                                    />
+                                                </div>
+                                                
+
+                                                <div className="form-group checkbox-group">
+                                                    <label htmlFor='adicionarGol'>Adicionar Gol?</label>
+                                                    <input
+                                                        type="checkbox"
+                                                        id="adicionarGol"
+                                                        checked={adicionarGol}
+                                                        onChange={(e) => setAdicionarGol(e.target.checked)}
+                                                    />
+                                                </div>
+
+                                                <div className="form-group checkbox-group">
+                                                    <label htmlFor='adicionarCartao'>Adicionar Cartão?</label>
+                                                    <input
+                                                        type="checkbox"
+                                                        id="adicionarCartao"
+                                                        checked={adicionarCartao}
+                                                        onChange={(e) => setAdicionarCartao(e.target.checked)}
+                                                    />
+                                                </div>
+
+                                                {adicionarCartao && (
+                                                    <div className="form-group">
+                                                        <label htmlFor='tipoCartao'>Tipo de Cartão:</label>
+                                                        <select
+                                                            id="tipoCartao"
+                                                            value={tipoCartao}
+                                                            onChange={(e) => setTipoCartao(e.target.value)}
+                                                        >
+                                                            {tipoCartaoOptions.map((option) => (
+                                                                <option key={option.value} value={option.value}>
+                                                                    {option.label}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                        <button type="submit" disabled={!idJogadorAcao || !minutoAcao}>Adicionar Ação</button>
+                                    </div>
+                                )}
+                            </form>
+                        )}
                     </div>
                 )}
             </div>

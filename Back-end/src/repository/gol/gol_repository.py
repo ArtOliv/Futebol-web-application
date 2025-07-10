@@ -192,7 +192,7 @@ def insert_gol_action(gol_data: Dict[str, Any]) -> str:
             score_to_update_column = "n_placar_visitante"
         else:
             # Esta validação é importante: o time do jogador deve ser um dos times do jogo.
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"O time do jogador ('{time_do_gol}') não participa da partida com ID {gol_data['id_jogo']}.")
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"O time ('{time_do_gol}') não participa do campeonato da partida com ID {gol_data['id_jogo']}.")
 
         # 4. Incrementar o placar e atualizar o status do jogo
         if score_to_update_column:
@@ -200,8 +200,7 @@ def insert_gol_action(gol_data: Dict[str, Any]) -> str:
                 UPDATE Jogo
                 SET 
                     {score_to_update_column} = {score_to_update_column} + 1,
-                    {score_to_update_column} = {score_to_update_column} -1,
-                    c_status = 'Finalizado' -- <--- ALTERADO: Altera o status para 'Finalizado'
+                    {score_to_update_column} = {score_to_update_column} -1                
                 WHERE id_jogo = %s;
             """
             cursor.execute(query_update_placar_status, (gol_data['id_jogo'],))
@@ -210,7 +209,7 @@ def insert_gol_action(gol_data: Dict[str, Any]) -> str:
                 print(f"WARNING: Jogo com ID {gol_data['id_jogo']} não encontrado para atualização de placar/status após adicionar gol.")
 
         conn.commit()
-        return "Gol adicionado com sucesso e status da partida atualizado para Finalizado!"
+        return "Gol adicionado com sucesso!"
     except IntegrityError as e:
         if conn: conn.rollback()
         error_message_lower = str(e).lower()
