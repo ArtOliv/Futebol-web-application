@@ -170,17 +170,6 @@ function Times() {
                                     <p>Cidade: {corrigirEncoding(teamData.city)}</p>
                                     <p>Técnico: {corrigirEncoding(teamData.coach)}</p>
                                 </div>
-
-                                <div className="card titles-card">
-                                    <h3>Títulos</h3>
-                                    <ul>
-                                        {teamData.titles && teamData.titles.length > 0 ?
-                                            teamData.titles.map((title, index) => (
-                                                <li key={index}><span className="close-icon">X</span> {title}</li>
-                                            )) : <li>Nenhum título disponível.</li>
-                                        }
-                                    </ul>
-                                </div>
                             </div>
                         </div>
                     </div>
